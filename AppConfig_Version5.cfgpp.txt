@@ -1,0 +1,68 @@
+// Canonical example of cfgpp configuration format
+// - Human-friendly, C++-inspired syntax
+// - Supports nested containers, arrays, typed parameters, and comments
+
+AppConfig(
+    Logging logging,
+    UserConfig userConf
+)
+{
+    Logging::logging(
+        string level = "debug",
+        Output[] fileOutputs,
+        Output[] debugOutputs,
+        Output syslog = {}
+    ) {
+        Output::fileOutputs(
+            string type = "file",
+            string path = "/var/log/app.log",
+            bool rotate = false,
+            int max_files = 5
+        );
+        Output::fileOutputs(
+            string type = "file",
+            string path = "/var/log/app_info.log",
+            bool rotate = false,
+            int max_files = 3
+        );
+        Output::debugOutputs(
+            string type = "file",
+            string path = "/var/log/app_debug.log",
+            bool rotate = true,
+            int max_files = 1
+        );
+        Output::syslog(
+            string type = "syslog",
+            string facility = "local0"
+        );
+    }
+
+    UserConfig::userConf(
+        User users[],
+        User singleUser
+    ) {
+        User::users(
+            string name = "Alice",
+            string[] roles = ["admin", "editor"],
+            Preferences prefs = {}
+        ) {
+            Preferences(string theme = "dark");
+        }
+
+        User::users(
+            string name = "Bob",
+            string[] roles = ["viewer"],
+            Preferences prefs = {}
+        ) {
+            Preferences(string theme = "light");
+        }
+
+        User::singleUser(
+            string name = "Gregory",
+            string[] roles = ["standbyStaff", "salaryReceiver"],
+            Preferences prefs = {}
+        ) {
+            Preferences(string theme = "gray");
+        }
+    }
+}

@@ -1,0 +1,12 @@
+# Editor/project files
+*.swp
+*~
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Build outputs
+build/
+dist/
+out/
