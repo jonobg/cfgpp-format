@@ -1,0 +1,7 @@
+antlr4-python3-runtime==4.13.1
+antlr4-tools==0.2.2
+pytest==7.4.3
+black==22.12.0
+mypy==1.1.1
+pylint==2.17.4
+jdk

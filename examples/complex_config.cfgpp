@@ -1,0 +1,85 @@
+// A more complex configuration example for testing
+ComplexConfig(
+    string appName = "My Awesome App",
+    string version = "1.0.0",
+    DatabaseConfig database,
+    ServerConfig server,
+    CacheConfig cache,
+    SecurityConfig security,
+    FeatureFlags features,
+    string[] supportedLocales = ["en_US", "es_ES", "fr_FR"],
+    int maxConnections = 100,
+    bool enableAnalytics = true
+) {
+    DatabaseConfig::database(
+        string host = "db.example.com",
+        int port = 5432,
+        string name = "myapp_production",
+        string user = "admin",
+        bool useSSL = true,
+        ConnectionPool pool = {}
+    ) {
+        ConnectionPool::pool(
+            int minConnections = 5,
+            int maxConnections = 50,
+            int maxLifetime = 3600,
+            int idleTimeout = 600
+        );
+    }
+
+    ServerConfig::server(
+        string host = "0.0.0.0",
+        int port = 3000,
+        bool enableCORS = true,
+        string environment = "production",
+        RateLimiting rateLimiting = {}
+    ) {
+        RateLimiting::rateLimiting(
+            int requestsPerMinute = 1000,
+            bool enabled = true,
+            string[] whitelist = ["192.168.1.1", "10.0.0.0/8"]
+        );
+    }
+
+    CacheConfig::cache(
+        string provider = "redis",
+        int ttl = 3600,
+        RedisConfig redis = {}
+    ) {
+        RedisConfig::redis(
+            string host = "redis.example.com",
+            int port = 6379,
+            string password = "",
+            int db = 0,
+            bool ssl = true
+        );
+    }
+
+    SecurityConfig::security(
+        bool enableHSTS = true,
+        string[] allowedOrigins = ["https://example.com"],
+        JWTConfig jwt = {},
+        PasswordPolicy passwordPolicy = {}
+    ) {
+        JWTConfig::jwt(
+            string secret = "your-secret-key-here",
+            int expiresIn = 86400,
+            string algorithm = "HS256"
+        );
+
+        PasswordPolicy::passwordPolicy(
+            int minLength = 12,
+            bool requireUppercase = true,
+            bool requireLowercase = true,
+            bool requireNumbers = true,
+            bool requireSpecialChars = true
+        );
+    }
+
+    FeatureFlags::features(
+        bool darkMode = true,
+        bool notifications = true,
+        bool experimentalFeatures = false,
+        string[] enabledModules = ["dashboard", "reports", "analytics"]
+    );
+}
