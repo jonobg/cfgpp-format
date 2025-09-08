@@ -1,0 +1,119 @@
+name: Bug Report
+description: Report a bug in the CFGPP parser
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please fill out the information below to help us understand and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: "The parser fails when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Create a config file with content: ...
+        2. Run parser with: ...
+        3. See error: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration File
+      description: The CFGPP configuration that causes the issue
+      render: text
+      placeholder: |
+        Config {
+          // Your configuration here
+        }
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: "The parser should..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: "Instead, the parser..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Output
+      description: Full error message and stack trace (if any)
+      render: text
+      placeholder: "Paste the complete error output here"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: python-version
+    attributes:
+      label: Python Version
+      description: Which Python version are you using?
+      options:
+        - "3.7"
+        - "3.8" 
+        - "3.9"
+        - "3.10"
+        - "3.11"
+        - "3.12"
+        - "Other (specify in additional context)"
+    validations:
+      required: true
+
+  - type: input
+    id: cfgpp-version
+    attributes:
+      label: CFGPP Version
+      description: Which version of CFGPP are you using?
+      placeholder: "e.g., 0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      options:
+        - "Windows"
+        - "macOS"
+        - "Linux (Ubuntu)"
+        - "Linux (other)"
+        - "Other (specify in additional context)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+      placeholder: "Add any other context, screenshots, or related issues here"
+    validations:
+      required: false

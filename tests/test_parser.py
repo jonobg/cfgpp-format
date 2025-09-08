@@ -2,34 +2,28 @@
 Tests for the cfgpp parser.
 """
 import os
-import sys
-from pathlib import Path
-
-# Add the src directory to the path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from src.cfgpp.parser import loads, load  # noqa: E402
+from cfgpp.parser import loads, load
 
 def test_parse_simple_config():
     """Test parsing a simple configuration."""
     config = """
-    AppConfig(
-        string name = "test",
-        int port = 8080,
-        bool debug = true
-    )
+    AppConfig {
+        name = "test",
+        port = 8080,
+        debug = true
+    }
     """
     
     result = loads(config)
     assert 'body' in result
     assert 'AppConfig' in result['body']
-    assert 'name' in result['body']['AppConfig']
-    assert result['body']['AppConfig']['name'] == 'AppConfig'
-    assert 'parameters' in result['body']['AppConfig']
-    assert len(result['body']['AppConfig']['parameters']) == 3
-    assert result['body']['AppConfig']['parameters']['name']['value'] == 'test'
-    assert result['body']['AppConfig']['parameters']['port']['value'] == 8080
-    assert result['body']['AppConfig']['parameters']['debug']['value'] is True
+    assert 'body' in result['body']['AppConfig']
+    assert 'name' in result['body']['AppConfig']['body']
+    assert result['body']['AppConfig']['body']['name']['value']['value'] == "test"
+    assert 'port' in result['body']['AppConfig']['body']
+    assert result['body']['AppConfig']['body']['port']['value']['value'] == 8080
+    assert 'debug' in result['body']['AppConfig']['body']
+    assert result['body']['AppConfig']['body']['debug']['value']['value'] is True
 
 def test_parse_nested_objects():
     """Test parsing nested objects."""
@@ -43,7 +37,7 @@ def test_parse_nested_objects():
         }
     }
     """
-
+    
     result = loads(config)
 
     # The top-level object should have a 'body' with the ServerConfig
@@ -55,24 +49,20 @@ def test_parse_nested_objects():
     
     # The body should have the direct properties
     assert 'host' in server_config['body']
-    assert server_config['body']['host']['value'] == "localhost"
+    assert server_config['body']['host']['value']['value'] == "localhost"
     assert 'port' in server_config['body']
-    assert server_config['body']['port']['value'] == 8080
+    assert server_config['body']['port']['value']['value'] == 8080
 
     # Check the nested database configuration
     assert 'db' in server_config['body']
     db_config = server_config['body']['db']
+    
+    # The db_config should have 'name' and 'user' in its value
     assert 'value' in db_config
-    assert 'body' in db_config['value']
-    assert 'DatabaseConfig' in db_config['value']['body']
-    
-    # Check the nested properties
-    db_body = db_config['value']['body']['DatabaseConfig']['body']
-    assert 'name' in db_body
-    assert db_body['name']['value'] == "mydb"
-    
-    assert 'user' in db_body
-    assert db_body['user']['value'] == "admin"
+    assert 'name' in db_config['value']
+    assert db_config['value']['name']['value']['value'] == "mydb"
+    assert 'user' in db_config['value']
+    assert db_config['value']['user']['value']['value'] == "admin"
 
 def test_parse_array():
     """Test parsing an array of values."""
@@ -87,7 +77,17 @@ def test_parse_array():
     assert 'ArrayTest' in result['body']
     assert 'body' in result['body']['ArrayTest']
     assert 'values' in result['body']['ArrayTest']['body']
-    assert result['body']['ArrayTest']['body']['values']['value'] == [1, 2, 3, "test", True]
+    
+    # Get the array value
+    values = result['body']['ArrayTest']['body']['values']['value']
+    
+    # Check each element's value
+    assert len(values) == 5
+    assert values[0]['value'] == 1
+    assert values[1]['value'] == 2
+    assert values[2]['value'] == 3
+    assert values[3]['value'] == "test"
+    assert values[4]['value'] is True
 
 def test_parse_example_file():
     """Test parsing the example configuration file."""

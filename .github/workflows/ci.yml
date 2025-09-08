@@ -1,0 +1,284 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        exclude:
+          # Reduce matrix size for faster CI
+          - os: macos-latest
+            python-version: '3.7'
+          - os: macos-latest
+            python-version: '3.8'
+          - os: windows-latest
+            python-version: '3.7'
+          - os: windows-latest
+            python-version: '3.8'
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest pytest-cov pytest-xdist
+    
+    - name: Run tests
+      run: |
+        pytest --cov=src/cfgpp --cov-report=xml --cov-report=term-missing -v
+    
+    - name: Upload coverage to Codecov
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black flake8 mypy
+        pip install -e .
+    
+    - name: Check code formatting with Black
+      run: |
+        black --check --diff src/ tests/
+    
+    - name: Lint with flake8
+      run: |
+        flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+    
+    - name: Type check with mypy
+      run: |
+        mypy src/ --ignore-missing-imports
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety
+        pip install -e .
+    
+    - name: Run security checks with bandit
+      run: |
+        bandit -r src/ -f json -o bandit-report.json || true
+        bandit -r src/
+    
+    - name: Check dependencies with safety
+      run: |
+        safety check
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+    
+    - name: Validate documentation links
+      run: |
+        # Check that all documentation files exist and are properly linked
+        python -c "
+        import os
+        docs_dir = 'docs'
+        required_docs = [
+          'README.md', 'getting-started.md', 'language-specification.md',
+          'api-reference.md', 'examples.md', 'error-handling.md', 'contributing.md'
+        ]
+        for doc in required_docs:
+          path = os.path.join(docs_dir, doc)
+          if not os.path.exists(path):
+            print(f'Missing documentation: {path}')
+            exit(1)
+          print(f'✓ {doc}')
+        print('All documentation files exist')
+        "
+    
+    - name: Test example configurations
+      run: |
+        python -c "
+        from cfgpp import loads
+        import os
+        
+        # Test the example configuration file
+        example_path = 'examples/complex_config.cfgpp'
+        if os.path.exists(example_path):
+          with open(example_path, 'r') as f:
+            try:
+              config = loads(f.read())
+              print('✓ Example configuration parses successfully')
+            except Exception as e:
+              print(f'✗ Example configuration failed to parse: {e}')
+              exit(1)
+        else:
+          print('No example configuration found - skipping')
+        "
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: [test, lint]
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+    
+    - name: Run integration tests
+      run: |
+        python -c "
+        # Integration test: Parse a complex configuration
+        from cfgpp import loads, load
+        from cfgpp.parser import ConfigParseError
+        from cfgpp.lexer import LexerError
+        import tempfile
+        import os
+        
+        # Test 1: Basic parsing functionality
+        config_text = '''
+        AppConfig {
+          name = \"TestApp\"
+          port = 8080
+          debug = true
+          
+          database = Database::PostgreSQL {
+            host = \"localhost\"
+            port = 5432
+            credentials = {
+              username = \"admin\"
+              password = \"secret\"
+            }
+          }
+          
+          features = [\"auth\", \"logging\", \"metrics\"]
+        }
+        '''
+        
+        try:
+          result = loads(config_text)
+          assert 'body' in result
+          assert 'AppConfig' in result['body']
+          print('✓ Complex configuration parsing')
+        except Exception as e:
+          print(f'✗ Complex configuration parsing failed: {e}')
+          exit(1)
+        
+        # Test 2: File parsing
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.cfgpp', delete=False) as f:
+          f.write(config_text)
+          temp_file = f.name
+        
+        try:
+          result = load(temp_file)
+          assert 'body' in result
+          print('✓ File parsing')
+        except Exception as e:
+          print(f'✗ File parsing failed: {e}')
+          exit(1)
+        finally:
+          os.unlink(temp_file)
+        
+        # Test 3: Error handling
+        try:
+          loads('Invalid { syntax')
+          print('✗ Error handling test failed - should have raised exception')
+          exit(1)
+        except (ConfigParseError, LexerError):
+          print('✓ Error handling')
+        except Exception as e:
+          print(f'✗ Unexpected error type: {e}')
+          exit(1)
+        
+        print('All integration tests passed!')
+        "
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, lint, security, docs, integration]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+        pip install -e .
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: dist/

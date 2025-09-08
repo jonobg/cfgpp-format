@@ -1,0 +1,104 @@
+name: Feature Request
+description: Suggest a new feature for CFGPP
+title: "[Feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature! Please provide details about your proposed feature.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A brief description of the feature you'd like to see
+      placeholder: "Add support for..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Description
+      description: What problem does this feature solve? What use case does it address?
+      placeholder: "I'm trying to... but currently I have to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this feature to work?
+      placeholder: "The feature should work by..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: syntax
+    attributes:
+      label: Proposed Syntax
+      description: If applicable, show how the feature would look in CFGPP syntax
+      render: text
+      placeholder: |
+        Config {
+          // Example of how the feature would be used
+        }
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Any alternative solutions or workarounds you've considered
+      placeholder: "I've considered... but it doesn't work because..."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: feature-category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - label: "Language syntax (new keywords, operators, etc.)"
+        - label: "Parser functionality (new parsing capabilities)"
+        - label: "API improvements (new functions, methods)"
+        - label: "CLI tools (command-line utilities)"
+        - label: "Documentation (examples, guides)"
+        - label: "Performance improvements"
+        - label: "Developer experience (error messages, debugging)"
+        - label: "Integration (with other tools/formats)"
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - "Low - Nice to have"
+        - "Medium - Would be helpful"
+        - "High - Important for my use case"
+        - "Critical - Blocking my adoption"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Notes
+      description: Any thoughts on how this could be implemented? (Optional - for developers)
+      placeholder: "This could be implemented by..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, examples, or related issues
+      placeholder: "This is related to... / Here's a real-world example..."
+    validations:
+      required: false
