@@ -8,11 +8,12 @@ from .lexer import lex, Token, LexerError
 
 class ConfigParseError(SyntaxError):
     """Custom exception for configuration parsing errors."""
-    def __init__(self, message: str, line: int = None, column: int = None, context: str = None):
+    def __init__(self, message: str, token: Optional[Dict] = None, expected: Optional[str] = None, context: str = None):
         self.message = message
-        self.line = line
-        self.column = column
+        self.line = token.get("line") if token else None
+        self.column = token.get("col") if token else None
         self.context = context
+        self.expected = expected
         super().__init__(self._format_message())
     
     def _format_message(self) -> str:
@@ -58,9 +59,9 @@ class Parser:
         
         # Check if we have a simple key-value assignment at the top level
         if (self._current_token() and 
-            self._current_token()['type'] == 'IDENTIFIER' and
+            self._current_token()['type'] == "IDENTIFIER" and
             self._current_token(1) and 
-            self._current_token(1)['value'] == '='):
+            self._current_token(1)['value'] == "="):
             # Parse as a simple key-value pair
             key, value = self._parse_key_value_pair()
             return {'body': {key: value}}
@@ -173,17 +174,7 @@ class Parser:
         expected: Optional[str] = None
     ) -> ConfigParseError:
         """Create a syntax error with detailed context information."""
-        line = token.get('line', 1) if token else None
-        col = token.get('col', 1) if token else None
-        
-        # Enhance the message with what was expected if provided
-        if expected:
-            if message.startswith(("Expected", "Unexpected")):
-                message = f"Expected {expected}, {message[8:].lower()}"
-            else:
-                message = f"Expected {expected}, {message}"
-        
-        return ConfigParseError(message, line, col)
+        return ConfigParseError(message, token, expected)
     
     def _process_include(self, include_path: str) -> Dict[str, Any]:
         """Process an include/import directive."""
