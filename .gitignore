@@ -49,3 +49,8 @@ htmlcov/
 # Project specific
 .cache/
 .mypy_cache/
+
+# MCP and AI tooling
+.mcp/
+.cascade/
+*.mcp.json
