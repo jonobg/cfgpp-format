@@ -1,3 +1,7 @@
+## Quickstart
+
+For a concise set of commands to set up a venv, run the CLI, and run tests, see the [QUICKSTART](./QUICKSTART.md). A convenience script is provided at `scripts/run_example.ps1`.
+
 # cfgpp-format
 
 **cfgpp-format** is a free, open configuration language inspired by C++ for deeply nested, typed settings. This repository contains both the language specification and a Python implementation of a parser.

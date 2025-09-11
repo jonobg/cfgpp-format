@@ -60,11 +60,11 @@ def test_invalid_namespace_syntax():
     from cfgpp.lexer import LexerError
     
     # Test with trailing ::
-    with pytest.raises(ConfigParseError, match="Expected identifier after '::'"):
+    with pytest.raises(ConfigParseError, match="Incomplete namespaced identifier"):
         loads("Namespace:: {}")
     
     # Test with leading ::
-    with pytest.raises(ConfigParseError, match="Expected object name or include directive"):
+    with pytest.raises(ConfigParseError, match="Unexpected token at top level"):
         loads("::Type {}")
     
     # Test with multiple colons
