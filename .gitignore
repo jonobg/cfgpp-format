@@ -37,6 +37,20 @@ build/
 dist/
 out/
 
+# Rust build artifacts
+**/target/
+**/Cargo.lock
+
+# C++ build artifacts  
+**/build/
+**/*.obj
+**/*.exe
+**/*.dll
+**/*.lib
+**/*.pdb
+**/*.ilk
+**/*.exp
+
 # Test outputs
 .coverage
 htmlcov/
