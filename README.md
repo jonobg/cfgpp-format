@@ -113,169 +113,79 @@ cmake .. && make
 
 MIT License - see [LICENSE](LICENSE) for details
 
-## Installation
+## 🔧 **Installation**
+
+Choose your preferred implementation:
 
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/cfgpp-format.git
 cd cfgpp-format
 
-# Create a virtual environment (recommended)
-python -m venv .venv
-.venv\Scripts\activate  # On Windows
-source .venv/bin/activate  # On Unix/macOS
-
-# Install in development mode
+# Python implementation
+cd implementations/python
 pip install -e .
+
+# Rust implementation  
+cd implementations/rust
+cargo build --release
+
+# C++ LabVIEW implementation
+cd implementations/cpp-labview
+mkdir build && cd build
+cmake .. && cmake --build . --config Release
 ```
 
-## Usage
+## 📋 **Language Reference**
 
-### Basic Usage
+CFG++ uses a clean, intuitive syntax:
 
-```python
-from cfgpp.parser import loads
-
-config = """
-AppConfig(
-    string name = "test",
-    int port = 8080,
-    bool debug = true
-)
-"""
-
-parsed = loads(config)
-print(parsed['parameters']['name']['value'])  # Output: test
-```
-
-### Command Line Interface
-
-The package includes a CLI tool for parsing cfgpp files:
-
-```bash
-# Parse a file and output as JSON
-cfgpp examples/complex_config.cfgpp
-
-# Output as YAML (requires PyYAML)
-cfgpp examples/complex_config.cfgpp --format yaml
-
-# Read from stdin
-echo 'AppConfig(string name="test")' | cfgpp -
-```
-
-## Language Reference
-
-### Basic Syntax
-
-```cpp
+```cfgpp
 // Comments start with //
-/* Or can be multi-line */
-
-// Basic configuration with parameters
-AppConfig(
-    string name = "myapp",
-    int port = 3000,
-    bool debug = true
-)
-
-// Arrays
-ServerConfig(
-    string[] hosts = ["primary", "secondary"],
-    int[] ports = [80, 443, 8080]
-)
-
-// Nested objects
-DatabaseConfig(
-    string host = "localhost",
-    int port = 5432
-) {
-    // Object body with nested configuration
-    ConnectionPool::pool(
-        int min = 5,
-        int max = 50
-    );
-}
-```
-
-### Data Types
-
-- `string`: Text values in double quotes (`"text"`)
-- `int`: Integer numbers (`42`)
-- `float`: Floating-point numbers (`3.14`)
-- `bool`: Boolean values (`true` or `false`)
-- `array`: Ordered lists of values (`[1, 2, 3]` or `["a", "b", "c"]`)
-- `enum`: Enumeration types with constrained value sets
-- Custom types: User-defined objects
-
-### Enum Types
-
-Enums define a set of allowed values for type-safe configuration:
-
-```cpp
-// Define an enum with possible values
-enum::Status {
-    values = ["active", "inactive", "pending"]
-}
-
-// Define an enum with a default value
-enum::LogLevel {
-    values = ["debug", "info", "warning", "error"],
-    default = "info"
-}
-
-// Use enum types in parameters
-AppConfig(
-    Status status = "active",
-    LogLevel logLevel = "warning"
-)
-
-// Enum arrays are also supported
-UserManager {
-    setPermissions(Status[] statuses) {
-        statuses = ["active", "pending"]
+database {
+    host = "localhost";
+    port = 5432;
+    ssl = true;
+    
+    connection_pool {
+        min_connections = 5;
+        max_connections = 20;
     }
 }
+
+// Environment variables with defaults
+api_endpoint = ${API_URL:-"https://api.example.com"};
+
+// Arrays
+servers = ["web1", "web2", "web3"];
+ports = [80, 443, 8080];
+
+// Include other files
+@include "secrets.cfgpp";
+
+// Schema validation with .cfgpp-schema files
 ```
 
-## Examples
+### **Data Types**
+- **Strings**: `"text values"`
+- **Numbers**: `42`, `3.14`  
+- **Booleans**: `true`, `false`
+- **Arrays**: `[1, 2, 3]`, `["a", "b"]`
+- **Objects**: `{ key = value; }`
+- **Environment Variables**: `${VAR:-default}`
 
-See the [examples](./examples) directory for more complex configuration examples.
+## 📝 **Examples**
 
-## Development
+See [`specification/examples/`](specification/examples/) for configuration examples and schema definitions.
 
-### Setting Up
+## 🔧 **Development**
 
-1. Clone the repository
-2. Create a virtual environment
-3. Install development dependencies:
+Each implementation has its own development workflow:
 
-```bash
-pip install -r requirements.txt
-```
+- **Python**: See [implementations/python/README.md](implementations/python/README.md)
+- **Rust**: See [implementations/rust/README.md](implementations/rust/README.md)  
+- **C++ LabVIEW**: See [implementations/cpp-labview/README.md](implementations/cpp-labview/README.md)
 
-### Running Tests
+## 🤝 **Contributing**
 
-```bash
-pytest tests/
-```
-
-### Code Style
-
-```bash
-# Format code
-black src tests
-
-# Check types
-mypy src
-
-# Lint code
-pylint src
-```
-
-## Contributing
-
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
