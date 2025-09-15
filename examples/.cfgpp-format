@@ -1,0 +1,15 @@
+{
+  "indent_size": 4,
+  "use_tabs": false,
+  "space_before_equals": true,
+  "space_after_equals": true,
+  "space_after_comma": true,
+  "brace_style": "same_line",
+  "array_style": "auto",
+  "max_line_length": 100,
+  "blank_lines_before_object": 1,
+  "blank_lines_after_object": 1,
+  "sort_object_keys": false,
+  "sort_enum_values": false,
+  "schema_aware_formatting": true
+}

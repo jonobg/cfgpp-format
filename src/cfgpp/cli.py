@@ -11,6 +11,7 @@ import re
 from .parser import load, loads, ConfigParseError
 from .lexer import LexerError
 from .cli_schema import add_schema_commands
+from .cli_formatter import add_formatter_commands
 
 
 def format_output(data: dict, format_type: str = "json") -> str:
@@ -227,9 +228,10 @@ Examples:
         """
     )
     
-    # Add schema subcommands
+    # Add schema and formatter subcommands
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     add_schema_commands(subparsers)
+    add_formatter_commands(subparsers)
     
     # Input options
     parser.add_argument("file", nargs="?", help="Path to the cfgpp file to parse")

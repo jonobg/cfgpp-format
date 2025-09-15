@@ -1,0 +1,183 @@
+{
+  "name": "cfgpp-language-support",
+  "displayName": "CFG++ Language Support",
+  "description": "Language support for CFG++ configuration files with syntax highlighting, validation, and auto-completion",
+  "version": "1.0.3",
+  "publisher": "cfgpp",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Formatters"
+  ],
+  "keywords": [
+    "cfgpp",
+    "configuration",
+    "config",
+    "schema",
+    "validation"
+  ],
+  "activationEvents": [
+    "onLanguage:cfgpp",
+    "onLanguage:cfgpp-schema"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "cfgpp",
+        "aliases": [
+          "CFG++",
+          "cfgpp"
+        ],
+        "extensions": [
+          ".cfgpp"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "cfgpp-schema",
+        "aliases": [
+          "CFG++ Schema",
+          "cfgpp-schema"
+        ],
+        "extensions": [
+          ".cfgpp-schema"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cfgpp",
+        "scopeName": "source.cfgpp",
+        "path": "./syntaxes/cfgpp.tmGrammar.json"
+      },
+      {
+        "language": "cfgpp-schema",
+        "scopeName": "source.cfgpp-schema",
+        "path": "./syntaxes/cfgpp-schema.tmGrammar.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "CFG++ Configuration",
+      "properties": {
+        "cfgpp.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable syntax and schema validation"
+        },
+        "cfgpp.validation.schemaAutoDiscovery": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically discover and use schema files"
+        },
+        "cfgpp.completion.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable auto-completion suggestions"
+        },
+        "cfgpp.completion.includeSnippets": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include code snippets in completion suggestions"
+        },
+        "cfgpp.hover.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show hover information for symbols"
+        },
+        "cfgpp.formatting.provider": {
+          "type": "string",
+          "default": "cfgpp-format",
+          "description": "Document formatting provider"
+        },
+        "cfgpp.diagnostics.maxProblems": {
+          "type": "number",
+          "default": 100,
+          "description": "Maximum number of problems to show"
+        },
+        "cfgpp.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the language server"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "cfgpp.formatDocument",
+        "title": "Format CFG++ Document",
+        "category": "CFG++"
+      },
+      {
+        "command": "cfgpp.validateSchema",
+        "title": "Validate Against Schema",
+        "category": "CFG++"
+      },
+      {
+        "command": "cfgpp.discoverSchema",
+        "title": "Discover Schema Files",
+        "category": "CFG++"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceExtname == .cfgpp",
+          "command": "cfgpp.formatDocument",
+          "group": "1_modification"
+        },
+        {
+          "when": "resourceExtname == .cfgpp",
+          "command": "cfgpp.validateSchema",
+          "group": "9_cutcopypaste"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "cfgpp.formatDocument",
+          "when": "resourceExtname == .cfgpp"
+        },
+        {
+          "command": "cfgpp.validateSchema",
+          "when": "resourceExtname == .cfgpp"
+        },
+        {
+          "command": "cfgpp.discoverSchema",
+          "when": "resourceExtname == .cfgpp"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "^18.x",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonobg/cfgpp-format.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonobg/cfgpp-format/issues"
+  },
+  "homepage": "https://github.com/jonobg/cfgpp-format#readme",
+  "license": "MIT"
+}
