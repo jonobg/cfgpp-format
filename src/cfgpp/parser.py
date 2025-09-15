@@ -8,7 +8,7 @@ A simple parser for the CFG++ configuration format.
 """
 import os
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Set
+from typing import List, Dict, Any, Optional, Set, Tuple
 from .lexer import lex, Token, LexerError
 
 # REASONING: ConfigParseError enables parsing error handling and diagnostic reporting for error workflows.
@@ -109,11 +109,18 @@ class Parser:
         # comprehensive parsing strategies and systematic structure workflows.
         body = {}
         while self._current_token():
+            # REASONING: Enum definition processing enables type definition and value constraint specification for enum workflows.
+            # Enum workflows require enum definition processing for type definition and value constraint specification in enum workflows.
+            # Enum definition processing supports type definition, value constraint specification, and enum coordination while enabling
+            # comprehensive enum strategies and systematic type workflows.
+            if self._current_token()['type'] == 'ENUM':
+                enum_name, enum_data = self._parse_enum_definition()
+                body[enum_name] = enum_data
             # REASONING: Include directive processing enables modular configuration and file composition for composition workflows.
             # Composition workflows require include directive processing for modular configuration and file composition in composition workflows.
             # Include directive processing supports modular configuration, file composition, and composition coordination while enabling
             # comprehensive include strategies and systematic composition workflows.
-            if self._current_token()['type'] == 'INCLUDE':
+            elif self._current_token()['type'] == 'INCLUDE':
                 include_token = self._consume('INCLUDE')
                 
                 # REASONING: Path validation enables file reference checking and include safety for validation workflows.
@@ -790,7 +797,21 @@ class Parser:
         # Type workflows require type parsing for parameter type identification and namespace support in type workflows.
         # Type parsing supports parameter type identification, namespace support, and type coordination while enabling
         # comprehensive parsing strategies and systematic type workflows.
+        
+        # REASONING: Type parsing enables parameter type identification and namespace support for type workflows.
+        # Type workflows require type parsing for parameter type identification and namespace support in type workflows.
+        # Type parsing supports parameter type identification, namespace support, and type coordination while enabling
+        # comprehensive parsing strategies and systematic type workflows.
         param_type, type_parts = self._parse_identifier(allow_namespace=True)
+        
+        # REASONING: Enum type usage detection enables enum parameter recognition and type constraint enforcement for enum workflows.
+        # Enum workflows require enum type usage detection for enum parameter recognition and type constraint enforcement in enum workflows.
+        # Enum type usage detection supports enum parameter recognition, type constraint enforcement, and enum coordination while enabling
+        # comprehensive detection strategies and systematic enum usage workflows.
+        # Note: This is a simplified check - in a complete implementation, we would validate against defined enums
+        is_enum_type = ('::' not in param_type and 
+                       param_type not in ['string', 'int', 'float', 'boolean', 'array', 'object'])
+        
         is_array = False
         
         # REASONING: Array notation detection enables array type recognition and collection type support for array workflows.
@@ -824,6 +845,7 @@ class Parser:
         param_info = {
             'type': param_type,                    # Parameter type name
             'is_array': is_array,                  # Array type flag
+            'is_enum_type': is_enum_type,          # Enum type flag for constraint validation
             'value': default_value,                # Default value if specified
             'line': type_parts[0]['line'],         # Line number for error reporting
             'col': type_parts[0]['col']            # Column position for location
@@ -1676,6 +1698,129 @@ class Parser:
                 message=f"Error parsing array: {str(e)}",
                 token=self._current_token(),
                 expected="a value or ']'"
+            ) from e
+    
+    # REASONING: Enum definition parsing enables type definition and constraint specification for enum workflows.
+    # Enum workflows require enum definition parsing for type definition and constraint specification in enum workflows.
+    # Enum definition parsing supports type definition, constraint specification, and enum coordination while enabling
+    # comprehensive enum strategies and systematic type workflows.
+    def _parse_enum_definition(self) -> Tuple[str, Dict]:
+        """Parse an enum definition: enum::EnumName { values = [...], default = "..." }"""
+        try:
+            # REASONING: Enum keyword consumption enables syntax validation and parsing progression for parsing workflows.
+            # Parsing workflows require enum keyword consumption for syntax validation and parsing progression in parsing workflows.
+            # Enum keyword consumption supports syntax validation, parsing progression, and parsing coordination while enabling
+            # comprehensive consumption strategies and systematic enum workflows.
+            self._consume('ENUM')
+            
+            # REASONING: Namespace separator validation enables proper enum syntax and type system integration for validation workflows.
+            # Validation workflows require namespace separator validation for proper enum syntax and type system integration in validation workflows.
+            # Namespace separator validation supports proper enum syntax, type system integration, and validation coordination while enabling
+            # comprehensive validation strategies and systematic namespace workflows.
+            if not self._current_token() or self._current_token()['value'] != '::':
+                raise self._create_syntax_error("Expected '::' after 'enum'", self._current_token(), "'::'")
+            self._consume('NAMESPACE', '::')
+            
+            # REASONING: Enum name extraction enables type identification and namespace organization for identification workflows.
+            # Identification workflows require enum name extraction for type identification and namespace organization in identification workflows.
+            # Enum name extraction supports type identification, namespace organization, and identification coordination while enabling
+            # comprehensive extraction strategies and systematic naming workflows.
+            if not self._current_token() or self._current_token()['type'] != 'IDENTIFIER':
+                raise self._create_syntax_error("Expected enum name after 'enum::'", self._current_token(), "identifier")
+            enum_name = self._consume('IDENTIFIER')['value']
+            
+            # REASONING: Opening brace validation enables block structure and parameter parsing for structure workflows.
+            # Structure workflows require opening brace validation for block structure and parameter parsing in structure workflows.
+            # Opening brace validation supports block structure, parameter parsing, and structure coordination while enabling
+            # comprehensive validation strategies and systematic structure workflows.
+            if not self._current_token() or self._current_token()['value'] != '{':
+                raise self._create_syntax_error("Expected '{' to start enum body", self._current_token(), "'{'")
+            self._consume('PUNCTUATION', '{')
+            
+            # REASONING: Enum properties parsing enables value specification and configuration handling for property workflows.
+            # Property workflows require enum properties parsing for value specification and configuration handling in property workflows.
+            # Enum properties parsing supports value specification, configuration handling, and property coordination while enabling
+            # comprehensive parsing strategies and systematic property workflows.
+            enum_data = {
+                'type': 'enum_definition',
+                'name': enum_name,
+                'values': [],
+                'default': None
+            }
+            
+            # Parse enum properties (values and default)
+            while self._current_token() and self._current_token()['value'] != '}':
+                # REASONING: Property name validation enables enum configuration and parameter identification for validation workflows.
+                # Validation workflows require property name validation for enum configuration and parameter identification in validation workflows.
+                # Property name validation supports enum configuration, parameter identification, and validation coordination while enabling
+                # comprehensive validation strategies and systematic property workflows.
+                if not self._current_token() or self._current_token()['type'] != 'IDENTIFIER':
+                    raise self._create_syntax_error("Expected property name in enum definition", self._current_token(), "'values' or 'default'")
+                
+                prop_name = self._consume('IDENTIFIER')['value']
+                
+                # REASONING: Assignment operator validation enables property assignment and syntax compliance for assignment workflows.
+                # Assignment workflows require assignment operator validation for property assignment and syntax compliance in assignment workflows.
+                # Assignment operator validation supports property assignment, syntax compliance, and assignment coordination while enabling
+                # comprehensive validation strategies and systematic assignment workflows.
+                if not self._current_token() or self._current_token()['value'] != '=':
+                    raise self._create_syntax_error("Expected '=' after enum property name", self._current_token(), "'='")
+                self._consume('PUNCTUATION', '=')
+                
+                # REASONING: Property value parsing enables enum configuration and constraint specification for value workflows.
+                # Value workflows require property value parsing for enum configuration and constraint specification in value workflows.
+                # Property value parsing supports enum configuration, constraint specification, and value coordination while enabling
+                # comprehensive parsing strategies and systematic value workflows.
+                if prop_name == 'values':
+                    # REASONING: Values array parsing enables enum option specification and constraint definition for array workflows.
+                    # Array workflows require values array parsing for enum option specification and constraint definition in array workflows.
+                    # Values array parsing supports enum option specification, constraint definition, and array coordination while enabling
+                    # comprehensive parsing strategies and systematic array workflows.
+                    if not self._current_token() or self._current_token()['value'] != '[':
+                        raise self._create_syntax_error("Expected '[' for enum values array", self._current_token(), "'['")
+                    enum_data['values'] = self._parse_array()
+                elif prop_name == 'default':
+                    # REASONING: Default value parsing enables fallback specification and value initialization for default workflows.
+                    # Default workflows require default value parsing for fallback specification and value initialization in default workflows.
+                    # Default value parsing supports fallback specification, value initialization, and default coordination while enabling
+                    # comprehensive parsing strategies and systematic default workflows.
+                    enum_data['default'] = self._parse_value()
+                else:
+                    raise self._create_syntax_error(f"Unknown enum property: {prop_name}", self._current_token(), "'values' or 'default'")
+                
+                # REASONING: Optional comma handling enables flexible syntax and property separation for separation workflows.
+                # Separation workflows require optional comma handling for flexible syntax and property separation in separation workflows.
+                # Optional comma handling supports flexible syntax, property separation, and separation coordination while enabling
+                # comprehensive handling strategies and systematic separation workflows.
+                if self._current_token() and self._current_token()['value'] == ',':
+                    self._consume('PUNCTUATION', ',')
+            
+            # REASONING: Closing brace validation enables block completion and structure termination for completion workflows.
+            # Completion workflows require closing brace validation for block completion and structure termination in completion workflows.
+            # Closing brace validation supports block completion, structure termination, and completion coordination while enabling
+            # comprehensive validation strategies and systematic completion workflows.
+            if not self._current_token() or self._current_token()['value'] != '}':
+                raise self._create_syntax_error("Expected '}' to close enum body", self._current_token(), "'}'")
+            self._consume('PUNCTUATION', '}')
+            
+            return enum_name, enum_data
+            
+        except ConfigParseError as e:
+            # REASONING: Custom error preservation enables specific error handling and diagnostic information retention for preservation workflows.
+            # Preservation workflows require custom error preservation for specific error handling and diagnostic information retention in preservation workflows.
+            # Custom error preservation supports specific error handling, diagnostic information retention, and preservation coordination while enabling
+            # comprehensive preservation strategies and systematic error workflows.
+            raise e from None
+            
+        except Exception as e:
+            # REASONING: Exception wrapping enables generic error handling and consistent error format for wrapping workflows.
+            # Wrapping workflows require exception wrapping for generic error handling and consistent error format in wrapping workflows.
+            # Exception wrapping supports generic error handling, consistent error format, and wrapping coordination while enabling
+            # comprehensive wrapping strategies and systematic exception workflows.
+            raise self._create_syntax_error(
+                message=f"Error parsing enum definition: {str(e)}",
+                token=self._current_token(),
+                expected="enum definition syntax"
             ) from e
 
 # REASONING: Loads function enables string-based configuration parsing and API simplification for parsing workflows.

@@ -1,7 +1,33 @@
 // A more complex configuration example for testing
+
+// Enum definitions for type-safe configuration
+enum::Environment {
+    values = ["development", "staging", "production"],
+    default = "development"
+}
+
+enum::LogLevel {
+    values = ["debug", "info", "warning", "error", "critical"],
+    default = "info"
+}
+
+enum::DatabaseType {
+    values = ["mysql", "postgresql", "sqlite", "mongodb"]
+}
+
+enum::CacheStrategy {
+    values = ["memory", "redis", "memcached", "hybrid"]
+}
+
+enum::AuthMethod {
+    values = ["basic", "oauth2", "jwt", "saml"]
+}
+
 ComplexConfig(
     string appName = "My Awesome App",
     string version = "1.0.0",
+    Environment environment = "production",
+    LogLevel defaultLogLevel = "info",
     DatabaseConfig database,
     ServerConfig server,
     CacheConfig cache,
@@ -16,7 +42,9 @@ ComplexConfig(
         int port = 5432,
         string name = "myapp_production",
         string user = "admin",
+        DatabaseType type = "postgresql",
         bool useSSL = true,
+        LogLevel logLevel = "warning",
         ConnectionPool pool = {}
     ) {
         ConnectionPool::pool(
@@ -42,8 +70,9 @@ ComplexConfig(
     }
 
     CacheConfig::cache(
-        string provider = "redis",
+        CacheStrategy strategy = "redis",
         int ttl = 3600,
+        LogLevel logLevel = "error",
         RedisConfig redis = {}
     ) {
         RedisConfig::redis(
@@ -57,6 +86,7 @@ ComplexConfig(
 
     SecurityConfig::security(
         bool enableHSTS = true,
+        AuthMethod authMethod = "jwt",
         string[] allowedOrigins = ["https://example.com"],
         JWTConfig jwt = {},
         PasswordPolicy passwordPolicy = {}

@@ -10,6 +10,7 @@ import re
 
 from .parser import load, loads, ConfigParseError
 from .lexer import LexerError
+from .cli_schema import add_schema_commands
 
 
 def format_output(data: dict, format_type: str = "json") -> str:
@@ -218,8 +219,17 @@ Examples:
   cfgpp config.cfgpp --format-cfgpp     # Format CFGPP syntax
   cfgpp config.cfgpp --convert-json     # Convert to simplified JSON
   cat config.cfgpp | cfgpp -            # Read from stdin
+  
+  # Schema commands:
+  cfgpp validate config.cfgpp --schema schema.cfgpp-schema
+  cfgpp schema-check schema.cfgpp-schema
+  cfgpp schema-info schema.cfgpp-schema
         """
     )
+    
+    # Add schema subcommands
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    add_schema_commands(subparsers)
     
     # Input options
     parser.add_argument("file", nargs="?", help="Path to the cfgpp file to parse")
@@ -290,6 +300,10 @@ Examples:
     )
 
     args = parser.parse_args()
+
+    # Handle schema subcommands
+    if args.command:
+        return args.func(args)
 
     try:
         # Read input

@@ -1,0 +1,140 @@
+// Schema definition for application configuration
+// This demonstrates the developer-friendly schema syntax for cfgpp-format
+
+// Import enums from other schema files (future feature)
+// import "common-enums.cfgpp-schema";
+
+// Define enums that can be used in this schema
+enum Environment {
+    values = ["development", "staging", "production"]
+    default = "development"
+}
+
+enum LogLevel {
+    values = ["debug", "info", "warning", "error", "critical"]
+    default = "info"
+}
+
+enum DatabaseType {
+    values = ["mysql", "postgresql", "sqlite", "mongodb"]
+}
+
+// Main schema definition
+schema AppConfigSchema {
+    // Required fields with types
+    required string appName;
+    required string version;
+    required Environment environment;
+    
+    // Optional fields with defaults
+    optional LogLevel logLevel = "info";
+    optional int maxConnections = 100;
+    optional bool enableAnalytics = false;
+    optional string[] supportedLocales = ["en_US"];
+    
+    // Nested object schemas
+    required DatabaseConfig database;
+    optional ServerConfig server;
+    optional CacheConfig cache;
+    
+    // Validation rules
+    validate {
+        // String validations
+        appName.length > 0 && appName.length <= 50;
+        version.matches("^\\d+\\.\\d+\\.\\d+$");
+        
+        // Numeric validations
+        maxConnections > 0 && maxConnections <= 10000;
+        
+        // Array validations
+        supportedLocales.length > 0;
+        supportedLocales.all(locale => locale.matches("^[a-z]{2}_[A-Z]{2}$"));
+        
+        // Conditional validations
+        when (environment == "production") {
+            enableAnalytics == true;
+            maxConnections >= 50;
+        }
+        
+        when (environment == "development") {
+            logLevel in ["debug", "info"];
+        }
+    }
+}
+
+// Nested schema definitions
+schema DatabaseConfig {
+    required string host;
+    required int port;
+    required string name;
+    required string user;
+    required DatabaseType type;
+    optional bool useSSL = true;
+    optional LogLevel logLevel = "warning";
+    
+    // Nested object
+    optional ConnectionPool pool;
+    
+    validate {
+        host.length > 0;
+        port > 0 && port <= 65535;
+        name.length > 0;
+        user.length > 0;
+        
+        // Type-specific validations
+        when (type == "postgresql") {
+            port == 5432 || (port >= 5433 && port <= 5440);
+        }
+        
+        when (type == "mysql") {
+            port == 3306 || (port >= 3307 && port <= 3320);
+        }
+    }
+}
+
+schema ConnectionPool {
+    optional int minConnections = 5;
+    optional int maxConnections = 50;
+    optional int maxLifetime = 3600;
+    optional int idleTimeout = 600;
+    
+    validate {
+        minConnections > 0;
+        maxConnections > minConnections;
+        maxLifetime > 0;
+        idleTimeout > 0;
+        maxConnections <= 200; // Reasonable upper limit
+    }
+}
+
+schema ServerConfig {
+    required string host;
+    required int port;
+    optional bool enableCORS = false;
+    optional Environment environment = "development";
+    optional string[] allowedOrigins = [];
+    
+    validate {
+        port > 0 && port <= 65535;
+        port != 22 && port != 80 && port != 443; // Avoid system ports
+        
+        when (enableCORS == true) {
+            allowedOrigins.length > 0;
+        }
+        
+        allowedOrigins.all(origin => 
+            origin.startsWith("http://") || origin.startsWith("https://")
+        );
+    }
+}
+
+schema CacheConfig {
+    required string strategy; // Would be CacheStrategy enum if imported
+    optional int ttl = 3600;
+    optional LogLevel logLevel = "error";
+    
+    validate {
+        strategy in ["memory", "redis", "memcached", "hybrid"];
+        ttl > 0 && ttl <= 86400; // Max 24 hours
+    }
+}

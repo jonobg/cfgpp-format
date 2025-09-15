@@ -49,6 +49,11 @@ TOKEN_SPECS = [
     # Boolean recognition supports logical value processing, true/false handling, and boolean coordination.
     ('BOOLEAN', r'true|false'),
     
+    # REASONING: Enum keyword recognition enables enumeration type definitions and value constraint specification for enum workflows.
+    # Enum workflows require enum keyword recognition for enumeration type definitions and value constraint specification in enum workflows.
+    # Enum keyword recognition supports enumeration type definitions, value constraint specification, and enum coordination.
+    ('ENUM', r'enum'),
+    
     # REASONING: Null recognition enables empty value processing and null state handling for null workflows.
     # Null workflows require null recognition for empty value processing and null state handling in null workflows.
     # Null recognition supports empty value processing, null state handling, and null coordination.
@@ -72,7 +77,7 @@ TOKEN_SPECS = [
     # REASONING: Punctuation recognition enables structural parsing and syntax delimitation for structural workflows.
     # Structural workflows require punctuation recognition for structural parsing and syntax delimitation in structural workflows.
     # Punctuation recognition supports structural parsing, syntax delimitation, and structural coordination.
-    ('PUNCTUATION', r'[\{\}\(\)\[\],;=]'),
+    ('PUNCTUATION', r'[\{\}\(\)\[\],;=\.]'),
 ]
 
 # REASONING: Token class enables lexical unit representation and parser integration for token workflows.

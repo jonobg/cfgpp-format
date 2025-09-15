@@ -10,6 +10,7 @@ For a concise set of commands to set up a venv, run the CLI, and run tests, see 
 
 - **Familiar syntax:** C++-style declarations and nesting
 - **Strong typing:** Type-safe configuration with support for custom types
+- **Enum types:** Enumeration support for constrained value sets
 - **Nested objects:** Hierarchical configuration structure
 - **Arrays and containers:** For lists of values or objects
 - **Comments:** Both single-line (`//`) and multi-line (`/* */`) comments
@@ -106,7 +107,38 @@ DatabaseConfig(
 - `float`: Floating-point numbers (`3.14`)
 - `bool`: Boolean values (`true` or `false`)
 - `array`: Ordered lists of values (`[1, 2, 3]` or `["a", "b", "c"]`)
+- `enum`: Enumeration types with constrained value sets
 - Custom types: User-defined objects
+
+### Enum Types
+
+Enums define a set of allowed values for type-safe configuration:
+
+```cpp
+// Define an enum with possible values
+enum::Status {
+    values = ["active", "inactive", "pending"]
+}
+
+// Define an enum with a default value
+enum::LogLevel {
+    values = ["debug", "info", "warning", "error"],
+    default = "info"
+}
+
+// Use enum types in parameters
+AppConfig(
+    Status status = "active",
+    LogLevel logLevel = "warning"
+)
+
+// Enum arrays are also supported
+UserManager {
+    setPermissions(Status[] statuses) {
+        statuses = ["active", "pending"]
+    }
+}
+```
 
 ## Examples
 
