@@ -1,0 +1,74 @@
+(* CFG++ Grammar Specification *)
+(* Extended Backus-Naur Form (EBNF) *)
+
+configuration = { statement } ;
+
+statement = object_definition
+          | assignment
+          | include_directive
+          | enum_definition
+          | comment ;
+
+(* Object Definitions *)
+object_definition = [ identifier ] "{" { object_member } "}" ;
+object_member = assignment | nested_object ;
+nested_object = identifier "{" { object_member } "}" ;
+
+(* Assignments *)
+assignment = identifier "=" value [ ";" ] ;
+
+(* Values *)
+value = primitive_value
+      | array_value
+      | object_value
+      | environment_variable
+      | expression ;
+
+primitive_value = string_literal
+                | number_literal
+                | boolean_literal
+                | null_literal
+                | identifier ;
+
+(* Literals *)
+string_literal = '"' { character | escape_sequence } '"' ;
+number_literal = integer_literal | float_literal ;
+integer_literal = [ "-" ] digit { digit } ;
+float_literal = [ "-" ] digit { digit } "." digit { digit } [ exponent ] ;
+exponent = ( "e" | "E" ) [ "+" | "-" ] digit { digit } ;
+boolean_literal = "true" | "false" ;
+null_literal = "null" ;
+
+(* Arrays *)
+array_value = "[" [ value { "," value } ] "]" ;
+
+(* Object Values *)
+object_value = "{" { assignment } "}" ;
+
+(* Environment Variables *)
+environment_variable = "${" identifier [ ":-" default_value ] "}" ;
+default_value = string_literal | identifier ;
+
+(* Expressions *)
+expression = term { ( "+" | "-" ) term } ;
+term = factor { ( "*" | "/" ) factor } ;
+factor = primitive_value | "(" expression ")" ;
+
+(* Directives *)
+include_directive = "@include" string_literal ;
+enum_definition = "enum" identifier "{" identifier { "," identifier } "}" ;
+
+(* Identifiers and Comments *)
+identifier = letter { letter | digit | "_" } ;
+comment = "//" { character } newline ;
+
+(* Basic Characters *)
+letter = "A" | "B" | ... | "Z" | "a" | "b" | ... | "z" ;
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+character = ? any printable character ? ;
+escape_sequence = "\" ( "n" | "r" | "t" | "\" | '"' | "u" hex_digit hex_digit hex_digit hex_digit ) ;
+hex_digit = digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" | "c" | "d" | "e" | "f" ;
+newline = ? platform-specific newline character ? ;
+
+(* Whitespace (ignored) *)
+whitespace = " " | "\t" | "\r" | "\n" ;

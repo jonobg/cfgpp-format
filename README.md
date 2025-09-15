@@ -1,20 +1,117 @@
-## Quickstart
+{{ ... }}
 
 For a concise set of commands to set up a venv, run the CLI, and run tests, see the [QUICKSTART](./QUICKSTART.md). A convenience script is provided at `scripts/run_example.ps1`.
 
-# cfgpp-format
+# CFG++ Format
 
-**cfgpp-format** is a free, open configuration language inspired by C++ for deeply nested, typed settings. This repository contains both the language specification and a Python implementation of a parser.
+A modern, high-performance configuration format with powerful features and multi-language support.
 
-## Features
+## 🚀 **Multi-Language Implementations**
 
-- **Familiar syntax:** C++-style declarations and nesting
-- **Strong typing:** Type-safe configuration with support for custom types
-- **Enum types:** Enumeration support for constrained value sets
-- **Nested objects:** Hierarchical configuration structure
-- **Arrays and containers:** For lists of values or objects
-- **Comments:** Both single-line (`//`) and multi-line (`/* */`) comments
-- **Human-readable:** Designed to be both machine and human friendly
+| Language | Performance | Use Case | Location |
+|----------|-------------|----------|----------|
+| **Python** | Standard | Tooling, scripting, web apps | [`implementations/python/`](implementations/python/) |
+| **Rust** | Blazing fast | High-performance applications | [`implementations/rust/`](implementations/rust/) |
+| **C++ LabVIEW** | Optimized | LabVIEW integration, DLLs | [`implementations/cpp-labview/`](implementations/cpp-labview/) |
+
+## ✨ **Features**
+
+- **🎯 Intuitive Syntax**: Clean, readable configuration files
+- **🛡️ Schema Validation**: Built-in validation with detailed error messages  
+- **🔧 Environment Variables**: Dynamic configuration with `${VAR:-default}` syntax
+- **📦 Include Directives**: Modular configuration with `@include`
+- **🎪 Type Safety**: Strong typing with custom enum support
+- **📝 Comments**: Full comment support for documentation
+- **⚡ High Performance**: Zero-copy parsing where possible
+
+## 📖 **Quick Example**
+
+```cfgpp
+database {
+    host = ${DATABASE_HOST:-"localhost"};
+    port = 5432;
+    ssl = true;
+    
+    connection_pool {
+        min_connections = 5;
+        max_connections = 20;
+    }
+}
+
+servers = ["web1", "web2", "web3"];
+log_level = DEBUG;
+```
+
+## 🏗️ **Project Structure**
+
+```
+cfgpp-format/
+├── implementations/          # Core parsers by language
+│   ├── python/              # Python implementation + formatter
+│   ├── rust/                # High-performance Rust parser  
+│   └── cpp-labview/         # C++ LabVIEW integration
+├── bindings/                # Language bindings & FFI
+├── tools/                   # Command-line utilities
+├── specification/           # Grammar & examples
+├── tests/                   # Cross-language tests
+├── docs/                    # Documentation
+└── vscode-extension/        # VS Code extension
+```
+
+## 🚀 **Getting Started**
+
+### Python
+```bash
+cd implementations/python
+pip install -e .
+```
+
+### Rust
+```bash
+cd implementations/rust  
+cargo build --release
+```
+
+### C++ LabVIEW
+```bash
+cd implementations/cpp-labview
+mkdir build && cd build
+cmake .. && make
+```
+
+## 📚 **Documentation**
+
+- [Language Guide](docs/language-guide/) - CFG++ syntax and features
+- [API References](docs/api-reference/) - Language-specific APIs
+- [Integration Guides](docs/integration-guides/) - Usage examples
+- [Grammar Specification](specification/grammar.ebnf) - Formal grammar
+
+## 🛠️ **Tools**
+
+- **VS Code Extension**: Syntax highlighting, validation, formatting
+- **CLI Tools**: Formatting, validation, conversion utilities
+- **Schema Validator**: Comprehensive configuration validation
+
+## 🧪 **Testing**
+
+```bash
+# Cross-language conformance tests
+./tests/run-conformance-tests.sh
+
+# Performance benchmarks  
+./tests/run-benchmarks.sh
+```
+
+## 🤝 **Contributing**
+
+1. Choose your implementation language
+2. Follow the coding standards in each directory
+3. Add tests for new features
+4. Update documentation
+
+## 📄 **License**
+
+MIT License - see [LICENSE](LICENSE) for details
 
 ## Installation
 
