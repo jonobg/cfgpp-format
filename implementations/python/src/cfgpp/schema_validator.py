@@ -112,7 +112,17 @@ class SchemaValidator:
             
             # Validate the configuration body
             if 'body' in config_data:
-                self._validate_object(config_data['body'], schema, "")
+                body = config_data['body']
+                # Find the schema object in the body
+                if schema_name in body:
+                    self._validate_object(body[schema_name], schema, schema_name)
+                else:
+                    # Try to find any object that matches the schema
+                    matching_objects = [obj_name for obj_name in body.keys() if obj_name == schema_name]
+                    if matching_objects:
+                        self._validate_object(body[matching_objects[0]], schema, matching_objects[0])
+                    else:
+                        self._add_error(f"Configuration object '{schema_name}' not found in body", "")
             else:
                 self._add_error("Configuration missing 'body' section", "")
             
@@ -160,12 +170,17 @@ class SchemaValidator:
             schema: The schema definition
             path: Current validation path for error reporting
         """
+        # Determine where to look for fields - constructor calls store them under 'params'
+        fields_data = obj_data
+        if 'params' in obj_data and isinstance(obj_data['params'], dict):
+            fields_data = obj_data['params']
+        
         # Check for required fields
         for field_name, field_def in schema.fields.items():
             field_path = f"{path}.{field_name}" if path else field_name
             
             if field_def.requirement == FieldRequirement.REQUIRED:
-                if field_name not in obj_data:
+                if field_name not in fields_data:
                     self._add_error(
                         f"Required field '{field_name}' is missing",
                         field_path,
@@ -174,14 +189,14 @@ class SchemaValidator:
                     continue
             
             # Validate field if present
-            if field_name in obj_data:
-                self._validate_field(obj_data[field_name], field_def, field_path)
+            if field_name in fields_data:
+                self._validate_field(fields_data[field_name], field_def, field_path)
             elif field_def.requirement == FieldRequirement.OPTIONAL and field_def.default_value is not None:
                 # Field is optional with default - that's fine
                 pass
         
-        # Check for unknown fields
-        for field_name in obj_data:
+        # Check for unknown fields in the appropriate location
+        for field_name in fields_data:
             if field_name not in schema.fields:
                 field_path = f"{path}.{field_name}" if path else field_name
                 self._add_warning(
@@ -307,14 +322,19 @@ class SchemaValidator:
         Returns:
             bool: True if validation passed or couldn't be evaluated
         """
+        # Determine where to look for fields - constructor calls store them under 'params'
+        fields_data = obj_data
+        if 'params' in obj_data and isinstance(obj_data['params'], dict):
+            fields_data = obj_data['params']
+            
         # Simple pattern matching for common validations
         
         # Pattern: fieldName.length > N
         length_match = re.match(r'(\w+)\.length\s*>\s*(\d+)', expression.strip())
         if length_match:
             field_name, min_length = length_match.groups()
-            if field_name in obj_data:
-                field_value = self._extract_value(obj_data[field_name])
+            if field_name in fields_data:
+                field_value = self._extract_value(fields_data[field_name])
                 if isinstance(field_value, str) and len(field_value) <= int(min_length):
                     self._add_error(
                         f"Field '{field_name}' length ({len(field_value)}) must be greater than {min_length}",
@@ -327,8 +347,8 @@ class SchemaValidator:
         range_match = re.match(r'(\w+)\s*>\s*(\d+)\s*&&\s*\1\s*<=\s*(\d+)', expression.strip())
         if range_match:
             field_name, min_val, max_val = range_match.groups()
-            if field_name in obj_data:
-                field_value = self._extract_value(obj_data[field_name])
+            if field_name in fields_data:
+                field_value = self._extract_value(fields_data[field_name])
                 if isinstance(field_value, (int, float)):
                     if not (int(min_val) < field_value <= int(max_val)):
                         self._add_error(

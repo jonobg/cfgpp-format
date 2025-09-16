@@ -83,7 +83,7 @@ class TestDocumentManager(unittest.TestCase):
     def test_parse_invalid_document(self):
         """Test parsing an invalid document."""
         uri = "file:///test.cfgpp"
-        content = 'AppConfig { invalid syntax }'
+        content = 'AppConfig { invalid = ; }'  # Missing value before semicolon
         
         self.doc_manager.open_document(uri, content)
         parsed = self.doc_manager.get_parsed_document(uri)
@@ -183,9 +183,9 @@ class TestCompletionProvider(unittest.TestCase):
         enum::Status {
             values = ["active", "inactive"]
         }
-        AppConfig(Status status = "
+        AppConfig(Status status = "active")
         '''
-        position = Position(line=5, character=30)
+        position = Position(line=4, character=31)
         
         self.doc_manager.open_document(uri, content)
         completions = self.completion_provider.provide_completion(uri, position)

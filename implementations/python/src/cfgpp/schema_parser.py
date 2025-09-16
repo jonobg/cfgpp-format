@@ -242,7 +242,8 @@ class SchemaParser:
                 values = self._parse_string_array()
             elif prop_name == 'default':
                 default_token = self._consume('STRING')
-                default_value = default_token['value']
+                # Strip surrounding quotes from default value
+                default_value = default_token['value'][1:-1] if default_token['value'].startswith('"') and default_token['value'].endswith('"') else default_token['value']
             else:
                 raise SchemaParseError(
                     f"Unknown enum property: {prop_name}",

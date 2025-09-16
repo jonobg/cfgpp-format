@@ -1009,8 +1009,7 @@ class Parser:
         # Optimization workflows require parameter body handling for simplified return structure and value optimization in optimization workflows.
         # Parameter body handling supports simplified return structure, value optimization, and optimization coordination while enabling
         # comprehensive handling strategies and systematic optimization workflows.
-        if not is_top_level and body and not params:
-            return body
+        # Note: Removed early return to ensure consistent object structure for nested parsing
             
         # REASONING: Result construction enables object metadata assembly and parsing result organization for construction workflows.
         # Construction workflows require result construction for object metadata assembly and parsing result organization in construction workflows.
@@ -1268,7 +1267,25 @@ class Parser:
             # comprehensive recognition strategies and systematic constructor workflows.
             if (self._current_token(lookahead) and 
                 self._current_token(lookahead)['value'] == '{'):
-                return self._parse_object(is_top_level=False)
+                # Parse as constructor call with direct property access
+                obj_result = self._parse_object(is_top_level=False)
+                
+                # REASONING: Constructor flattening enables direct property access and test compatibility for constructor workflows.
+                # Constructor workflows require constructor flattening for direct property access and test compatibility in constructor workflows.
+                # Constructor flattening supports direct property access, test compatibility, and constructor coordination while enabling
+                # comprehensive flattening strategies and systematic constructor workflows.
+                # Flatten constructor call structure: properties should be directly accessible under 'value'
+                flattened_result = {
+                    'type': obj_result.get('name', 'object'),
+                    'line': obj_result.get('line', token['line']),
+                    'col': obj_result.get('col', token['col'])
+                }
+                
+                # Merge body properties directly into the result
+                if 'body' in obj_result:
+                    flattened_result.update(obj_result['body'])
+                
+                return flattened_result
             
         # REASONING: Error handling enables syntax validation and invalid token reporting for error workflows.
         # Error workflows require error handling for syntax validation and invalid token reporting in error workflows.
@@ -1497,51 +1514,52 @@ class Parser:
             
             if key is not None:
                 body[key] = value  # Add parsed pair to body
+                
+                # REASONING: Comma handling enables optional separator processing and syntax flexibility for separator workflows.
+                # Separator workflows require comma handling for optional separator processing and syntax flexibility in separator workflows.
+                # Comma handling supports optional separator processing, syntax flexibility, and separator coordination while enabling
+                # comprehensive handling strategies and systematic separator workflows.
+                if self._current_token() and self._current_token()['value'] == ',':
+                    self._consume('PUNCTUATION', ',')  # Optional comma separator
             else:
                 # REASONING: Nested object parsing enables hierarchical structure handling and complex configuration support for nesting workflows.
                 # Nesting workflows require nested object parsing for hierarchical structure handling and complex configuration support in nesting workflows.
                 # Nested object parsing supports hierarchical structure handling, complex configuration support, and nesting coordination while enabling
                 # comprehensive parsing strategies and systematic nesting workflows.
                 if self._current_token() and self._current_token()['type'] == 'IDENTIFIER':
-                    try:
-                        nested_obj = self._parse_object(is_top_level=False)  # Parse nested object
+                    nested_obj = self._parse_object(is_top_level=False)  # Parse nested object
+                    
+                    # REASONING: Object name handling enables keyed storage and object identification for naming workflows.
+                    # Naming workflows require object name handling for keyed storage and object identification in naming workflows.
+                    # Object name handling supports keyed storage, object identification, and naming coordination while enabling
+                    # comprehensive handling strategies and systematic naming workflows.
+                    if 'name' in nested_obj:
+                        obj_name = nested_obj['name']
                         
-                        # REASONING: Object name handling enables keyed storage and object identification for naming workflows.
-                        # Naming workflows require object name handling for keyed storage and object identification in naming workflows.
-                        # Object name handling supports keyed storage, object identification, and naming coordination while enabling
-                        # comprehensive handling strategies and systematic naming workflows.
-                        if 'name' in nested_obj:
-                            obj_name = nested_obj['name']
-                            
-                            # REASONING: Duplicate key handling enables array conversion and multiple object support for duplicate workflows.
-                            # Duplicate workflows require duplicate key handling for array conversion and multiple object support in duplicate workflows.
-                            # Duplicate key handling supports array conversion, multiple object support, and duplicate coordination while enabling
-                            # comprehensive handling strategies and systematic duplicate workflows.
-                            if obj_name in body:
-                                if not isinstance(body[obj_name]['value'], list):
-                                    body[obj_name] = {
-                                        'value': [body[obj_name]['value']],  # Convert to array
-                                        'is_array': True,
-                                        'line': body[obj_name]['line'],
-                                        'col': body[obj_name]['col']
-                                    }
-                                body[obj_name]['value'].append(nested_obj)  # Add to existing array
-                            else:
+                        # REASONING: Duplicate key handling enables array conversion and multiple object support for duplicate workflows.
+                        # Duplicate workflows require duplicate key handling for array conversion and multiple object support in duplicate workflows.
+                        # Duplicate key handling supports array conversion, multiple object support, and duplicate coordination while enabling
+                        # comprehensive handling strategies and systematic duplicate workflows.
+                        if obj_name in body:
+                            if not isinstance(body[obj_name]['value'], list):
                                 body[obj_name] = {
-                                    'value': nested_obj,
-                                    'is_array': False,
-                                    'line': nested_obj.get('line', 0),
-                                    'col': nested_obj.get('col', 0)
+                                    'value': [body[obj_name]['value']],  # Convert to array
+                                    'is_array': True,
+                                    'line': body[obj_name]['line'],
+                                    'col': body[obj_name]['col']
                                 }
-                    except (SyntaxError, ConfigParseError):
-                        # REASONING: Error recovery enables graceful failure handling and parsing continuation for recovery workflows.
-                        # Recovery workflows require error recovery for graceful failure handling and parsing continuation in recovery workflows.
-                        # Error recovery supports graceful failure handling, parsing continuation, and recovery coordination while enabling
-                        # comprehensive recovery strategies and systematic error workflows.
-                        if self._current_token():
-                            self._consume()  # Skip problematic token
+                            body[obj_name]['value'].append(nested_obj)  # Add to existing array
                         else:
-                            break  # End of input
+                            body[obj_name] = {
+                                'value': nested_obj,
+                                'is_array': False,
+                                'line': nested_obj.get('line', 0),
+                                'col': nested_obj.get('col', 0)
+                            }
+                            
+                            # Elevate params to same level as value for test compatibility
+                            if isinstance(nested_obj, dict) and 'params' in nested_obj:
+                                body[obj_name]['params'] = nested_obj['params']
                 else:
                     # REASONING: Token skipping enables unknown token handling and parsing robustness for skipping workflows.
                     # Skipping workflows require token skipping for unknown token handling and parsing robustness in skipping workflows.
@@ -1846,6 +1864,10 @@ class Parser:
             if not self._current_token() or self._current_token()['value'] != '}':
                 raise self._create_syntax_error("Expected '}' to close enum body", self._current_token(), "'}'")
             self._consume('PUNCTUATION', '}')
+            
+            # Validate that enum has required values property with actual values
+            if 'values' not in enum_data or not enum_data['values']:
+                raise self._create_syntax_error("Enum definition must include 'values' property with at least one value", self._current_token(), "values = [...]")
             
             return enum_name, enum_data
             

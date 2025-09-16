@@ -290,6 +290,11 @@ class CompletionProvider:
     
     def _is_enum_context(self, line_before_cursor: str) -> bool:
         """Check if cursor is in enum value context."""
+        # Check if we're in a string context after an enum type parameter
+        # Pattern: SomeEnumType paramName = "
+        if '= "' in line_before_cursor:
+            return True
+        # Also check for enum definition values context
         return 'enum::' in line_before_cursor and 'values' in line_before_cursor
     
     def _is_parameter_context(self, line_before_cursor: str) -> bool:

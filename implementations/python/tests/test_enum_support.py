@@ -332,15 +332,15 @@ class TestEnumIntegration(unittest.TestCase):
         
         # Verify nested usage in Logger.log
         logger = result['body']['Application']['body']['Logger']
-        log_method = logger['body']['log']
+        log_method = logger['value']['body']['log']
         level_param = log_method['params']['level']
         
         self.assertEqual(level_param['type'], 'LogLevel')
         self.assertTrue(level_param['is_enum_type'])
         
         # Verify nested usage in Logger.Settings.setDefaultLevel
-        settings = logger['body']['Settings']
-        set_level_method = settings['body']['setDefaultLevel']
+        settings = logger['value']['body']['Settings']
+        set_level_method = settings['value']['body']['setDefaultLevel']
         level_param2 = set_level_method['params']['level']
         
         self.assertEqual(level_param2['type'], 'LogLevel')

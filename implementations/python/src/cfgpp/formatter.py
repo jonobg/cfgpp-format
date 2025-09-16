@@ -149,6 +149,10 @@ class CfgppFormatter:
         Raises:
             ConfigParseError: If the configuration cannot be parsed
         """
+        # Handle empty configuration
+        if not config_text.strip():
+            return ""
+            
         # Parse the configuration
         try:
             parsed_config = loads(config_text)
@@ -324,25 +328,33 @@ class CfgppFormatter:
                 self._dedent()
                 obj_line = ")"
         
-        # Add opening brace
-        if self.config.brace_style == BraceStyle.SAME_LINE:
-            obj_line += " {"
+        # Check if object is empty
+        is_empty = 'body' not in obj or not obj['body']
         
-        self._write_line(obj_line)
-        
-        if self.config.brace_style != BraceStyle.SAME_LINE:
-            if self.config.brace_style == BraceStyle.NEW_LINE_INDENT:
-                self._indent()
-            self._write_line("{")
-            if self.config.brace_style == BraceStyle.NEW_LINE_INDENT:
-                self._dedent()
-        
-        # Format object body
-        self._indent()
-        self._format_object_body(obj)
-        self._dedent()
-        
-        self._write_line("}")
+        if is_empty:
+            # Format empty object on single line
+            obj_line += " {}"
+            self._write_line(obj_line)
+        else:
+            # Add opening brace
+            if self.config.brace_style == BraceStyle.SAME_LINE:
+                obj_line += " {"
+            
+            self._write_line(obj_line)
+            
+            if self.config.brace_style != BraceStyle.SAME_LINE:
+                if self.config.brace_style == BraceStyle.NEW_LINE_INDENT:
+                    self._indent()
+                self._write_line("{")
+                if self.config.brace_style == BraceStyle.NEW_LINE_INDENT:
+                    self._dedent()
+            
+            # Format object body
+            self._indent()
+            self._format_object_body(obj)
+            self._dedent()
+            
+            self._write_line("}")
     
     def _format_parameters(self, params: Dict[str, Any]) -> List[str]:
         """Format parameter list."""
@@ -439,8 +451,14 @@ class CfgppFormatter:
             item = body[key]
             
             if isinstance(item, dict) and 'value' in item:
-                # This is a property assignment
-                self._format_property(key, item)
+                # Check if this is actually a nested object with constructor call parameters
+                value = item['value']
+                if isinstance(value, dict) and ('params' in value or 'body' in value):
+                    # This is a constructor call/nested object, not a simple property
+                    self._format_nested_constructor_object(key, item)
+                else:
+                    # This is a property assignment
+                    self._format_property(key, item)
             else:
                 # This is a nested object
                 self._format_nested_object(key, item)
@@ -479,6 +497,66 @@ class CfgppFormatter:
         prop_line += ";"
         
         self._write_line(prop_line)
+    
+    def _format_nested_constructor_object(self, name: str, prop: Dict[str, Any]):
+        """Format a nested object that has constructor call parameters."""
+        value = prop['value']
+        
+        # Extract constructor parameters from the property's params if available
+        params = []
+        if 'params' in prop:
+            params = self._format_parameters(prop['params'])
+        elif 'params' in value:
+            params = self._format_parameters(value['params'])
+        
+        # Write object header with parameters
+        obj_line = name
+        if params:
+            if len(''.join(params)) + len(name) + 2 < self.config.max_line_length:
+                # Short parameter list - keep on same line
+                obj_line += f"({', '.join(params)})"
+            else:
+                # Long parameter list - multi-line
+                obj_line += "("
+                self._write_line(obj_line)
+                self._indent()
+                
+                for i, param in enumerate(params):
+                    param_line = param
+                    if i < len(params) - 1:
+                        param_line += ","
+                    self._write_line(param_line)
+                
+                self._dedent()
+                obj_line = ")"
+        
+        # Check if object is empty
+        is_empty = 'body' not in value or not value['body']
+        
+        if is_empty:
+            # Format empty object on single line
+            obj_line += " {}"
+            self._write_line(obj_line)
+        else:
+            # Add opening brace
+            if self.config.brace_style == BraceStyle.SAME_LINE:
+                obj_line += " {"
+            
+            self._write_line(obj_line)
+            
+            if self.config.brace_style != BraceStyle.SAME_LINE:
+                if self.config.brace_style == BraceStyle.NEW_LINE_INDENT:
+                    self._indent()
+                self._write_line("{")
+                if self.config.brace_style == BraceStyle.NEW_LINE_INDENT:
+                    self._dedent()
+            
+            # Format object body
+            self._indent()
+            self._format_object_body(value)
+            self._dedent()
+            
+            self._write_line("}")
     
     def _format_nested_object(self, name: str, obj: Dict[str, Any]):
         """Format a nested object."""
@@ -586,9 +664,23 @@ class CfgppFormatter:
     
     def _format_complex_value(self, value: Dict[str, Any]) -> str:
         """Format complex values like objects."""
+        # For inline object formatting, we need to handle this differently
+        # Objects as property values should be formatted inline or expanded
         if 'body' in value and value['body']:
-            # This is an object with body
-            return "{...}"  # Placeholder for inline objects
+            # Check if this is a simple object that can be formatted inline
+            body = value['body']
+            if len(body) <= 2:  # Small objects can be inline
+                formatted_parts = []
+                for key, item in body.items():
+                    if isinstance(item, dict) and 'value' in item:
+                        # Simple property
+                        formatted_parts.append(f"{key} = {self._format_value(item['value'])}")
+                    else:
+                        # Nested object - use placeholder for deeply nested
+                        formatted_parts.append(f"{key} = {{...}}")
+                return "{ " + "; ".join(formatted_parts) + " }"
+            else:
+                return "{...}"  # Complex objects get placeholder
         else:
             return "{}"
     
