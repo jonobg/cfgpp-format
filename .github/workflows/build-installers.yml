@@ -1,0 +1,234 @@
+name: Build Installers
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  build-python-executable:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            executable_name: cfgpp
+            artifact_name: cfgpp-linux-x64
+          - os: windows-latest
+            executable_name: cfgpp.exe
+            artifact_name: cfgpp-windows-x64
+          - os: macos-latest
+            executable_name: cfgpp
+            artifact_name: cfgpp-macos-x64
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        cd implementations/python
+        pip install -e .
+    
+    - name: Build executable with PyInstaller
+      run: |
+        cd implementations/python
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          pyinstaller --onefile --name cfgpp --console src/cfgpp_standalone.py
+        else
+          pyinstaller --onefile --name cfgpp --console src/cfgpp_standalone.py
+        fi
+      shell: bash
+    
+    - name: Test executable
+      run: |
+        cd implementations/python/dist
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          ./cfgpp.exe --help
+        else
+          ./cfgpp --help
+        fi
+      shell: bash
+    
+    - name: Create installer package
+      run: |
+        cd implementations/python
+        mkdir -p installer
+        # Copy executable
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          cp dist/cfgpp.exe installer/
+        else
+          cp dist/cfgpp installer/
+        fi
+        cp README.md installer/
+        cp ../../LICENSE installer/ || echo "No LICENSE file found"
+        
+        # Create install script for Unix systems
+        if [ "${{ matrix.os }}" != "windows-latest" ]; then
+          cat > installer/install.sh << 'EOF'
+        #!/bin/bash
+        # CFGPP Installer Script
+        
+        INSTALL_DIR="$HOME/.local/bin"
+        EXECUTABLE_NAME="cfgpp"
+        
+        echo "Installing CFGPP Configuration Parser..."
+        
+        # Create install directory if it doesn't exist
+        mkdir -p "$INSTALL_DIR"
+        
+        # Copy executable
+        cp "$EXECUTABLE_NAME" "$INSTALL_DIR/"
+        chmod +x "$INSTALL_DIR/$EXECUTABLE_NAME"
+        
+        echo "CFGPP installed to $INSTALL_DIR/$EXECUTABLE_NAME"
+        echo ""
+        echo "Add $INSTALL_DIR to your PATH if not already present:"
+        echo "  export PATH=\"\$PATH:$INSTALL_DIR\""
+        echo ""
+        echo "Test installation:"
+        echo "  cfgpp --help"
+        EOF
+          chmod +x installer/install.sh
+        fi
+        
+        # Create install script for Windows
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          cat > installer/install.bat << 'EOF'
+        @echo off
+        REM CFGPP Installer Script for Windows
+        
+        set "INSTALL_DIR=%LOCALAPPDATA%\cfgpp"
+        set "EXECUTABLE_NAME=cfgpp.exe"
+        
+        echo Installing CFGPP Configuration Parser...
+        
+        REM Create install directory
+        if not exist "%INSTALL_DIR%" mkdir "%INSTALL_DIR%"
+        
+        REM Copy executable
+        copy "%EXECUTABLE_NAME%" "%INSTALL_DIR%\"
+        
+        echo CFGPP installed to %INSTALL_DIR%\%EXECUTABLE_NAME%
+        echo.
+        echo Add %INSTALL_DIR% to your PATH environment variable
+        echo Test installation: cfgpp --help
+        
+        pause
+        EOF
+        fi
+      shell: bash
+    
+    - name: Create archive
+      run: |
+        cd implementations/python/installer
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          7z a ../${{ matrix.artifact_name }}.zip *
+        else
+          tar -czf ../${{ matrix.artifact_name }}.tar.gz *
+        fi
+      shell: bash
+    
+    - name: Upload installer artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: |
+          implementations/python/${{ matrix.artifact_name }}.zip
+          implementations/python/${{ matrix.artifact_name }}.tar.gz
+
+  create-release:
+    needs: build-python-executable
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+    
+    - name: Generate release notes
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        
+        cat > RELEASE_NOTES.md << EOF
+        # CFGPP v$VERSION - Configuration Parser & Tools
+        
+        ## Installation Options
+        
+        ### Option 1: Python Package (Recommended)
+        \`\`\`bash
+        pip install cfgpp
+        \`\`\`
+        
+        ### Option 2: Standalone Executables
+        Download the appropriate executable for your platform:
+        
+        - **Windows**: cfgpp-windows-x64.zip
+        - **macOS**: cfgpp-macos-x64.tar.gz  
+        - **Linux**: cfgpp-linux-x64.tar.gz
+        
+        Extract and run the included install script, or manually place the executable in your PATH.
+        
+        ## Usage
+        \`\`\`bash
+        cfgpp --help                    # Show help
+        cfgpp parse config.cfgpp        # Parse configuration file
+        cfgpp validate config.cfgpp     # Validate syntax
+        cfgpp format config.cfgpp       # Format configuration
+        \`\`\`
+        
+        ## Features
+        - Robust bracket-based syntax (no indentation sensitivity)
+        - Environment variable interpolation: \${VAR:-default}
+        - Include/import functionality with circular detection
+        - Expression evaluation and string operations
+        - Cross-platform CLI tools
+        
+        ## Changes in this Release
+        EOF
+        
+        # Get commits since last tag
+        LAST_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+        if [ -n "$LAST_TAG" ]; then
+          git log --pretty=format:"- %s" $LAST_TAG..HEAD >> RELEASE_NOTES.md
+        else
+          echo "- Initial release with comprehensive installer support" >> RELEASE_NOTES.md
+        fi
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: CFGPP v${{ env.VERSION }}
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Assets
+      run: |
+        # Find and upload all installer archives
+        find . -name "*.zip" -o -name "*.tar.gz" | while read file; do
+          if [[ -f "$file" ]]; then
+            filename=$(basename "$file")
+            echo "Uploading $filename..."
+            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                 -H "Content-Type: application/octet-stream" \
+                 --data-binary @"$file" \
+                 "${{ steps.create_release.outputs.upload_url }}?name=$filename"
+          fi
+        done

@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cfgpp"
+version = "0.1.0"
+authors = [{name = "CFGPP Development Team", email = "dev@cfgpp.org"}]
+description = "A robust configuration parser for the CFGPP format - industrial-grade config management"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+]
+keywords = ["configuration", "parser", "config", "cfgpp", "industrial"]
+dependencies = [
+    "antlr4-python3-runtime>=4.13.1",
+    "pyyaml>=5.4.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "black>=22.12.0", 
+    "mypy>=1.1.1",
+    "pylint>=2.17.4",
+    "pyinstaller>=5.0",
+]
+
+[project.scripts]
+cfgpp = "cfgpp.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jonobg/cfgpp-format"
+Repository = "https://github.com/jonobg/cfgpp-format"
+Documentation = "https://github.com/jonobg/cfgpp-format/tree/main/docs"
+"Bug Tracker" = "https://github.com/jonobg/cfgpp-format/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
