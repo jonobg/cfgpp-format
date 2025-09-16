@@ -166,6 +166,12 @@ class DiagnosticsEngine:
             error_line = parsed.get('line', 0)
             error_col = parsed.get('col', 0)
             
+            # Ensure line and col are integers
+            if not isinstance(error_line, int):
+                error_line = 0
+            if not isinstance(error_col, int):
+                error_col = 0
+            
             diagnostic = Diagnostic(
                 range=Range(
                     start=Position(line=error_line, character=error_col),

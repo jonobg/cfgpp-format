@@ -300,8 +300,8 @@ class CfgppFormatter:
         """Format a regular configuration object."""
         # Extract parameters if present
         params = []
-        if 'parameters' in obj:
-            params = self._format_parameters(obj['parameters'])
+        if 'params' in obj:
+            params = self._format_parameters(obj['params'])
         
         # Write object header
         obj_line = name

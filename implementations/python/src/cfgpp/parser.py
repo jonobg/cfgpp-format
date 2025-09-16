@@ -15,18 +15,19 @@ from .lexer import lex, Token, LexerError
 # Error workflows require config parse error for parsing error handling and diagnostic reporting in error workflows.
 # ConfigParseError supports parsing error handling, diagnostic reporting, and error coordination while enabling
 # comprehensive error strategies and systematic parsing error workflows.
-class ConfigParseError(SyntaxError):
-    """Custom exception for configuration parsing errors."""
+class ConfigParseError(Exception):
+    """Exception raised when configuration parsing fails."""
     
-    # REASONING: Error constructor enables error initialization and context preservation for initialization workflows.
-    # Initialization workflows require error constructor for error initialization and context preservation in initialization workflows.
-    # Error constructor supports error initialization, context preservation, and initialization coordination while enabling
-    # comprehensive constructor strategies and systematic error initialization workflows.
-    def __init__(self, message: str, token: Optional[Dict] = None, expected: Optional[str] = None, context: str = None):
+    # REASONING: Error constructor enables exception initialization and context preservation for error workflows.
+    # Error workflows require error constructor for exception initialization and context preservation in error workflows.
+    # Error constructor supports exception initialization, context preservation, and error coordination while enabling
+    # comprehensive error handling strategies and systematic exception management workflows.
+    def __init__(self, message: str, line: int = None, column: int = None, context: str = None, expected: str = None):
         self.message = message      # Primary error description
-        self.line = token.get("line") if token else None       # Error line for debugging
-        self.column = token.get("col") if token else None      # Error column for location
-        self.context = context      # Additional context information
+        self.line = line           # Line number where error occurred
+        self.column = column       # Column position for precise location
+        self.col = column          # Alias for backward compatibility
+        self.context = context     # Surrounding code/configuration for debugging
         self.expected = expected    # What was expected vs. what was found
         super().__init__(self._format_message())
     
@@ -1027,7 +1028,7 @@ class Parser:
         # Parameter integration supports function signature inclusion, complete object representation, and integration coordination while enabling
         # comprehensive integration strategies and systematic parameter workflows.
         if params:
-            result['parameters'] = params
+            result['params'] = params
         
         # REASONING: Top-level wrapping enables proper nesting structure and parsing result consistency for wrapping workflows.
         # Wrapping workflows require top-level wrapping for proper nesting structure and parsing result consistency in wrapping workflows.
@@ -1353,6 +1354,10 @@ class Parser:
                 'col': self.tokens[start_pos]['col']
             }
             
+            # Elevate params to same level as value for test compatibility
+            if isinstance(value, dict) and 'params' in value:
+                result['params'] = value['params']
+            
             # REASONING: Type annotation inclusion enables strong typing and declaration metadata for annotation workflows.
             # Annotation workflows require type annotation inclusion for strong typing and declaration metadata in annotation workflows.
             # Type annotation inclusion supports strong typing, declaration metadata, and annotation coordination while enabling
@@ -1391,11 +1396,17 @@ class Parser:
                 # Packaging workflows require simple result packaging for basic metadata and value wrapping in packaging workflows.
                 # Simple result packaging supports basic metadata, value wrapping, and packaging coordination while enabling
                 # comprehensive packaging strategies and systematic result workflows.
-                return key_name, {
+                result = {
                     'value': value,
                     'line': self.tokens[start_pos]['line'],
                     'col': self.tokens[start_pos]['col']
                 }
+                
+                # Elevate params to same level as value for test compatibility
+                if isinstance(value, dict) and 'params' in value:
+                    result['params'] = value['params']
+                
+                return key_name, result
         
         # REASONING: Fallback handling enables non-pair detection and parsing continuation for fallback workflows.
         # Fallback workflows require fallback handling for non-pair detection and parsing continuation in fallback workflows.
@@ -1695,10 +1706,44 @@ class Parser:
             # Exception wrapping supports generic error handling, consistent error format, and wrapping coordination while enabling
             # comprehensive wrapping strategies and systematic exception workflows.
             raise self._create_syntax_error(
-                message=f"Error parsing array: {str(e)}",
-                token=self._current_token(),
-                expected="a value or ']'"
+                message=f"Array parsing failed: {str(e)}",
+                token=self._current_token()
             ) from e
+    
+    def _parse_enum_values_array(self) -> List[str]:
+        """Parse an enum values array and return simple string values."""
+        start_token = self._current_token()
+        if start_token is None or start_token['value'] != '[':
+            raise self._create_syntax_error("Expected '[' for enum values array", start_token, "'['")
+            
+        self._consume('PUNCTUATION', '[')
+        values = []
+        
+        # Handle empty array
+        if self._current_token() and self._current_token()['value'] == ']':
+            self._consume('PUNCTUATION', ']')
+            return values
+            
+        # Parse first value
+        value_obj = self._parse_value()
+        values.append(value_obj['value'])  # Extract just the value, not the full object
+        
+        # Parse additional values
+        while self._current_token() and self._current_token()['value'] == ',':
+            self._consume('PUNCTUATION', ',')
+            
+            # Handle trailing comma
+            if self._current_token() and self._current_token()['value'] == ']':
+                break
+                
+            value_obj = self._parse_value()
+            values.append(value_obj['value'])  # Extract just the value
+        
+        if not self._current_token() or self._current_token()['value'] != ']':
+            raise self._create_syntax_error("Expected ']' to close enum values array", self._current_token(), "']'")
+            
+        self._consume('PUNCTUATION', ']')
+        return values
     
     # REASONING: Enum definition parsing enables type definition and constraint specification for enum workflows.
     # Enum workflows require enum definition parsing for type definition and constraint specification in enum workflows.
@@ -1776,15 +1821,14 @@ class Parser:
                     # Array workflows require values array parsing for enum option specification and constraint definition in array workflows.
                     # Values array parsing supports enum option specification, constraint definition, and array coordination while enabling
                     # comprehensive parsing strategies and systematic array workflows.
-                    if not self._current_token() or self._current_token()['value'] != '[':
-                        raise self._create_syntax_error("Expected '[' for enum values array", self._current_token(), "'['")
-                    enum_data['values'] = self._parse_array()
+                    enum_data['values'] = self._parse_enum_values_array()
                 elif prop_name == 'default':
                     # REASONING: Default value parsing enables fallback specification and value initialization for default workflows.
                     # Default workflows require default value parsing for fallback specification and value initialization in default workflows.
                     # Default value parsing supports fallback specification, value initialization, and default coordination while enabling
                     # comprehensive parsing strategies and systematic default workflows.
-                    enum_data['default'] = self._parse_value()
+                    default_obj = self._parse_value()
+                    enum_data['default'] = default_obj['value']  # Extract just the value
                 else:
                     raise self._create_syntax_error(f"Unknown enum property: {prop_name}", self._current_token(), "'values' or 'default'")
                 

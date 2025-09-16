@@ -59,25 +59,25 @@ TOKEN_SPECS = [
     # Null recognition supports empty value processing, null state handling, and null coordination.
     ('NULL', r'null'),
     
-    # REASONING: Operator recognition enables mathematical expression and calculation support for expression workflows.
-    # Expression workflows require operator recognition for mathematical expression and calculation support in expression workflows.
-    # Operator recognition supports mathematical expression, calculation support, and expression coordination.
-    ('OPERATOR', r'[+\-*/]'),
-    
-    # REASONING: Identifier recognition enables variable names and key identification for identification workflows.
-    # Identification workflows require identifier recognition for variable names and key identification in identification workflows.
-    # Identifier recognition supports variable names, key identification, and identification coordination.
-    ('IDENTIFIER', r'[a-zA-Z_][a-zA-Z0-9_]*'),
-    
     # REASONING: Namespace recognition enables scope separation and hierarchical organization for namespace workflows.
     # Namespace workflows require namespace recognition for scope separation and hierarchical organization in namespace workflows.
     # Namespace recognition supports scope separation, hierarchical organization, and namespace coordination.
     ('NAMESPACE', r'::'),
     
+    # REASONING: Comparison operator recognition enables validation rules and conditional expressions for comparison workflows.
+    # Comparison workflows require comparison operator recognition for validation rules and conditional expressions in comparison workflows.
+    # Comparison operator recognition supports validation rules, conditional expressions, and comparison coordination.
+    ('OPERATOR', r'(>=|<=|==|!=|&&|\|\||[+\-*\/><!&|])'),
+    
     # REASONING: Punctuation recognition enables structural parsing and syntax delimitation for structural workflows.
     # Structural workflows require punctuation recognition for structural parsing and syntax delimitation in structural workflows.
     # Punctuation recognition supports structural parsing, syntax delimitation, and structural coordination.
     ('PUNCTUATION', r'[\{\}\(\)\[\],;=\.]'),
+    
+    # REASONING: Identifier recognition enables variable names and key identification for identification workflows.
+    # Identification workflows require identifier recognition for variable names and key identification in identification workflows.
+    # Identifier recognition supports variable names, key identification, and identification coordination.
+    ('IDENTIFIER', r'[a-zA-Z_][a-zA-Z0-9_]*'),
 ]
 
 # REASONING: Token class enables lexical unit representation and parser integration for token workflows.

@@ -271,7 +271,11 @@ class SchemaParser:
         values = []
         while self._current_token() and self._current_token()['value'] != ']':
             string_token = self._consume('STRING')
-            values.append(string_token['value'])
+            value = string_token['value']
+            # Strip surrounding quotes from string tokens
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1]
+            values.append(value)
             
             if self._current_token() and self._current_token()['value'] == ',':
                 self._consume('PUNCTUATION', ',')
@@ -379,11 +383,18 @@ class SchemaParser:
         
         if token['type'] == 'STRING':
             self._consume()
-            return token['value']
+            value = token['value']
+            # Strip surrounding quotes from string tokens
+            if value.startswith('"') and value.endswith('"'):
+                value = value[1:-1]
+            return value
         elif token['type'] == 'NUMBER':
             self._consume()
             value = token['value']
             return int(value) if '.' not in str(value) else float(value)
+        elif token['type'] == 'BOOLEAN':
+            self._consume()
+            return token['value'] == 'true'
         elif token['type'] == 'IDENTIFIER':
             if token['value'] in ['true', 'false']:
                 self._consume()
@@ -456,7 +467,19 @@ class SchemaParser:
             expression_parts.append(token['value'])
             self._consume()
         
-        expression = ' '.join(expression_parts).strip()
+        # Join tokens with smart spacing - no spaces around dots
+        expression = ''
+        for i, part in enumerate(expression_parts):
+            if i > 0:
+                prev_part = expression_parts[i-1]
+                # No space before or after dots for property access
+                if part == '.' or prev_part == '.':
+                    expression += part
+                else:
+                    expression += ' ' + part
+            else:
+                expression += part
+        expression = expression.strip()
         
         return ValidationRule(
             expression=expression,
