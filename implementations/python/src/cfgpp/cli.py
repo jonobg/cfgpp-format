@@ -82,7 +82,7 @@ def validate_config(data: Dict[Any, Any]) -> Tuple[bool, List[str]]:
 def format_cfgpp(data: Dict[Any, Any], indent: int = 2) -> str:
     """Format parsed configuration back to CFGPP syntax."""
 
-    def format_value(value, current_indent=0):
+    def format_value(value: Any, current_indent: int = 0) -> str:
         """Format a value according to its type."""
         if isinstance(value, dict):
             if "type" in value and "value" in value:
@@ -129,7 +129,7 @@ def format_cfgpp(data: Dict[Any, Any], indent: int = 2) -> str:
             items_str = f",\n{indent_str}".join(formatted_items)
             return f"[\n{indent_str}{items_str}\n{' ' * current_indent}]"
 
-    def format_dict(d, current_indent=0):
+    def format_dict(d: Dict[Any, Any], current_indent: int = 0) -> str:
         """Format a plain dictionary."""
         if not d:
             return "{}"
@@ -143,7 +143,7 @@ def format_cfgpp(data: Dict[Any, Any], indent: int = 2) -> str:
 
         return "{\n" + "\n".join(items) + f"\n{' ' * current_indent}}}"
 
-    def format_object(obj, current_indent=0):
+    def format_object(obj: Dict[Any, Any], current_indent: int = 0) -> str:
         """Format an object with name and body."""
         name = obj.get("name", "UnknownObject")
         body = obj.get("body", {})
@@ -179,7 +179,7 @@ def format_cfgpp(data: Dict[Any, Any], indent: int = 2) -> str:
 def convert_to_json(data: Dict[Any, Any]) -> Dict[Any, Any]:
     """Convert CFGPP parsed data to a simplified JSON structure."""
 
-    def extract_value(obj):
+    def extract_value(obj: Any) -> Any:
         """Extract the actual value from CFGPP structure."""
         if isinstance(obj, dict):
             if "type" in obj and "value" in obj:
@@ -214,7 +214,7 @@ def convert_to_json(data: Dict[Any, Any]) -> Dict[Any, Any]:
         return extract_value(data)
 
 
-def main():
+def main() -> None:
     """Main entry point for the CLI."""
     parser = argparse.ArgumentParser(
         description="Parse and process cfgpp configuration files.",

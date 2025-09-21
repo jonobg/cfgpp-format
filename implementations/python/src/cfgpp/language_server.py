@@ -85,7 +85,7 @@ class DocumentManager:
     # comprehensive efficiency strategies and systematic incremental parsing workflows.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.documents: Dict[str, str] = {}  # URI -> content
         self.parsed_documents: Dict[str, Dict] = {}  # URI -> parsed AST
         self._logger = logging.getLogger(__name__)
@@ -156,7 +156,7 @@ class DiagnosticsEngine:
 
     def validate_document(self, uri: str) -> List[Diagnostic]:
         """Validate document and return diagnostics."""
-        diagnostics = []
+        diagnostics: List[Diagnostic] = []
 
         content = self.document_manager.get_document_content(uri)
         if not content:
@@ -259,7 +259,7 @@ class CompletionProvider:
 
     def provide_completion(self, uri: str, position: Position) -> List[CompletionItem]:
         """Generate context-aware completion suggestions."""
-        completions = []
+        completions: List[CompletionItem] = []
 
         content = self.document_manager.get_document_content(uri)
         parsed = self.document_manager.get_parsed_document(uri)
@@ -312,7 +312,7 @@ class CompletionProvider:
 
     def _complete_enum_values(self, parsed_doc: Dict) -> List[CompletionItem]:
         """Complete enum values from document."""
-        completions = []
+        completions: List[CompletionItem] = []
 
         if "body" not in parsed_doc:
             return completions
@@ -371,7 +371,7 @@ class CfgppLanguageServer:
     # comprehensive professional strategies and systematic IDE integration workflows.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.document_manager = DocumentManager()
         self.diagnostics_engine = DiagnosticsEngine(self.document_manager)
         self.completion_provider = CompletionProvider(self.document_manager)
