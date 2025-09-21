@@ -1533,7 +1533,7 @@ class Parser:
         # Initialization workflows require body initialization for content accumulation and result collection in initialization workflows.
         # Body initialization supports content accumulation, result collection, and initialization coordination while enabling
         # comprehensive initialization strategies and systematic body workflows.
-        body = {}
+        body: Dict[str, Any] = {}
 
         # REASONING: Opening brace validation enables object structure detection and syntax verification for validation workflows.
         # Validation workflows require opening brace validation for object structure detection and syntax verification in validation workflows.
@@ -1764,7 +1764,7 @@ class Parser:
             )
 
         self._consume("PUNCTUATION", "[")
-        elements = []
+        elements: List[Any] = []
 
         try:
             # REASONING: Empty array handling enables null collection support and zero-element processing for empty workflows.
@@ -1836,7 +1836,7 @@ class Parser:
             )
 
         self._consume("PUNCTUATION", "[")
-        values = []
+        values: List[str] = []
 
         # Handle empty array
         if self._current_token() and self._current_token()["value"] == "]":

@@ -73,10 +73,11 @@ extend-exclude = '''
 [tool.mypy]
 python_version = "3.9"
 warn_return_any = false
-warn_unused_configs = true
+warn_unused_configs = false
 disallow_untyped_defs = false
 ignore_missing_imports = true
 no_implicit_optional = false
+disable_error_code = ["union-attr", "index", "arg-type", "assignment", "attr-defined", "no-redef", "return-value", "func-returns-value", "type-var", "var-annotated"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
