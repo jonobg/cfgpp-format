@@ -154,19 +154,18 @@ jobs:
     - name: Test example configurations
       run: |
         python -c "
-        from cfgpp import loads
+        from cfgpp import load
         import os
         
         # Test the example configuration file
         example_path = 'specification/examples/complex_config.cfgpp'
         if os.path.exists(example_path):
-          with open(example_path, 'r') as f:
-            try:
-              config = loads(f.read())
-              print('✓ Example configuration parses successfully')
-            except Exception as e:
-              print(f'✗ Example configuration failed to parse: {e}')
-              exit(1)
+          try:
+            config = load(example_path)
+            print('✓ Example configuration parses successfully')
+          except Exception as e:
+            print(f'✗ Example configuration failed to parse: {e}')
+            exit(1)
         else:
           print('No example configuration found - skipping')
         "
