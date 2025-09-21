@@ -205,14 +205,14 @@ jobs:
           port = 8080
           debug = true
           
-          database = Database::PostgreSQL {
-            host = \"localhost\"
-            port = 5432
+          database = Database::PostgreSQL(
+            host = \"localhost\",
+            port = 5432,
             credentials = {
-              username = \"admin\"
+              username = \"admin\",
               password = \"secret\"
             }
-          }
+          )
           
           features = [\"auth\", \"logging\", \"metrics\"]
         }
