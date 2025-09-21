@@ -8,7 +8,7 @@ Test cases for enum type support in cfgpp-format parser.
 """
 
 import unittest
-from src.cfgpp.parser import loads, ConfigParseError
+from cfgpp.parser import loads, ConfigParseError
 
 
 class TestEnumSupport(unittest.TestCase):
