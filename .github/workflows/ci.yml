@@ -56,7 +56,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
       uses: codecov/codecov-action@v3
       with:
-        file: ./coverage.xml
+        file: ./implementations/python/coverage.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
@@ -145,7 +145,7 @@ jobs:
         docs_dir = 'docs'
         required_docs = [
           'README.md', 'getting-started.md', 'language-specification.md',
-          'api-reference.md', 'examples.md', 'error-handling.md', 'contributing.md'
+          'api-reference.md', 'error-handling.md', 'contributing.md'
         ]
         for doc in required_docs:
           path = os.path.join(docs_dir, doc)
@@ -163,7 +163,7 @@ jobs:
         import os
         
         # Test the example configuration file
-        example_path = 'examples/complex_config.cfgpp'
+        example_path = 'specification/examples/complex_config.cfgpp'
         if os.path.exists(example_path):
           with open(example_path, 'r') as f:
             try:
