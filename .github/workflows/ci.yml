@@ -207,11 +207,7 @@ jobs:
           
           database = Database::PostgreSQL(
             string host = \"localhost\",
-            int port = 5432,
-            object credentials = {
-              username = \"admin\",
-              password = \"secret\"
-            }
+            int port = 5432
           )
           
           features = [\"auth\", \"logging\", \"metrics\"]
