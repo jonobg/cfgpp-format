@@ -28,10 +28,10 @@ class ConfigParseError(Exception):
     def __init__(
         self,
         message: str,
-        line: int = None,
-        column: int = None,
-        context: str = None,
-        expected: str = None,
+        line: Optional[int] = None,
+        column: Optional[int] = None,
+        context: Optional[str] = None,
+        expected: Optional[str] = None,
     ):
         self.message = message  # Primary error description
         self.line = line  # Line number where error occurred
@@ -86,7 +86,7 @@ class Parser:
     # Parsing workflows require parse method for configuration processing and syntax tree construction in parsing workflows.
     # Parse method supports configuration processing, syntax tree construction, and parsing coordination while enabling
     # comprehensive parsing strategies and systematic configuration processing workflows.
-    def parse(self, text: str = None) -> Dict:
+    def parse(self, text: Optional[str] = None) -> Dict:
         """Parse the given cfgpp configuration text into a Python dictionary.
 
         Args:
