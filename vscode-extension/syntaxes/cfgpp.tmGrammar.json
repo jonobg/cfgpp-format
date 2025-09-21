@@ -31,6 +31,9 @@
       "include": "#keywords"
     },
     {
+      "include": "#environment-variables"
+    },
+    {
       "include": "#identifiers"
     }
   ],
@@ -181,6 +184,40 @@
         {
           "name": "storage.type.cfgpp",
           "match": "\\b(string|int|float|bool|array)\\b"
+        }
+      ]
+    },
+    "environment-variables": {
+      "patterns": [
+        {
+          "name": "support.variable.environment.cfgpp",
+          "begin": "\\$\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.variable.begin.cfgpp"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.variable.end.cfgpp"
+            }
+          },
+          "patterns": [
+            {
+              "name": "variable.other.environment.cfgpp",
+              "match": "[a-zA-Z_][a-zA-Z0-9_]*"
+            },
+            {
+              "name": "punctuation.separator.default.cfgpp",
+              "match": ":-"
+            },
+            {
+              "name": "string.quoted.double.default.cfgpp",
+              "begin": "\"",
+              "end": "\""
+            }
+          ]
         }
       ]
     },
