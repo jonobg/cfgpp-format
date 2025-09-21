@@ -191,27 +191,31 @@ class TestCompletionProvider(unittest.TestCase):
         }
         AppConfig(Status status = "active")
         """
-        position = Position(line=4, character=39)  # Adjusted for leading whitespace: 8 spaces + 31
+        position = Position(
+            line=4, character=39
+        )  # Adjusted for leading whitespace: 8 spaces + 31
 
         self.doc_manager.open_document(uri, content)
         completions = self.completion_provider.provide_completion(uri, position)
 
         # Should include enum values
         labels = [c.label for c in completions]
-        
+
         # Debug output for troubleshooting
         if not completions:
-            self.skipTest("No completions returned - completion provider may need setup")
-            
+            self.skipTest(
+                "No completions returned - completion provider may need setup"
+            )
+
         # More robust test - check if we got any completions with the expected values
         has_active = any("active" in label for label in labels)
         has_inactive = any("inactive" in label for label in labels)
-        
+
         # If neither found, provide debug info
         if not has_active and not has_inactive:
             print(f"Debug: Got {len(completions)} completions: {labels}")
             self.fail(f"Expected enum values not found in completions: {labels}")
-            
+
         self.assertTrue(has_active, f"'active' not found in labels: {labels}")
         self.assertTrue(has_inactive, f"'inactive' not found in labels: {labels}")
 

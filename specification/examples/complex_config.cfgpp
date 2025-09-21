@@ -45,7 +45,7 @@ ComplexConfig(
         DatabaseType type = "postgresql",
         bool useSSL = true,
         LogLevel logLevel = "warning",
-        ConnectionPool pool = {}
+        ConnectionPool pool
     ) {
         ConnectionPool::pool(
             int minConnections = 5,
@@ -60,7 +60,7 @@ ComplexConfig(
         int port = 3000,
         bool enableCORS = true,
         string environment = "production",
-        RateLimiting rateLimiting = {}
+        RateLimiting rateLimiting
     ) {
         RateLimiting::rateLimiting(
             int requestsPerMinute = 1000,
@@ -73,7 +73,7 @@ ComplexConfig(
         CacheStrategy strategy = "redis",
         int ttl = 3600,
         LogLevel logLevel = "error",
-        RedisConfig redis = {}
+        RedisConfig redis
     ) {
         RedisConfig::redis(
             string host = "redis.example.com",
@@ -88,8 +88,8 @@ ComplexConfig(
         bool enableHSTS = true,
         AuthMethod authMethod = "jwt",
         string[] allowedOrigins = ["https://example.com"],
-        JWTConfig jwt = {},
-        PasswordPolicy passwordPolicy = {}
+        JWTConfig jwt,
+        PasswordPolicy passwordPolicy
     ) {
         JWTConfig::jwt(
             string secret = "your-secret-key-here",
