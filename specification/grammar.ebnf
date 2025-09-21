@@ -4,31 +4,49 @@
 configuration = { statement } ;
 
 statement = object_definition
-          | assignment
-          | include_directive
+          | constructor_definition
           | enum_definition
+          | include_directive
           | comment ;
 
 (* Object Definitions *)
-object_definition = [ identifier ] "{" { object_member } "}" ;
+object_definition = identifier "{" { object_member } "}" ;
 object_member = assignment | nested_object ;
-nested_object = identifier "{" { object_member } "}" ;
+nested_object = identifier "=" object_constructor 
+              | identifier "{" { object_member } "}" ;
+
+(* Constructor-Style Definitions *)
+constructor_definition = identifier "(" parameter_list ")" "{" { object_member } "}" ;
+parameter_list = [ parameter { "," parameter } ] ;
+parameter = type_annotation identifier [ "=" value ] ;
+type_annotation = identifier [ "::" identifier ]* ;
+
+(* Enum Definitions *)
+enum_definition = "enum::" identifier "{" enum_body "}" ;
+enum_body = enum_values [ "," enum_default ] ;
+enum_values = "values" "=" array_value ;
+enum_default = "default" "=" string_literal ;
 
 (* Assignments *)
-assignment = identifier "=" value [ ";" ] ;
+assignment = identifier "=" value [ "," ] ;
 
 (* Values *)
 value = primitive_value
       | array_value
-      | object_value
+      | object_constructor
       | environment_variable
-      | expression ;
+      | namespaced_identifier ;
 
 primitive_value = string_literal
                 | number_literal
                 | boolean_literal
-                | null_literal
-                | identifier ;
+                | null_literal ;
+
+(* Object Constructors *)
+object_constructor = namespaced_identifier "{" { assignment } "}" ;
+
+(* Namespaced Identifiers *)
+namespaced_identifier = identifier [ "::" identifier ]* ;
 
 (* Literals *)
 string_literal = '"' { character | escape_sequence } '"' ;
@@ -40,27 +58,22 @@ boolean_literal = "true" | "false" ;
 null_literal = "null" ;
 
 (* Arrays *)
-array_value = "[" [ value { "," value } ] "]" ;
-
-(* Object Values *)
-object_value = "{" { assignment } "}" ;
+array_value = "[" [ value { "," value } [ "," ] ] "]" ;
 
 (* Environment Variables *)
 environment_variable = "${" identifier [ ":-" default_value ] "}" ;
-default_value = string_literal | identifier ;
-
-(* Expressions *)
-expression = term { ( "+" | "-" ) term } ;
-term = factor { ( "*" | "/" ) factor } ;
-factor = primitive_value | "(" expression ")" ;
+default_value = string_literal | number_literal | boolean_literal ;
 
 (* Directives *)
 include_directive = "@include" string_literal ;
-enum_definition = "enum" identifier "{" identifier { "," identifier } "}" ;
 
-(* Identifiers and Comments *)
+(* Comments *)
+comment = single_line_comment | multi_line_comment ;
+single_line_comment = "//" { character } newline ;
+multi_line_comment = "/*" { character } "*/" ;
+
+(* Identifiers *)
 identifier = letter { letter | digit | "_" } ;
-comment = "//" { character } newline ;
 
 (* Basic Characters *)
 letter = "A" | "B" | ... | "Z" | "a" | "b" | ... | "z" ;

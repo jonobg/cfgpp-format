@@ -1,15 +1,33 @@
 # CFGPP Documentation
 
-Welcome to the CFGPP (Configuration Plus Plus) parser documentation. This directory contains comprehensive documentation for understanding, using, and extending the CFGPP configuration format and parser.
+This directory contains comprehensive documentation for the CFGPP configuration format.
 
 ## Documentation Structure
 
-- [**Getting Started**](getting-started.md) - Quick start guide and installation instructions
-- [**Language Specification**](language-specification.md) - Complete CFGPP language syntax and features
-- [**API Reference**](api-reference.md) - Python API documentation
-- [**Examples**](examples.md) - Practical examples and use cases
-- [**Error Handling**](error-handling.md) - Understanding and handling parser errors
-- [**Contributing**](contributing.md) - Guidelines for contributing to the project
+### Core Documentation
+- **[Getting Started](getting-started.md)** - Basic introduction and setup
+- **[Syntax Examples](syntax-examples.md)** - Practical configuration examples  
+- **[API Reference](api-reference.md)** - Programming APIs
+- **[Language Server Design](LANGUAGE_SERVER_DESIGN.md)** - LSP implementation details
+- **[Error Handling](error-handling.md)** - Error handling and debugging guide
+
+### Reference Materials
+- **[Language Specification](language-specification.md)** - Formal language specification
+- **[Contributing](contributing.md)** - How to contribute to CFGPP
+
+### Development Documentation
+- **[Development](development/)** - Analysis, resolutions, and meta-documentation
+
+## Quick Links
+
+- **📖 [Syntax Reference](../SYNTAX_REFERENCE.md)** - THE authoritative syntax guide (main reference)
+- **🚀 [Quick Start](../QUICKSTART.md)** - Get up and running quickly  
+- **📝 [Formal Grammar](../specification/grammar.ebnf)** - EBNF grammar specification
+
+## External Resources
+
+- [Specification](../specification/) - Formal grammar and specification files
+- [Implementations](../implementations/) - Language-specific implementations
 
 ## What is CFGPP?
 

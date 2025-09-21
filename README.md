@@ -1,10 +1,9 @@
-{{ ... }}
-
-For a concise set of commands to set up a venv, run the CLI, and run tests, see the [QUICKSTART](./QUICKSTART.md). A convenience script is provided at `scripts/run_example.ps1`.
-
 # CFG++ Format
 
 A modern, high-performance configuration format with powerful features and multi-language support.
+
+**📖 For complete syntax documentation, see [SYNTAX_REFERENCE.md](SYNTAX_REFERENCE.md)**  
+**🚀 For quick setup, see [QUICKSTART.md](QUICKSTART.md)**
 
 ## 🚀 **Multi-Language Implementations**
 
