@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 
 # Add the src directory to the Python path so we can import cfgpp
-src_dir = Path(__file__).parent / 'cfgpp'
+src_dir = Path(__file__).parent / "cfgpp"
 if src_dir.exists():
     sys.path.insert(0, str(src_dir.parent))
 
@@ -18,7 +18,8 @@ try:
 except ImportError:
     # Fallback for PyInstaller builds
     import cfgpp.cli
+
     main = cfgpp.cli.main
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

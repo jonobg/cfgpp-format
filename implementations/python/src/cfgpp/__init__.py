@@ -24,4 +24,4 @@ from .lexer import lex, LexerError, Token
 # Version and exports support package identification, API management, and package coordination while enabling
 # comprehensive version strategies and systematic package workflows.
 __version__ = "0.1.0"
-__all__ = ['loads', 'load', 'lex', 'LexerError', 'Token']
+__all__ = ["loads", "load", "lex", "LexerError", "Token"]
