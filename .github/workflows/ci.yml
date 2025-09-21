@@ -153,12 +153,13 @@ jobs:
     
     - name: Test example configurations
       run: |
+        cd implementations/python
         python -c "
         from cfgpp import load
         import os
         
         # Test the example configuration file
-        example_path = 'specification/examples/complex_config.cfgpp'
+        example_path = '../../specification/examples/complex_config.cfgpp'
         if os.path.exists(example_path):
           try:
             config = load(example_path)
