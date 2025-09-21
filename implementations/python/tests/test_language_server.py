@@ -191,7 +191,7 @@ class TestCompletionProvider(unittest.TestCase):
         }
         AppConfig(Status status = "active")
         """
-        position = Position(line=4, character=31)
+        position = Position(line=4, character=39)  # Adjusted for leading whitespace: 8 spaces + 31
 
         self.doc_manager.open_document(uri, content)
         completions = self.completion_provider.provide_completion(uri, position)
