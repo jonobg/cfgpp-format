@@ -206,9 +206,9 @@ jobs:
           debug = true
           
           database = Database::PostgreSQL(
-            host = \"localhost\",
-            port = 5432,
-            credentials = {
+            string host = \"localhost\",
+            int port = 5432,
+            object credentials = {
               username = \"admin\",
               password = \"secret\"
             }
