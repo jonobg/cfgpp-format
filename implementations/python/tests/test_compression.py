@@ -58,9 +58,7 @@ def test_compression_with_metadata():
     try:
         compressor = CFGPPCompressor()
 
-        content = (
-            "test configuration content " * 20
-        )  # Larger content for better compression
+        content = "test configuration content " * 20  # Larger content for better compression
 
         # Test metadata generation
         metadata = compressor.compress_with_metadata(content, "ai-communication")
@@ -218,7 +216,7 @@ def test_production_safety():
 def test_zero_impact_on_existing_functionality():
     """Verify compressor has zero impact on existing parser functionality"""
     # Import parser to ensure compressor doesn't break imports
-    from cfgpp.core.parser import loads
+    from cfgpp.core.parser import parse_string
 
     # Test that parser still works normally
     config = """
@@ -229,7 +227,7 @@ def test_zero_impact_on_existing_functionality():
     }
     """
 
-    result = loads(config)
+    result = parse_string(config)
     assert "body" in result
     assert len(result["body"]) > 0
 
@@ -238,7 +236,7 @@ def test_zero_impact_on_existing_functionality():
     assert not compressor.enabled  # Disabled by default
 
     # Parser functionality unchanged
-    result2 = loads(config)
+    result2 = parse_string(config)
     assert result == result2
 
 
