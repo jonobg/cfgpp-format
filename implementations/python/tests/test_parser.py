@@ -3,7 +3,7 @@ Tests for the cfgpp parser.
 """
 
 import os
-from cfgpp.parser import loads, load
+from cfgpp.core.parser import loads, load
 
 
 def test_parse_simple_config():

@@ -16,7 +16,7 @@ from typing import Dict, List, Any, Optional, Union, Tuple
 import os
 from pathlib import Path
 
-from .parser import loads as config_loads, ConfigParseError
+from ..core.parser import loads as config_loads, ConfigParseError
 from .schema_parser import loads_schema, load_schema, SchemaDocument, SchemaParseError
 from .schema_validator import (
     validate_config,

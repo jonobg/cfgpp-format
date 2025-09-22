@@ -14,7 +14,7 @@ if src_dir.exists():
     sys.path.insert(0, str(src_dir.parent))
 
 try:
-    from cfgpp.cli import main
+    from cfgpp.tools.cli.cli import main
 except ImportError:
     # Fallback for PyInstaller builds
     import cfgpp.cli

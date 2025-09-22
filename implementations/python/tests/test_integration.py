@@ -10,9 +10,9 @@ from pathlib import Path
 import pytest
 import json
 
-from cfgpp.parser import loads, load, ConfigParseError
-from cfgpp.lexer import LexerError
-from cfgpp.cli import main
+from cfgpp.core.parser import loads, load, ConfigParseError
+from cfgpp.core.lexer import LexerError
+from cfgpp.tools.cli.cli import main
 import sys
 from io import StringIO
 

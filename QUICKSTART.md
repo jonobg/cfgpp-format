@@ -24,10 +24,25 @@ echo 'AppConfig(string name="test")' | python -m cfgpp.cli -
 ```
 
 ## Library Usage
+
+**New Clear API (Recommended):**
 ```python
-from cfgpp.parser import loads
-parsed = loads('App(string name="x")')
+from cfgpp import parse_string, parse_file
+
+# Parse from string
+parsed = parse_string('App(string name="x")')
 print(parsed)
+
+# Parse from file
+parsed = parse_file('config.cfgpp')
+print(parsed)
+```
+
+**Legacy API (Still works):**
+```python
+from cfgpp import loads, load  # Less clear naming
+parsed = loads('App(string name="x")')  # Use parse_string() instead
+parsed = load('config.cfgpp')           # Use parse_file() instead
 ```
 
 ## Tests

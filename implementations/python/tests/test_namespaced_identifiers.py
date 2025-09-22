@@ -66,8 +66,8 @@ def test_parameter_with_namespaced_type():
 
 def test_invalid_namespace_syntax():
     """Test handling of invalid namespace syntax."""
-    from cfgpp.parser import ConfigParseError
-    from cfgpp.lexer import LexerError
+    from cfgpp.core.parser import ConfigParseError
+    from cfgpp.core.lexer import LexerError
 
     # Test with trailing ::
     with pytest.raises(ConfigParseError, match="Incomplete namespaced identifier"):

@@ -468,6 +468,29 @@ def validate_config(
 
     Returns:
         ValidationResult: The validation result
+        
+    Examples:
+        >>> from cfgpp import parse_string
+        >>> from cfgpp.schema import load_schema
+        >>> 
+        >>> # Load schema
+        >>> schema = load_schema("app.schema")
+        >>> 
+        >>> # Parse configuration
+        >>> config = parse_string('''
+        ... AppConfig {
+        ...     name = "MyApp",
+        ...     port = 8080
+        ... }
+        ... ''')
+        >>> 
+        >>> # Validate
+        >>> result = validate_config(config, schema)
+        >>> if result.is_valid:
+        ...     print("✅ Configuration is valid!")
+        ... else:
+        ...     for error in result.get_errors():
+        ...         print(f"❌ {error.message} at line {error.line}")
     """
     validator = SchemaValidator(schema_doc)
     return validator.validate(config_data, schema_name)

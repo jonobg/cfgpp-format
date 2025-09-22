@@ -13,7 +13,7 @@ from textwrap import dedent
 # Add src directory to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from cfgpp.formatter import (
+from cfgpp.core.formatter import (
     CfgppFormatter,
     FormatterConfig,
     BraceStyle,
@@ -22,7 +22,7 @@ from cfgpp.formatter import (
     format_string,
     format_file,
 )
-from cfgpp.parser import loads, ConfigParseError
+from cfgpp.core.parser import loads, ConfigParseError
 
 
 class TestFormatterConfig(unittest.TestCase):

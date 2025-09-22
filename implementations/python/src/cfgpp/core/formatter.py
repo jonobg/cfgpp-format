@@ -18,7 +18,7 @@ from enum import Enum as PyEnum
 from io import StringIO
 
 from .parser import loads, ConfigParseError
-from .schema_parser import loads_schema, SchemaDocument, SchemaParseError
+from ..schema.schema_parser import loads_schema, SchemaDocument, SchemaParseError
 
 
 class BraceStyle(PyEnum):
@@ -767,6 +767,33 @@ def format_string(
 
     Returns:
         str: The formatted configuration text
+        
+    Examples:
+        >>> # Basic formatting
+        >>> messy_config = "App{name='test',port=8080,debug=true}"
+        >>> formatted = format_string(messy_config)
+        >>> print(formatted)
+        App {
+            name = "test",
+            port = 8080,
+            debug = true
+        }
+        
+        >>> # Custom formatting options
+        >>> config = FormatterConfig(
+        ...     indent_size=2,
+        ...     brace_style=BraceStyle.SAME_LINE
+        ... )
+        >>> formatted = format_string(messy_config, config)
+        
+        >>> # Format typed configuration
+        >>> typed_config = "Database::MySQL(string host='localhost',int port=3306)"
+        >>> formatted = format_string(typed_config)
+        >>> print(formatted)
+        Database::MySQL(
+            string host = "localhost",
+            int port = 3306
+        )
     """
     schema_doc = None
     if schema_text:
@@ -801,7 +828,7 @@ def format_file(
     schema_doc = None
     if schema_path:
         try:
-            from .schema_parser import load_schema
+            from ..schema.schema_parser import load_schema
 
             schema_doc = load_schema(schema_path)
         except (SchemaParseError, FileNotFoundError):

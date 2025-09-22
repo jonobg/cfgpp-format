@@ -20,10 +20,10 @@ from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
 from pathlib import Path
 
-from .parser import loads, ConfigParseError
-from .schema_integration import auto_discover_schema, load_with_auto_schema
-from .schema_validator import ValidationResult, ValidationMessage, ValidationSeverity
-from .formatter import format_string
+from ..core.parser import loads, ConfigParseError
+from ..schema.integration import auto_discover_schema, load_with_auto_schema
+from ..schema.schema_validator import ValidationResult, ValidationMessage, ValidationSeverity
+from ..core.formatter import format_string
 
 
 # LSP Protocol Types

@@ -16,8 +16,8 @@ import re
 from dataclasses import dataclass
 from enum import Enum as PyEnum
 
-from .lexer import lex
-from .parser import ConfigParseError
+from ..core.lexer import lex
+from ..core.parser import ConfigParseError
 
 
 class SchemaParseError(Exception):

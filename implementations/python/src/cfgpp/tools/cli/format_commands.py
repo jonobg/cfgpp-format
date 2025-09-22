@@ -11,13 +11,12 @@ style checking, and format configuration.
 # comprehensive CLI strategies and systematic formatting command-line workflows.
 """
 
-import argparse
 import sys
 import json
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
-from .formatter import (
+from ...core.formatter import (
     CfgppFormatter,
     FormatterConfig,
     BraceStyle,
@@ -26,8 +25,8 @@ from .formatter import (
     format_string,
     format_file,
 )
-from .parser import loads, ConfigParseError
-from .schema_integration import auto_discover_schema
+from ...core.parser import loads, ConfigParseError
+from ...schema.integration import auto_discover_schema
 
 
 def add_formatter_commands(subparsers):

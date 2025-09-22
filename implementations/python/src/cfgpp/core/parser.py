@@ -2031,9 +2031,81 @@ class Parser:
 # Parsing workflows require loads function for string-based configuration parsing and API simplification in parsing workflows.
 # Loads function supports string-based configuration parsing, API simplification, and parsing coordination while enabling
 # comprehensive function strategies and systematic configuration workflows.
-def loads(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
-    """Parse a cfgpp configuration string into a Python dictionary.
+def parse_string(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
+    """
+    Parse CFGPP configuration from a string.
+    
+    This is the primary parsing function for text content. Preferred over loads().
+    
+    Args:
+        text: CFGPP configuration text to parse
+        base_path: Base path for resolving includes
+        included_files: Set of already included files (for circular detection)
+        
+    Returns:
+        Parsed configuration as dictionary
+        
+    Examples:
+        >>> config_text = '''
+        ... AppConfig {
+        ...     name = "MyApp",
+        ...     port = 8080
+        ... }
+        ... '''
+        >>> result = parse_string(config_text)
+        >>> result['body']['AppConfig']['body']['name']['value']['value']
+        'MyApp'
+        
+        >>> # Typed configuration
+        >>> typed_config = 'Database::MySQL(string host="localhost", int port=3306)'
+        >>> result = parse_string(typed_config)
+        >>> params = result['body']['Database::MySQL']['params']
+        >>> params['host']['value']['value']
+        'localhost'
+    """
+    return _parse_text_internal(text, base_path, included_files)
 
+
+def parse_file(file_path: str) -> Dict:
+    """
+    Parse CFGPP configuration from a file.
+    
+    Preferred over load() for clearer code.
+    
+    Args:
+        file_path: Path to the CFGPP configuration file
+        
+    Returns:
+        Parsed configuration as dictionary
+        
+    Examples:
+        >>> # Parse application configuration
+        >>> config = parse_file("app.cfgpp")
+        >>> app_name = config['body']['AppConfig']['body']['name']['value']['value']
+        
+        >>> # Parse with error handling
+        >>> try:
+        ...     config = parse_file("config.cfgpp")
+        ...     print("Configuration loaded successfully")
+        ... except FileNotFoundError:
+        ...     print("Configuration file not found")
+        ... except ConfigParseError as e:
+        ...     print(f"Parse error at line {e.line}: {e.message}")
+        
+        >>> # Parse microservice configuration
+        >>> service_config = parse_file("microservice.cfgpp")
+        >>> service_body = service_config['body']['ServiceConfig']['body']
+        >>> port = service_body['port']['value']['value']
+        >>> print(f"Service running on port {port}")
+    """
+    return _parse_file_internal(file_path)
+
+
+# Legacy aliases for backwards compatibility  
+def loads(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
+    """
+    Legacy alias for parse_string() - use parse_string() instead for clearer API.
+    
     Args:
         text: The configuration text to parse
         base_path: Base path for resolving include directives (defaults to current directory)
@@ -2045,6 +2117,11 @@ def loads(text: str, base_path: str = None, included_files: Set[Path] = None) ->
     Raises:
         ConfigParseError: If there's a syntax error in the configuration
     """
+    return parse_string(text, base_path, included_files)
+
+
+def _parse_text_internal(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
+    """Internal implementation for parsing configuration text."""
     # REASONING: Lexer integration enables tokenization dependency and modular parsing architecture for integration workflows.
     # Integration workflows require lexer integration for tokenization dependency and modular parsing architecture in integration workflows.
     # Lexer integration supports tokenization dependency, modular parsing architecture, and integration coordination while enabling
@@ -2090,7 +2167,20 @@ def loads(text: str, base_path: str = None, included_files: Set[Path] = None) ->
 # Load function supports file-based configuration parsing, filesystem integration, and file coordination while enabling
 # comprehensive function strategies and systematic file workflows.
 def load(file_path: str) -> Dict:
-    """Parse a cfgpp configuration file into a Python dictionary."""
+    """
+    Legacy alias for parse_file() - use parse_file() instead.
+    
+    Args:
+        file_path: Path to the CFGPP configuration file
+        
+    Returns:
+        Parsed configuration as dictionary
+    """
+    return parse_file(file_path)
+
+
+def _parse_file_internal(file_path: str) -> Dict:
+    """Internal implementation for parsing configuration files."""
     # REASONING: Path object creation enables file path handling and filesystem abstraction for path workflows.
     # Path workflows require path object creation for file path handling and filesystem abstraction in path workflows.
     # Path object creation supports file path handling, filesystem abstraction, and path coordination while enabling

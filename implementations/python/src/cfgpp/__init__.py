@@ -11,17 +11,29 @@ cfgpp - A Python parser for the cfgpp configuration language.
 # Parsing workflows require parser imports for configuration processing and document parsing in parsing workflows.
 # Parser imports support configuration processing, document parsing, and parsing coordination while enabling
 # comprehensive import strategies and systematic parsing workflows.
-from .parser import loads, load
+# Core CFGPP functionality (always available)
+from .core.parser import parse_string, parse_file, loads, load
+from .core.lexer import lex, LexerError, Token
+from .core.formatter import format_string
 
-# REASONING: Lexer imports enable token analysis and syntax processing for lexical workflows.
-# Lexical workflows require lexer imports for token analysis and syntax processing in lexical workflows.
-# Lexer imports support token analysis, syntax processing, and lexical coordination while enabling
-# comprehensive lexer strategies and systematic lexical workflows.
-from .lexer import lex, LexerError, Token
+# Optional AI-aware features (requires feature flags)
+try:
+    from .ai.parser import loads_with_extensions, explain_config, query_config
+    from .ai.feature_flags import FeatureFlags
+except ImportError:
+    # AI features not available
+    pass
 
 # REASONING: Version and exports enable package identification and API management for package workflows.
 # Package workflows require version and exports for package identification and API management in package workflows.
 # Version and exports support package identification, API management, and package coordination while enabling
 # comprehensive version strategies and systematic package workflows.
 __version__ = "0.1.0"
-__all__ = ["loads", "load", "lex", "LexerError", "Token"]
+__all__ = [
+    # Core functionality (new clear API)
+    "parse_string", "parse_file", "lex", "LexerError", "Token", "format_string",
+    # Legacy aliases
+    "loads", "load",
+    # AI features (optional)
+    "loads_with_extensions", "explain_config", "query_config", "FeatureFlags"
+]

@@ -11,13 +11,12 @@ checking, and schema management.
 # comprehensive CLI strategies and systematic schema command-line workflows.
 """
 
-import argparse
 import sys
 import json
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
-from .schema_integration import (
+from ...schema.integration import (
     load_with_auto_schema,
     loads_with_schema,
     auto_discover_schema,
@@ -25,8 +24,8 @@ from .schema_integration import (
     SchemaRegistry,
     register_global_schema,
 )
-from .schema_parser import load_schema, loads_schema, SchemaParseError
-from .parser import loads as config_loads, ConfigParseError
+from ...schema.parser import load_schema, loads_schema, SchemaParseError
+from ...core.parser import loads as config_loads, ConfigParseError
 
 
 def add_schema_commands(subparsers):

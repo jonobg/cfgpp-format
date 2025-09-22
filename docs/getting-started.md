@@ -28,7 +28,7 @@ pip install cfgpp
 ### Parsing Configuration Strings
 
 ```python
-from cfgpp import loads
+from cfgpp import parse_string
 
 # Parse a configuration string
 config_text = """
@@ -39,17 +39,27 @@ AppConfig {
 }
 """
 
-result = loads(config_text)
+# New clear API (recommended)
+result = parse_string(config_text)
 print(result)
 ```
 
 ### Parsing Configuration Files
 
+**New Clear API (Recommended):**
+```python
+from cfgpp import parse_file
+
+# Parse a configuration file  
+result = parse_file('config.cfgpp')
+```
+
+**Legacy API (Still works):**
 ```python
 from cfgpp import load
 
-# Parse a configuration file
-result = load('config.cfgpp')
+# Legacy function (less clear naming)
+result = load('config.cfgpp')  # Use parse_file() instead
 ```
 
 ## Understanding the Output Format
@@ -113,11 +123,11 @@ if 'database' in app_config:
 The parser provides detailed error information when parsing fails:
 
 ```python
-from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp import parse_string
+from cfgpp.core.parser import ConfigParseError
 
 try:
-    result = loads("invalid syntax {")
+    result = parse_string("invalid syntax {")
 except ConfigParseError as e:
     print(f"Parse error: {e}")
     print(f"Line: {e.line}, Column: {e.column}")

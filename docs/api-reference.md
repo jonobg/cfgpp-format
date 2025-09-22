@@ -12,7 +12,7 @@ This document provides detailed reference information for the CFGPP Python parse
 
 ## Core Functions
 
-### `loads(text: str) -> Dict`
+### `parse_string(text: str) -> Dict` 🆕 **Recommended**
 
 Parse a CFGPP configuration string into a Python dictionary.
 
@@ -26,42 +26,58 @@ Parse a CFGPP configuration string into a Python dictionary.
 - `ConfigParseError`: If there's a syntax error in the configuration
 - `LexerError`: If there's an invalid character in the input
 
-**Example:**
-```python
-from cfgpp import loads
-
-config_text = """
-AppConfig {
-    name = "MyApp"
-    port = 8080
-}
-"""
-
-result = loads(config_text)
-```
-
-### `load(file_path: str) -> Dict`
+### `parse_file(file_path: str) -> Dict` 🆕 **Recommended**
 
 Parse a CFGPP configuration file into a Python dictionary.
 
 **Parameters:**
-- `file_path` (str): Path to the configuration file
+- `file_path` (str): Path to the configuration file to parse
 
 **Returns:**
 - `Dict`: Parsed configuration as a structured dictionary
 
 **Raises:**
 - `ConfigParseError`: If there's a syntax error in the configuration
-- `LexerError`: If there's an invalid character in the input
 - `FileNotFoundError`: If the specified file doesn't exist
-- `IOError`: If there's an error reading the file
 
-**Example:**
+### `loads(text: str) -> Dict` ⚠️ **Legacy**
+
+Legacy alias for `parse_string()`. Use `parse_string()` for clearer code.
+
+**Note:** This function is maintained for backward compatibility but `parse_string()` is preferred for new code.
+
+### `load(file_path: str) -> Dict` ⚠️ **Legacy**
+
+Legacy alias for `parse_file()`. Use `parse_file()` for clearer code.
+
+**Note:** This function is maintained for backward compatibility but `parse_file()` is preferred for new code.
+
+**Example (New Clear API):**
 ```python
-from cfgpp import load
+from cfgpp import parse_string, parse_file
 
-result = load('config.cfgpp')
+# Parse from string
+config_text = """
+AppConfig {
+    name = "MyApp"
+    port = 8080
+}
+"""
+result = parse_string(config_text)
+
+# Parse from file
+result = parse_file("config.cfgpp")
 ```
+
+**Example (Legacy API - still works):**
+```python
+from cfgpp import loads, load
+
+# Legacy aliases (less clear)
+result = loads(config_text)  # Use parse_string() instead
+result = load("config.cfgpp")  # Use parse_file() instead
+```
+
 
 ## Parser Classes
 

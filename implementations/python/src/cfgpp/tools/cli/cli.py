@@ -1,5 +1,10 @@
 """
 Command-line interface for the cfgpp parser.
+
+# REASONING: CLI interface enables command-line configuration processing and developer tooling for CLI workflows.
+# CLI workflows require CLI interface for command-line configuration processing and developer tooling in CLI workflows.
+# CLI interface supports command-line configuration processing, developer tooling, and CLI coordination while enabling
+# comprehensive CLI strategies and systematic command-line workflows.
 """
 
 import argparse
@@ -9,14 +14,29 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List, Tuple
 import re
 
-from .parser import load, loads, ConfigParseError
-from .lexer import LexerError
-from .cli_schema import add_schema_commands
-from .cli_formatter import add_formatter_commands
+from ...core.parser import parse_file, parse_string, load, loads, ConfigParseError
+from ...core.lexer import LexerError
+from .schema_commands import add_schema_commands
+from .format_commands import add_formatter_commands
 
 
 def format_output(data: dict, format_type: str = "json") -> str:
-    """Format the output based on the specified format type."""
+    """Format the output based on the specified format type.
+    
+    Examples:
+        >>> config = {'body': {'App': {'body': {'name': {'value': {'value': 'test'}}}}}}
+        >>> json_output = format_output(config, 'json')
+        >>> 'App' in json_output
+        True
+        
+        >>> # YAML output (requires PyYAML)
+        >>> yaml_output = format_output(config, 'yaml')
+        
+        >>> # Compact JSON
+        >>> compact = format_output(config, 'compact')
+        >>> '\n' not in compact  # No newlines in compact format
+        True
+    """
     if format_type == "json":
         return json.dumps(data, indent=2)
     elif format_type == "yaml":
@@ -307,11 +327,13 @@ Examples:
             if args.verbose:
                 print("Reading from standard input...", file=sys.stderr)
             config_text = sys.stdin.read()
-            result = loads(config_text)
+            # Use new clear API
+            result = parse_string(config_text)
         elif args.file:
             if args.verbose:
                 print(f"Reading from file: {args.file}", file=sys.stderr)
-            result = load(args.file)
+            # Use new clear API
+            result = parse_file(args.file)
         else:
             parser.print_help()
             return 1
