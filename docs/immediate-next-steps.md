@@ -9,10 +9,10 @@ Following the risk-minimized strategy, here are the concrete steps for the next 
 #### **Step 1: Create Feature Flags System**
 ```bash
 # Create the feature flags file
-touch implementations/python/src/cfgpp_format/features.py
+touch implementations/python/src/cfgpp/features.py
 ```
 
-**File: `implementations/python/src/cfgpp_format/features.py`**
+**File: `implementations/python/src/cfgpp/features.py`**
 ```python
 """
 Feature flags for AI-aware CFGPP capabilities
@@ -58,7 +58,7 @@ class FeatureFlags:
 """Test feature flags system"""
 
 import pytest
-from cfgpp_format.features import FeatureFlags
+from cfgpp.features import FeatureFlags
 
 
 def test_all_features_disabled_by_default():
@@ -98,7 +98,7 @@ def test_feature_flag_integration():
 ### **Day 3-4: Basic Hash Infrastructure (Read-Only)**
 
 #### **Step 3: Create Hash Validator**
-**File: `implementations/python/src/cfgpp_format/hash_validator.py`**
+**File: `implementations/python/src/cfgpp/hash_validator.py`**
 ```python
 """
 Hash validation for configuration integrity
@@ -219,8 +219,8 @@ class BasicHashValidator:
 """Test hash validation functionality"""
 
 import pytest
-from cfgpp_format.hash_validator import BasicHashValidator
-from cfgpp_format.features import FeatureFlags
+from cfgpp.hash_validator import BasicHashValidator
+from cfgpp.features import FeatureFlags
 
 
 def test_hash_validator_disabled_by_default():
@@ -341,18 +341,17 @@ python -m pytest tests/ -v
 # Create performance baseline before AI features
 python -c "
 import time
-from cfgpp_format.parser import CFGPPParser
+from cfgpp.parser import loads
 
 # Load sample config
 with open('specification/examples/complex_config.cfgpp', 'r') as f:
     content = f.read()
 
 # Time parsing (10 iterations)
-parser = CFGPPParser()
 times = []
 for i in range(10):
     start = time.time()
-    result = parser.parse(content)
+    result = loads(content)
     times.append(time.time() - start)
 
 avg_time = sum(times) / len(times)
@@ -366,8 +365,8 @@ print(f'All times: {times}')
 #### **Step 7: Commit Week 1 Progress**
 ```bash
 # Add new files
-git add implementations/python/src/cfgpp_format/features.py
-git add implementations/python/src/cfgpp_format/hash_validator.py  
+git add implementations/python/src/cfgpp/features.py
+git add implementations/python/src/cfgpp/hash_validator.py  
 git add implementations/python/tests/test_feature_flags.py
 git add implementations/python/tests/test_hash_validator.py
 

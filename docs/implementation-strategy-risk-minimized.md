@@ -19,7 +19,7 @@
 
 #### **Step 1.1: Feature Flag Infrastructure** 
 ```python
-# New file: implementations/python/src/cfgpp_format/features.py
+# New file: implementations/python/src/cfgpp/features.py
 class FeatureFlags:
     """Feature flags for AI-aware capabilities - ALL DEFAULT FALSE"""
     HIERARCHICAL_PARSING = False      # Core hierarchical features
@@ -37,7 +37,7 @@ class FeatureFlags:
 
 #### **Step 1.2: Basic Hash Infrastructure (Read-Only)**
 ```python
-# New file: implementations/python/src/cfgpp_format/hash_validator.py  
+# New file: implementations/python/src/cfgpp/hash_validator.py  
 class BasicHashValidator:
     """Phase 1: Read-only hash validation - NO file modification"""
     
@@ -79,35 +79,28 @@ python -m pytest tests/test_hash_validator.py -v
 
 #### **Step 2.1: Abstract Parser Interface** 
 ```python
-# Modify existing: implementations/python/src/cfgpp_format/parser/parser.py
-class CFGPPParser:
-    def __init__(self):
-        self.extensions = []  # New: Extension point for AI features
-        self._init_extensions()
+# Modify existing: implementations/python/src/cfgpp/parser.py
+# Add extension point to loads() function
+
+def loads_with_extensions(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
+    """Enhanced loads function with AI extensions - UNCHANGED BEHAVIOR by default"""
+    # Existing parsing logic remains identical
+    result = loads(text, base_path, included_files)  # Original function
     
-    def _init_extensions(self):
-        """Initialize parser extensions - only if feature flags enabled"""
-        if FeatureFlags.is_enabled('HIERARCHICAL_PARSING'):
-            from .extensions.hierarchical_parser import HierarchicalExtension
-            self.extensions.append(HierarchicalExtension())
-    
-    def parse(self, content: str):
-        """Existing parse method - UNCHANGED BEHAVIOR"""
-        # Existing parsing logic remains identical
-        ast = self._existing_parse_method(content)
+    # NEW: Optional extension processing (disabled by default)
+    if FeatureFlags.is_enabled('HIERARCHICAL_PARSING'):
+        from .extensions.hierarchical_parser import HierarchicalExtension
+        extension = HierarchicalExtension()
+        result = extension.process(result)  # Only if enabled
         
-        # NEW: Optional extension processing (disabled by default)
-        for extension in self.extensions:
-            ast = extension.process(ast)  # Only if enabled
-            
-        return ast
+    return result
 ```
 
 **Risk Level**: 🟡 **VERY LOW** - Existing parse behavior identical, extensions disabled
 
 #### **Step 2.2: Hierarchical Node Structure (Parallel Implementation)**
 ```python
-# New file: implementations/python/src/cfgpp_format/parser/extensions/hierarchical_parser.py
+# New file: implementations/python/src/cfgpp/extensions/hierarchical_parser.py
 class HierarchicalNode:
     """New hierarchical node - parallel to existing AST"""
     def __init__(self, name: str, type_info: str = None):
@@ -139,7 +132,7 @@ class HierarchicalExtension:
 
 #### **Step 3.1: Compression Library (Isolated)**
 ```python
-# New file: implementations/python/src/cfgpp_format/compression.py
+# New file: implementations/python/src/cfgpp/compression.py
 class CFGPPCompressor:
     """Phase 1: Basic compression - completely standalone"""
     
@@ -178,12 +171,11 @@ def test_all_features_disabled_by_default():
     
 def test_existing_functionality_unchanged():
     """Ensure existing parser behavior identical"""
-    parser = CFGPPParser()
-    result = parser.parse(SAMPLE_CONFIG)
+    result = loads(SAMPLE_CONFIG)
     
     # Result should be identical to pre-AI implementation
-    assert result.type == "original_ast_type"
-    assert len(result.children) == EXPECTED_COUNT
+    assert isinstance(result, dict)
+    assert "body" in result  # Standard CFGPP parser output
 ```
 
 #### **Step 4.2: Backwards Compatibility Validation**
@@ -207,7 +199,7 @@ npm test
 
 ### **Feature Enablement Strategy** 
 ```python
-# Update: implementations/python/src/cfgpp_format/features.py
+# Update: implementations/python/src/cfgpp/features.py
 class FeatureFlags:
     # Phase 2: Enable ONE feature at a time
     HIERARCHICAL_PARSING = True       # Enable first (lowest risk)
@@ -359,7 +351,7 @@ class ConfigManager:
 
 #### **Step 3.1: AI Query Interface (Isolated)**
 ```python
-# New file: implementations/python/src/cfgpp_format/ai/query_interface.py
+# New file: implementations/python/src/cfgpp/ai/query_interface.py
 class AIQueryInterface:
     """Phase 3: AI query capabilities - isolated from core parsing"""
     
@@ -395,7 +387,7 @@ class AIQueryInterface:
 
 #### **Step 3.2: AI-to-AI Transfer (Completely Isolated)**
 ```python
-# New file: implementations/python/src/cfgpp_format/ai/communication.py
+# New file: implementations/python/src/cfgpp/ai/communication.py
 class AIConfigTransfer:
     """AI-to-AI communication - completely sandboxed"""
     
@@ -435,7 +427,7 @@ class AIConfigTransfer:
 
 ### **Immediate Rollback Plan**
 ```python
-# Emergency rollback: implementations/python/src/cfgpp_format/features.py
+# Emergency rollback: implementations/python/src/cfgpp/features.py
 class FeatureFlags:
     # EMERGENCY: Set all to False to revert to original behavior
     HIERARCHICAL_PARSING = False

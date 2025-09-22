@@ -8,7 +8,7 @@ This directory contains comprehensive documentation for the CFGPP configuration 
 - **[Getting Started](getting-started.md)** - Basic introduction and setup
 - **[Syntax Examples](syntax-examples.md)** - Practical configuration examples  
 - **[API Reference](api-reference.md)** - Programming APIs
-- **[Language Server Design](LANGUAGE_SERVER_DESIGN.md)** - LSP implementation details
+- **[Language Server Design](language-server-design.md)** - LSP implementation details
 - **[Error Handling](error-handling.md)** - Error handling and debugging guide
 
 ### Reference Materials

@@ -158,7 +158,7 @@ class AIValidator:
 ## 🚀 **GETTING STARTED**
 
 ### **For Contributors**
-1. **Study existing parser**: `implementations/python/src/cfgpp_format/parser/`
+1. **Study existing parser**: `implementations/python/src/cfgpp/parser.py`
 2. **Review test suite**: `implementations/python/tests/`
 3. **Understand AST structure**: Current flat representation → tree structure
 4. **Focus on backwards compatibility**: All existing tests must pass
