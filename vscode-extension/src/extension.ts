@@ -7,7 +7,7 @@ let client: LanguageClient;
 export function activate(context: vscode.ExtensionContext) {
     // Language server setup
     const serverModule = context.asAbsolutePath(
-        path.join('..', 'src', 'cfgpp', 'language_server.py')
+        path.join('..', 'implementations', 'python', 'src', 'cfgpp', 'tools', 'language_server.py')
     );
     
     const serverOptions: ServerOptions = {

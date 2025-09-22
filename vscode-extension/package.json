@@ -2,7 +2,7 @@
   "name": "cfgpp-language-support",
   "displayName": "CFG++ Language Support",
   "description": "Language support for CFG++ configuration files with syntax highlighting, validation, and auto-completion. Now with verified syntax support and authoritative documentation.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "cfgpp",
   "icon": "icon.png",
   "engines": {

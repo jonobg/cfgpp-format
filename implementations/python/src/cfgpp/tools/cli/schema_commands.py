@@ -24,7 +24,7 @@ from ...schema.integration import (
     SchemaRegistry,
     register_global_schema,
 )
-from ...schema.parser import load_schema, loads_schema, SchemaParseError
+from ...schema.schema_parser import load_schema, loads_schema, SchemaParseError
 from ...core.parser import loads as config_loads, ConfigParseError
 
 

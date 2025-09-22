@@ -50,7 +50,7 @@ class BasicHashValidator:
                 hasher = hashlib.sha512()
             elif algorithm == "md5":
                 # MD5 for legacy compatibility only - NOT for security purposes
-                hasher = hashlib.md5()  # nosec B324
+                hasher = hashlib.md5(usedforsecurity=False)
             else:
                 raise ValueError(f"Unsupported hash algorithm: {algorithm}")
 

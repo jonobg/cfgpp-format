@@ -1,5 +1,21 @@
 # CFG++ Language Support - Changelog
 
+## [1.2.0] - 2025-09-22
+
+### API Revolution & Project Reorganization Update
+This release aligns the extension with the major API improvements and project reorganization.
+
+#### Fixed
+- **Language server path** updated for new modular project structure
+- **Extension compatibility** with reorganized Python implementation
+- **File references** updated to match new `implementations/python/src/cfgpp/tools/` structure
+
+#### Backend Improvements
+- **Clear API naming**: Backend now uses `parse_string()` and `parse_file()` instead of confusing `loads()`/`load()`
+- **Professional modular structure**: Core, schema, tools, and AI components properly organized
+- **Enhanced examples**: Comprehensive documentation with real-world usage patterns
+- **Zero breaking changes**: All legacy APIs maintained for backward compatibility
+
 ## [1.1.0] - 2025-09-21
 
 ### Major Update - Documentation Crisis Resolution
