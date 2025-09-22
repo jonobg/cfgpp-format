@@ -468,14 +468,14 @@ def validate_config(
 
     Returns:
         ValidationResult: The validation result
-        
+
     Examples:
         >>> from cfgpp import parse_string
         >>> from cfgpp.schema import load_schema
-        >>> 
+        >>>
         >>> # Load schema
         >>> schema = load_schema("app.schema")
-        >>> 
+        >>>
         >>> # Parse configuration
         >>> config = parse_string('''
         ... AppConfig {
@@ -483,7 +483,7 @@ def validate_config(
         ...     port = 8080
         ... }
         ... ''')
-        >>> 
+        >>>
         >>> # Validate
         >>> result = validate_config(config, schema)
         >>> if result.is_valid:

@@ -31,9 +31,18 @@ except ImportError:
 __version__ = "0.1.0"
 __all__ = [
     # Core functionality (new clear API)
-    "parse_string", "parse_file", "lex", "LexerError", "Token", "format_string",
+    "parse_string",
+    "parse_file",
+    "lex",
+    "LexerError",
+    "Token",
+    "format_string",
     # Legacy aliases
-    "loads", "load",
+    "loads",
+    "load",
     # AI features (optional)
-    "loads_with_extensions", "explain_config", "query_config", "FeatureFlags"
+    "loads_with_extensions",
+    "explain_config",
+    "query_config",
+    "FeatureFlags",
 ]

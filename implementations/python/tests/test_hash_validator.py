@@ -99,50 +99,29 @@ def test_extract_hash_from_content():
         validator = BasicHashValidator()
 
         # Content with hash header
-<<<<<<< HEAD
         content_with_hash = """@config-hash: "sha256:abc123def456"
-=======
-        content_with_hash = '''@config-hash: "sha256:abc123def456"
->>>>>>> 1b1471a5237dd45c55ee78ad142950cd3d76bae8
 @hash-algorithm: "sha256"
 
 DatabaseConfig::primary(
     string host = "localhost"
-<<<<<<< HEAD
 )"""
-=======
-)'''
->>>>>>> 1b1471a5237dd45c55ee78ad142950cd3d76bae8
 
         extracted_hash = validator.extract_hash_from_content(content_with_hash)
         assert extracted_hash == "sha256:abc123def456"
 
         # Content without hash
-<<<<<<< HEAD
         content_no_hash = """DatabaseConfig::primary(
     string host = "localhost"
 )"""
-=======
-        content_no_hash = '''DatabaseConfig::primary(
-    string host = "localhost"
-)'''
->>>>>>> 1b1471a5237dd45c55ee78ad142950cd3d76bae8
 
         extracted_hash = validator.extract_hash_from_content(content_no_hash)
         assert extracted_hash is None
 
         # Content with malformed hash
-<<<<<<< HEAD
         content_malformed = """@config-hash: malformed
 DatabaseConfig::primary(
     string host = "localhost"
 )"""
-=======
-        content_malformed = '''@config-hash: malformed
-DatabaseConfig::primary(
-    string host = "localhost"
-)'''
->>>>>>> 1b1471a5237dd45c55ee78ad142950cd3d76bae8
 
         extracted_hash = validator.extract_hash_from_content(content_malformed)
         assert extracted_hash == "malformed"  # Returns the malformed value as-is
@@ -217,11 +196,7 @@ def test_production_safety():
 def test_zero_impact_on_existing_functionality():
     """Verify hash validator has zero impact on existing parser functionality"""
     # Import parser to ensure hash validator doesn't break imports
-<<<<<<< HEAD
-    from cfgpp.core.parser import loads
-=======
-    from cfgpp.parser import loads
->>>>>>> 1b1471a5237dd45c55ee78ad142950cd3d76bae8
+    from cfgpp.core.parser import parse_string
 
     # Test that parser still works normally
     config = """
@@ -232,7 +207,7 @@ def test_zero_impact_on_existing_functionality():
     }
     """
 
-    result = loads(config)
+    result = parse_string(config)
     assert "body" in result
     # Check that result structure is as expected (may vary by parser implementation)
     assert len(result["body"]) > 0
@@ -242,5 +217,5 @@ def test_zero_impact_on_existing_functionality():
     assert not validator.enabled  # Disabled by default
 
     # Parser functionality unchanged
-    result2 = loads(config)
+    result2 = parse_string(config)
     assert result == result2

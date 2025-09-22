@@ -17,7 +17,7 @@ import os
 # Add src directory to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from cfgpp.schema.parser import (
+from cfgpp.schema.schema_parser import (
     loads_schema,
     SchemaDocument,
     SchemaDefinition,
@@ -27,7 +27,7 @@ from cfgpp.schema.parser import (
     FieldRequirement,
     SchemaParseError,
 )
-from cfgpp.schema.validator import (
+from cfgpp.schema.schema_validator import (
     validate_config,
     SchemaValidator,
     ValidationResult,

@@ -2031,20 +2031,22 @@ class Parser:
 # Parsing workflows require loads function for string-based configuration parsing and API simplification in parsing workflows.
 # Loads function supports string-based configuration parsing, API simplification, and parsing coordination while enabling
 # comprehensive function strategies and systematic configuration workflows.
-def parse_string(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
+def parse_string(
+    text: str, base_path: str = None, included_files: Set[Path] = None
+) -> Dict:
     """
     Parse CFGPP configuration from a string.
-    
+
     This is the primary parsing function for text content. Preferred over loads().
-    
+
     Args:
         text: CFGPP configuration text to parse
         base_path: Base path for resolving includes
         included_files: Set of already included files (for circular detection)
-        
+
     Returns:
         Parsed configuration as dictionary
-        
+
     Examples:
         >>> config_text = '''
         ... AppConfig {
@@ -2055,7 +2057,7 @@ def parse_string(text: str, base_path: str = None, included_files: Set[Path] = N
         >>> result = parse_string(config_text)
         >>> result['body']['AppConfig']['body']['name']['value']['value']
         'MyApp'
-        
+
         >>> # Typed configuration
         >>> typed_config = 'Database::MySQL(string host="localhost", int port=3306)'
         >>> result = parse_string(typed_config)
@@ -2069,20 +2071,20 @@ def parse_string(text: str, base_path: str = None, included_files: Set[Path] = N
 def parse_file(file_path: str) -> Dict:
     """
     Parse CFGPP configuration from a file.
-    
+
     Preferred over load() for clearer code.
-    
+
     Args:
         file_path: Path to the CFGPP configuration file
-        
+
     Returns:
         Parsed configuration as dictionary
-        
+
     Examples:
         >>> # Parse application configuration
         >>> config = parse_file("app.cfgpp")
         >>> app_name = config['body']['AppConfig']['body']['name']['value']['value']
-        
+
         >>> # Parse with error handling
         >>> try:
         ...     config = parse_file("config.cfgpp")
@@ -2091,7 +2093,7 @@ def parse_file(file_path: str) -> Dict:
         ...     print("Configuration file not found")
         ... except ConfigParseError as e:
         ...     print(f"Parse error at line {e.line}: {e.message}")
-        
+
         >>> # Parse microservice configuration
         >>> service_config = parse_file("microservice.cfgpp")
         >>> service_body = service_config['body']['ServiceConfig']['body']
@@ -2101,11 +2103,11 @@ def parse_file(file_path: str) -> Dict:
     return _parse_file_internal(file_path)
 
 
-# Legacy aliases for backwards compatibility  
+# Legacy aliases for backwards compatibility
 def loads(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
     """
     Legacy alias for parse_string() - use parse_string() instead for clearer API.
-    
+
     Args:
         text: The configuration text to parse
         base_path: Base path for resolving include directives (defaults to current directory)
@@ -2120,7 +2122,9 @@ def loads(text: str, base_path: str = None, included_files: Set[Path] = None) ->
     return parse_string(text, base_path, included_files)
 
 
-def _parse_text_internal(text: str, base_path: str = None, included_files: Set[Path] = None) -> Dict:
+def _parse_text_internal(
+    text: str, base_path: str = None, included_files: Set[Path] = None
+) -> Dict:
     """Internal implementation for parsing configuration text."""
     # REASONING: Lexer integration enables tokenization dependency and modular parsing architecture for integration workflows.
     # Integration workflows require lexer integration for tokenization dependency and modular parsing architecture in integration workflows.
@@ -2169,10 +2173,10 @@ def _parse_text_internal(text: str, base_path: str = None, included_files: Set[P
 def load(file_path: str) -> Dict:
     """
     Legacy alias for parse_file() - use parse_file() instead.
-    
+
     Args:
         file_path: Path to the CFGPP configuration file
-        
+
     Returns:
         Parsed configuration as dictionary
     """

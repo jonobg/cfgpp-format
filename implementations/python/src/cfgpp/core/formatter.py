@@ -767,7 +767,7 @@ def format_string(
 
     Returns:
         str: The formatted configuration text
-        
+
     Examples:
         >>> # Basic formatting
         >>> messy_config = "App{name='test',port=8080,debug=true}"
@@ -778,14 +778,14 @@ def format_string(
             port = 8080,
             debug = true
         }
-        
+
         >>> # Custom formatting options
         >>> config = FormatterConfig(
         ...     indent_size=2,
         ...     brace_style=BraceStyle.SAME_LINE
         ... )
         >>> formatted = format_string(messy_config, config)
-        
+
         >>> # Format typed configuration
         >>> typed_config = "Database::MySQL(string host='localhost',int port=3306)"
         >>> formatted = format_string(typed_config)

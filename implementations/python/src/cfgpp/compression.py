@@ -163,7 +163,9 @@ class CFGPPCompressor:
 
         original_size = len(content.encode("utf-8"))
         compressed_size = len(compressed_data)
-        compression_ratio = compressed_size / original_size if original_size > 0 else 1.0
+        compression_ratio = (
+            compressed_size / original_size if original_size > 0 else 1.0
+        )
 
         return {
             "compressed": True,

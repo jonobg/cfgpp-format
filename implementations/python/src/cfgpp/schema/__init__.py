@@ -11,7 +11,7 @@ from .integration import SchemaAwareParser, SchemaRegistry
 __all__ = [
     # Schema Parser
     "load_schema",
-    "loads_schema", 
+    "loads_schema",
     "SchemaParseError",
     # Schema Validator
     "validate_config",

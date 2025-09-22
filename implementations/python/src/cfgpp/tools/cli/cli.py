@@ -22,16 +22,16 @@ from .format_commands import add_formatter_commands
 
 def format_output(data: dict, format_type: str = "json") -> str:
     """Format the output based on the specified format type.
-    
+
     Examples:
         >>> config = {'body': {'App': {'body': {'name': {'value': {'value': 'test'}}}}}}
         >>> json_output = format_output(config, 'json')
         >>> 'App' in json_output
         True
-        
+
         >>> # YAML output (requires PyYAML)
         >>> yaml_output = format_output(config, 'yaml')
-        
+
         >>> # Compact JSON
         >>> compact = format_output(config, 'compact')
         >>> '\n' not in compact  # No newlines in compact format

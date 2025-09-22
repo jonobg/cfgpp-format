@@ -58,7 +58,9 @@ def test_compression_with_metadata():
     try:
         compressor = CFGPPCompressor()
 
-        content = "test configuration content " * 20  # Larger content for better compression
+        content = (
+            "test configuration content " * 20
+        )  # Larger content for better compression
 
         # Test metadata generation
         metadata = compressor.compress_with_metadata(content, "ai-communication")

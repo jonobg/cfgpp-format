@@ -15,19 +15,19 @@ class FeatureFlags:
 
     CRITICAL: All features MUST default to False to maintain
     backwards compatibility with existing production system
-    
+
     Examples:
         >>> # Check if features are disabled by default
         >>> FeatureFlags.HIERARCHICAL_PARSING
         False
-        >>> FeatureFlags.AI_REASONING_MODES  
+        >>> FeatureFlags.AI_REASONING_MODES
         False
-        
+
         >>> # Enable features for development/testing
         >>> FeatureFlags.HIERARCHICAL_PARSING = True
         >>> FeatureFlags.is_enabled("HIERARCHICAL_PARSING")
         True
-        
+
         >>> # Use in production with careful feature gating
         >>> if FeatureFlags.is_enabled("COMPRESSION"):
         ...     compressed = compressor.compress(config_text)

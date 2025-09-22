@@ -27,18 +27,18 @@ def loads_with_extensions(
     - Uses original parser as foundation
     - All AI features disabled by default
     - Graceful degradation on any AI errors
-    
+
     Returns original parser result PLUS optional AI enhancements:
     - '_hierarchical_view': Tree structure for AI reasoning
-    - '_ai_interface': AI reasoning capabilities  
+    - '_ai_interface': AI reasoning capabilities
     - '_ai_capabilities': Metadata about available features
-    
+
     Examples:
         >>> # Basic usage (acts like normal parser when AI disabled)
         >>> config = loads_with_extensions('App { name = "test" }')
         >>> config['body']['App']['body']['name']['value']['value']
         'test'
-        
+
         >>> # Enable AI features
         >>> FeatureFlags.HIERARCHICAL_PARSING = True
         >>> config = loads_with_extensions('''
@@ -47,12 +47,12 @@ def loads_with_extensions(
         ...     int port = 5432
         ... )
         ... ''')
-        >>> 
+        >>>
         >>> # Access hierarchical view
         >>> tree = config['_hierarchical_view']
         >>> tree.children['DatabaseConfig::primary'].children['host'].value
         'localhost'
-        
+
         >>> # AI reasoning (when enabled)
         >>> FeatureFlags.AI_REASONING_MODES = True
         >>> explanation = explain_config(config)

@@ -11,7 +11,7 @@ from .formatter import format_string, format_file, CfgppFormatter
 __all__ = [
     # Lexer
     "lex",
-    "Token", 
+    "Token",
     "LexerError",
     # Parser (new clear API)
     "parse_string",
