@@ -192,9 +192,9 @@ jobs:
       run: |
         python -c "
         # Integration test: Parse a complex configuration
-        from cfgpp import loads, load
-        from cfgpp.parser import ConfigParseError
-        from cfgpp.lexer import LexerError
+        from cfgpp import parse_string, parse_file, loads, load
+        from cfgpp.core.parser import ConfigParseError
+        from cfgpp.core.lexer import LexerError
         import tempfile
         import os
         
@@ -215,10 +215,16 @@ jobs:
         '''
         
         try:
-          result = loads(config_text)
+          # Test new clear API
+          result = parse_string(config_text)
           assert 'body' in result
           assert 'AppConfig' in result['body']
-          print('✓ Complex configuration parsing')
+          print('✓ Complex configuration parsing (new API)')
+          
+          # Test backward compatibility
+          result_legacy = loads(config_text)
+          assert result == result_legacy
+          print('✓ Backward compatibility verified')
         except Exception as e:
           print(f'✗ Complex configuration parsing failed: {e}')
           exit(1)
@@ -229,9 +235,15 @@ jobs:
           temp_file = f.name
         
         try:
-          result = load(temp_file)
+          # Test new clear API
+          result = parse_file(temp_file)
           assert 'body' in result
-          print('✓ File parsing')
+          print('✓ File parsing (new API)')
+          
+          # Test backward compatibility
+          result_legacy = load(temp_file)
+          assert result == result_legacy
+          print('✓ File parsing backward compatibility')
         except Exception as e:
           print(f'✗ File parsing failed: {e}')
           exit(1)
@@ -240,7 +252,7 @@ jobs:
         
         # Test 3: Error handling
         try:
-          loads('Invalid { syntax')
+          parse_string('Invalid { syntax')
           print('✗ Error handling test failed - should have raised exception')
           exit(1)
         except (ConfigParseError, LexerError):
