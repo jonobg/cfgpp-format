@@ -26,56 +26,46 @@ This directory contains comprehensive documentation for the CFGPP configuration 
 
 ## External Resources
 
-- [Specification](../specification/) - Formal grammar and specification files
-- [Implementations](../implementations/) - Language-specific implementations
+### Language Servers
+- **[VS Code Extension](../vscode-extension/)** - Editor support with syntax highlighting and validation
+- **[LSP Implementation](language-server-design.md)** - Language Server Protocol details
 
-## What is CFGPP?
+### Libraries and Bindings
+- **[Python Implementation](../implementations/python/)** - Complete Python parser and formatter
+- **[Rust Implementation](../implementations/rust/)** - High-performance Rust parser
+- **[C++ LabVIEW Implementation](../implementations/cpp-labview/)** - LabVIEW integration
 
-CFGPP is a modern, structured configuration format designed to be:
+## Documentation Quality Standards
 
-- **Human-readable**: Clean, intuitive syntax
-- **Flexible**: Support for complex data structures and namespacing
-- **Type-safe**: Built-in type validation and error reporting
-- **Extensible**: Support for comments, includes, and expressions
+### Testing-First Documentation
+All syntax examples in this documentation have been **tested against the actual parser implementation**. This ensures:
 
-## Quick Example
+- **✅ Accurate syntax patterns** - Every example works with the real parser
+- **✅ Reliable user experience** - Users can copy/paste examples with confidence
+- **✅ Implementation consistency** - Documentation matches what the code actually does
+- **✅ Professional quality** - Zero tolerance for syntax errors in examples
 
-```cfgpp
-// Application Configuration
-AppConfig {
-    name = "MyApp"
-    version = "1.0.0"
-    
-    server = ServerConfig {
-        host = "localhost"
-        port = 8080
-        ssl = true
-    }
-    
-    database = Database::PostgreSQL {
-        host = "db.example.com"
-        port = 5432
-        credentials = {
-            username = "admin"
-            password = "${DB_PASSWORD}"
-        }
-    }
-    
-    features = ["auth", "logging", "metrics"]
-}
-```
+### Single Source of Truth
+- **Primary Reference**: [SYNTAX_REFERENCE.md](../SYNTAX_REFERENCE.md) is the authoritative syntax guide
+- **Grammar Specification**: [grammar.ebnf](../specification/grammar.ebnf) is the formal language definition
+- **Tested Examples**: All examples verified against parser implementation
 
-## Key Features
+### Documentation Maintenance
 
-- **Nested Objects**: Hierarchical configuration structure
-- **Namespaced Types**: Organize types with namespace qualifiers
-- **Arrays**: Support for lists of values
-- **Type Declarations**: Explicit type information for better validation
-- **Comments**: Single-line and multi-line comment support
-- **Error Reporting**: Detailed error messages with line and column information
+**Critical Rule**: When updating syntax or adding features:
+1. **Update the authoritative reference first** ([SYNTAX_REFERENCE.md](../SYNTAX_REFERENCE.md))
+2. **Test new syntax against parser** to ensure accuracy
+3. **Update related documentation** to maintain consistency
+4. **Validate all examples still parse** with the updated implementation
 
 ## Getting Help
 
+**Documentation Issues**:
+- Syntax examples not working? Check against [SYNTAX_REFERENCE.md](../SYNTAX_REFERENCE.md)
+- Parser behavior different than documented? File an issue with the specific example
+- Need more examples? Check [syntax-examples.md](syntax-examples.md) first
+
+**Development Questions**:
 If you need help or have questions:
 
 1. Check the [Getting Started](getting-started.md) guide
@@ -85,4 +75,4 @@ If you need help or have questions:
 
 ## License
 
-This project is open source. See the main README for license information.
+This documentation is part of the CFGPP project and follows the same license terms.
