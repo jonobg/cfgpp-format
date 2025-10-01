@@ -1,0 +1,189 @@
+// Sensor Monitoring - Simple IoT sensor configuration
+// This demonstrates CLEAN IoT sensor monitoring setup! 🌡️📊
+
+// === SENSOR MONITORING SYSTEM ===
+SensorMonitoring::building-automation(
+    string system-name = "Building Automation System",
+    string location = "Office Building A",
+    string version = "2.1.0",
+    
+    // === SENSOR CONFIGURATION ===
+    SensorConfig sensors = SensorConfig(
+        // Temperature sensors
+        array[TemperatureSensor] temperature = [
+            TemperatureSensor(
+                string id = "TEMP-01",
+                string location = "Conference Room A",
+                float min-value = 15.0,
+                float max-value = 30.0,
+                float alert-threshold = 28.0,
+                int read-interval-seconds = 60
+            ),
+            TemperatureSensor(
+                string id = "TEMP-02", 
+                string location = "Server Room",
+                float min-value = 18.0,
+                float max-value = 25.0,
+                float alert-threshold = 24.0,
+                int read-interval-seconds = 30
+            )
+        ],
+        
+        // Humidity sensors
+        array[HumiditySensor] humidity = [
+            HumiditySensor(
+                string id = "HUM-01",
+                string location = "Conference Room A",
+                float min-value = 30.0,
+                float max-value = 70.0,
+                float alert-threshold = 65.0,
+                int read-interval-seconds = 60
+            )
+        ],
+        
+        // Motion sensors
+        array[MotionSensor] motion = [
+            MotionSensor(
+                string id = "MOTION-01",
+                string location = "Main Entrance",
+                bool enabled = true,
+                int sensitivity = 5,
+                int timeout-seconds = 300
+            ),
+            MotionSensor(
+                string id = "MOTION-02",
+                string location = "Parking Garage",
+                bool enabled = true,
+                int sensitivity = 3,
+                int timeout-seconds = 600
+            )
+        ]
+    ),
+    
+    // === COMMUNICATION CONFIGURATION ===
+    CommunicationConfig communication = CommunicationConfig(
+        MQTTConfig mqtt = MQTTConfig(
+            string broker-host = "192.168.1.100",
+            int broker-port = 1883,
+            string client-id = "building-sensors",
+            int keepalive-seconds = 60,
+            
+            array[Topic] topics = [
+                Topic(name = "sensors/temperature", qos = 1),
+                Topic(name = "sensors/humidity", qos = 1),
+                Topic(name = "sensors/motion", qos = 0),
+                Topic(name = "alerts/critical", qos = 2)
+            ]
+        )
+    ),
+    
+    // === DATA STORAGE CONFIGURATION ===
+    StorageConfig storage = StorageConfig(
+        DatabaseConfig database = DatabaseConfig(
+            string type = "influxdb",
+            string host = "localhost",
+            int port = 8086,
+            string database = "sensor_data",
+            string username = "${INFLUX_USERNAME}",
+            string password = "${INFLUX_PASSWORD}",
+            int retention-days = 90
+        ),
+        
+        BackupConfig backup = BackupConfig(
+            bool enabled = true,
+            string schedule = "0 2 * * *",  // Daily at 2 AM
+            string destination = "/backup/sensor-data",
+            int retention-days = 30
+        )
+    ),
+    
+    // === ALERT CONFIGURATION ===
+    AlertConfig alerts = AlertConfig(
+        EmailConfig email = EmailConfig(
+            string smtp-server = "smtp.company.com",
+            int smtp-port = 587,
+            string username = "${EMAIL_USERNAME}",
+            string password = "${EMAIL_PASSWORD}",
+            array[string] recipients = [
+                "facilities@company.com",
+                "security@company.com"
+            ]
+        ),
+        
+        array[AlertRule] rules = [
+            AlertRule(
+                string name = "high-temperature",
+                string condition = "temperature > alert_threshold",
+                string severity = "warning",
+                bool email-enabled = true
+            ),
+            AlertRule(
+                string name = "server-room-critical",
+                string condition = "temperature > 25 AND location == 'Server Room'",
+                string severity = "critical",
+                bool email-enabled = true
+            ),
+            AlertRule(
+                string name = "motion-detected",
+                string condition = "motion == true AND time > '22:00'",
+                string severity = "info",
+                bool email-enabled = false
+            )
+        ]
+    ),
+    
+    // === DASHBOARD CONFIGURATION ===
+    DashboardConfig dashboard = DashboardConfig(
+        WebConfig web = WebConfig(
+            string host = "0.0.0.0",
+            int port = 3000,
+            bool ssl-enabled = false,
+            string static-path = "/var/www/dashboard"
+        ),
+        
+        array[Widget] widgets = [
+            Widget(
+                string type = "temperature-chart",
+                string title = "Temperature Trends",
+                string data-source = "sensors/temperature",
+                int refresh-seconds = 30
+            ),
+            Widget(
+                string type = "alert-list",
+                string title = "Recent Alerts", 
+                string data-source = "alerts/critical",
+                int refresh-seconds = 10
+            ),
+            Widget(
+                string type = "sensor-status",
+                string title = "Sensor Health",
+                string data-source = "sensors/status",
+                int refresh-seconds = 60
+            )
+        ]
+    )
+)
+
+/*
+ * 🌡️ SENSOR MONITORING FEATURES:
+ * - Temperature, humidity, and motion sensors
+ * - MQTT communication protocol
+ * - InfluxDB time-series data storage
+ * - Email alerting system
+ * - Web dashboard interface
+ * - Automated backup system
+ * 
+ * ✅ CLEAN AND SIMPLE:
+ * - Straightforward sensor configuration
+ * - Standard IoT communication patterns
+ * - Basic alerting and monitoring
+ * - No complex cross-references
+ * - Guaranteed parser compatibility
+ * 
+ * 🏢 REAL-WORLD APPLICABLE:
+ * - Building automation use case
+ * - Standard sensor types and ranges
+ * - Practical alert thresholds
+ * - Production-ready architecture
+ * - Scalable design patterns
+ */

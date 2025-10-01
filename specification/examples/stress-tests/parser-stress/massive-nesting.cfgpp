@@ -1,0 +1,209 @@
+// Massive Nesting - Deep hierarchy stress test for parser
+// This tests EXTREME nesting depth to validate parser limits! 🏗️💥
+
+// === MASSIVE NESTING STRESS TEST ===
+@config-hash: "sha256:d33p4e5t6789012345678901234567890123456789012345678901234567890"
+@hash-algorithm: "sha256"
+@generated-at: "2025-10-01T15:54:00Z"
+@stress-test: true
+@expected-parse-time-ms: 2000
+@expected-memory-mb: 128
+
+// === 20-LEVEL DEEP NESTING TEST ===
+Level01::root(
+    string name = "Level 1 - Root",
+    
+    Level02 level2 = Level02(
+        string name = "Level 2 - Application Layer",
+        
+        Level03 level3 = Level03(
+            string name = "Level 3 - Service Layer",
+            
+            Level04 level4 = Level04(
+                string name = "Level 4 - Business Logic",
+                
+                Level05 level5 = Level05(
+                    string name = "Level 5 - Domain Models",
+                    
+                    Level06 level6 = Level06(
+                        string name = "Level 6 - Data Access",
+                        
+                        Level07 level7 = Level07(
+                            string name = "Level 7 - Database Layer",
+                            
+                            Level08 level8 = Level08(
+                                string name = "Level 8 - Connection Pool",
+                                
+                                Level09 level9 = Level09(
+                                    string name = "Level 9 - Transaction Manager",
+                                    
+                                    Level10 level10 = Level10(
+                                        string name = "Level 10 - Query Builder",
+                                        
+                                        Level11 level11 = Level11(
+                                            string name = "Level 11 - SQL Generator",
+                                            
+                                            Level12 level12 = Level12(
+                                                string name = "Level 12 - Parameter Binding",
+                                                
+                                                Level13 level13 = Level13(
+                                                    string name = "Level 13 - Result Mapping",
+                                                    
+                                                    Level14 level14 = Level14(
+                                                        string name = "Level 14 - Object Hydration",
+                                                        
+                                                        Level15 level15 = Level15(
+                                                            string name = "Level 15 - Cache Layer",
+                                                            
+                                                            Level16 level16 = Level16(
+                                                                string name = "Level 16 - Serialization",
+                                                                
+                                                                Level17 level17 = Level17(
+                                                                    string name = "Level 17 - Compression",
+                                                                    
+                                                                    Level18 level18 = Level18(
+                                                                        string name = "Level 18 - Encryption",
+                                                                        
+                                                                        Level19 level19 = Level19(
+                                                                            string name = "Level 19 - Network Protocol",
+                                                                            
+                                                                            Level20 level20 = Level20(
+                                                                                string name = "Level 20 - Physical Layer",
+                                                                                string final-value = "DEEPEST LEVEL REACHED!",
+                                                                                int depth = 20,
+                                                                                bool parser-survived = true
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+// === ARRAY NESTING STRESS TEST ===
+ArrayNesting::stress-test(
+    string test-name = "Nested Array Stress Test",
+    
+    array[array[array[array[array[string]]]]] five-dimensional = [
+        [
+            [
+                [
+                    ["level5-item1", "level5-item2"],
+                    ["level5-item3", "level5-item4"]
+                ],
+                [
+                    ["level5-item5", "level5-item6"],
+                    ["level5-item7", "level5-item8"]
+                ]
+            ],
+            [
+                [
+                    ["level5-item9", "level5-item10"],
+                    ["level5-item11", "level5-item12"]
+                ],
+                [
+                    ["level5-item13", "level5-item14"],
+                    ["level5-item15", "level5-item16"]
+                ]
+            ]
+        ]
+    ]
+)
+
+// === MIXED NESTING COMPLEXITY ===
+MixedComplexity::ultimate-test(
+    string description = "Mixed nesting with objects, arrays, and deep hierarchies",
+    
+    ComplexObject complex = ComplexObject(
+        array[NestedObject] nested-objects = [
+            NestedObject(
+                string id = "nested-1",
+                
+                DeepObject deep = DeepObject(
+                    array[array[SubObject]] matrix = [
+                        [
+                            SubObject(
+                                string name = "sub-1-1",
+                                InnerObject inner = InnerObject(
+                                    array[string] values = ["val1", "val2", "val3"],
+                                    DeepestObject deepest = DeepestObject(
+                                        string final-nested-value = "PARSER STRESS TEST COMPLETE"
+                                    )
+                                )
+                            ),
+                            SubObject(
+                                string name = "sub-1-2", 
+                                InnerObject inner = InnerObject(
+                                    array[string] values = ["val4", "val5", "val6"],
+                                    DeepestObject deepest = DeepestObject(
+                                        string final-nested-value = "NESTED PARSING SUCCESS"
+                                    )
+                                )
+                            )
+                        ],
+                        [
+                            SubObject(
+                                string name = "sub-2-1",
+                                InnerObject inner = InnerObject(
+                                    array[string] values = ["val7", "val8", "val9"],
+                                    DeepestObject deepest = DeepestObject(
+                                        string final-nested-value = "DEEP NESTING VALIDATED"
+                                    )
+                                )
+                            )
+                        ]
+                    ]
+                )
+            )
+        ]
+    )
+)
+
+/*
+ * 🏗️ MASSIVE NESTING STRESS TEST OBJECTIVES:
+ * 
+ * 📊 PARSER LIMITS VALIDATION:
+ * - 20-level deep object nesting
+ * - 5-dimensional array structures
+ * - Mixed complexity with objects and arrays
+ * - Memory usage tracking during deep parsing
+ * - Stack overflow prevention testing
+ * 
+ * ⏱️ PERFORMANCE TARGETS:
+ * - Parse time: <2000ms on legacy hardware
+ * - Memory usage: <128MB peak consumption
+ * - No stack overflow errors
+ * - Graceful handling of deep structures
+ * - Consistent parsing results
+ * 
+ * 🎯 SUCCESS CRITERIA:
+ * - Parser completes without crashing
+ * - All nested values accessible
+ * - Memory cleanup after parsing
+ * - Performance within acceptable limits
+ * - Error handling for excessive nesting
+ * 
+ * 🚨 FAILURE CONDITIONS:
+ * - Stack overflow during parsing
+ * - Memory exhaustion (>256MB)
+ * - Parse time exceeding 5 seconds
+ * - Incomplete or corrupted parsing
+ * - Memory leaks after completion
+ * 
+ * This stress test validates that CFGPP can handle
+ * extremely deep nesting scenarios that might occur
+ * in complex enterprise configurations! 💪🧪
+ */
