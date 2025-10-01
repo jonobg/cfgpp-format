@@ -1,0 +1,206 @@
+// Hash Validation - Configuration integrity and tamper detection
+// Demonstrates CFGPP's revolutionary hash validation system for AI-safe configurations
+
+// === BASIC HASH VALIDATION ===
+@config-hash: "sha256:7f4e1a2b8c9d3e6f5a4b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9"
+@hash-algorithm: "sha256"
+@generated-at: "2025-10-01T13:15:00Z"
+@hash-includes: ["content", "structure", "comments"]
+
+// === ADVANCED HASH CONFIGURATION ===
+@hash-config {
+    primary-algorithm = "sha256",        // Primary hash for integrity
+    backup-algorithm = "blake3",         // Backup hash for security
+    include-metadata = true,             // Include timestamps, comments
+    exclude-patterns = ["${*}"],         // Exclude env variables from hash
+    section-hashing = true,              // Individual section hashes
+    incremental-hashing = true           // Support partial validation
+}
+
+// === VALIDATION POLICY ===
+@validation-policy {
+    require-hash = true,                 // Reject configs without hash
+    allow-hash-mismatch = false,         // Strict validation mode
+    hash-mismatch-action = "reject",     // reject, warn, fix
+    trusted-signers = ["build-system", "deployment-ai", "security-scanner"]
+}
+
+// === SECTION-SPECIFIC HASHES ===
+@section-hashes {
+    "MicroserviceConfig" = "sha256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3",
+    "DatabaseConfig" = "sha256:9f8e7d6c5b4a39283746152839475869483726459382746528374651928374652",
+    "SecurityConfig" = "sha256:4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e"
+}
+
+// === MICROSERVICE CONFIGURATION WITH HASH VALIDATION ===
+MicroserviceConfig::api-gateway(
+    // Basic service identity
+    string service-name = "api-gateway",
+    string version = "1.2.3",
+    string environment = "production",
+    
+    // Load balancer configuration
+    LoadBalancer balancer = LoadBalancer(
+        string algorithm = "round-robin",
+        int max-connections = 10000,
+        int health-check-interval = 30,
+        bool sticky-sessions = false
+    ),
+    
+    // Rate limiting configuration
+    RateLimit rate-limit = RateLimit(
+        int requests-per-minute = 1000,
+        int burst-limit = 100,
+        array[string] exempt-ips = ["10.0.0.0/8", "192.168.0.0/16"]
+    )
+) {
+    // Nested load balancer configuration
+    LoadBalancer::balancer(
+        string algorithm = "round-robin",
+        int max-connections = 10000,
+        int health-check-interval = 30,
+        bool sticky-sessions = false,
+        
+        // Health check configuration
+        HealthCheck health-check = HealthCheck(
+            string path = "/health",
+            int timeout-ms = 5000,
+            int interval-ms = 30000,
+            int failure-threshold = 3
+        )
+    ) {
+        HealthCheck::health-check(
+            string path = "/health",
+            int timeout-ms = 5000,
+            int interval-ms = 30000,
+            int failure-threshold = 3,
+            array[string] expected-headers = ["Content-Type: application/json"]
+        );
+    }
+    
+    // Rate limiting configuration
+    RateLimit::rate-limit(
+        int requests-per-minute = 1000,
+        int burst-limit = 100,
+        array[string] exempt-ips = ["10.0.0.0/8", "192.168.0.0/16"],
+        string strategy = "sliding-window"
+    );
+}
+
+// === DATABASE CONFIGURATION WITH HASH VALIDATION ===
+DatabaseConfig::primary(
+    string host = "db.production.com",
+    int port = 5432,
+    string database = "api_gateway_prod",
+    string user = "api_gateway_user",
+    
+    // Password excluded from hash for security
+    string password = "${DB_PASSWORD}",  // Excluded from hash
+    
+    bool ssl-enabled = true,
+    string ssl-mode = "require",
+    
+    // Connection pool with hash validation
+    ConnectionPool pool = ConnectionPool(
+        int min-connections = 5,
+        int max-connections = 50,
+        int max-lifetime-seconds = 3600,
+        int idle-timeout-seconds = 600
+    )
+) {
+    ConnectionPool::pool(
+        int min-connections = 5,
+        int max-connections = 50,
+        int max-lifetime-seconds = 3600,
+        int idle-timeout-seconds = 600,
+        bool validate-connections = true
+    );
+}
+
+// === SECURITY CONFIGURATION WITH HASH VALIDATION ===
+SecurityConfig::enterprise(
+    // JWT configuration
+    JWT jwt = JWT(
+        // Secret excluded from hash for security
+        string secret = "${JWT_SECRET}",  // Excluded from hash
+        int expiry-minutes = 15,
+        string algorithm = "HS256",
+        string issuer = "api-gateway-prod"
+    ),
+    
+    // CORS configuration
+    CORS cors = CORS(
+        array[string] allowed-origins = [
+            "https://app.company.com",
+            "https://admin.company.com"
+        ],
+        array[string] allowed-methods = ["GET", "POST", "PUT", "DELETE"],
+        array[string] allowed-headers = ["Authorization", "Content-Type"],
+        bool allow-credentials = true
+    ),
+    
+    // Rate limiting for security
+    SecurityRateLimit security-rate-limit = SecurityRateLimit(
+        int login-attempts-per-hour = 10,
+        int api-calls-per-minute = 100,
+        int suspicious-activity-threshold = 50
+    )
+) {
+    JWT::jwt(
+        string secret = "${JWT_SECRET}",  // Excluded from hash
+        int expiry-minutes = 15,
+        string algorithm = "HS256",
+        string issuer = "api-gateway-prod",
+        bool verify-issuer = true
+    );
+    
+    CORS::cors(
+        array[string] allowed-origins = [
+            "https://app.company.com",
+            "https://admin.company.com"
+        ],
+        array[string] allowed-methods = ["GET", "POST", "PUT", "DELETE"],
+        array[string] allowed-headers = ["Authorization", "Content-Type"],
+        bool allow-credentials = true,
+        int max-age-seconds = 86400
+    );
+    
+    SecurityRateLimit::security-rate-limit(
+        int login-attempts-per-hour = 10,
+        int api-calls-per-minute = 100,
+        int suspicious-activity-threshold = 50,
+        string action-on-limit = "block",
+        int block-duration-minutes = 60
+    );
+}
+
+// === HASH VALIDATION BENEFITS DEMONSTRATED ===
+
+/*
+ * This configuration demonstrates several key benefits of hash validation:
+ * 
+ * 1. INTEGRITY ASSURANCE
+ *    - The @config-hash ensures this configuration hasn't been corrupted
+ *    - Any modification will cause hash validation to fail
+ *    - AI systems can trust the configuration is exactly as intended
+ * 
+ * 2. CHANGE DETECTION
+ *    - Hash changes when configuration is modified
+ *    - Enables intelligent configuration management
+ *    - Supports incremental updates and rollback strategies
+ * 
+ * 3. SECURITY VALIDATION
+ *    - Prevents tampering with production configurations
+ *    - Environment variables (${*}) excluded from hash for security
+ *    - Supports compliance and audit requirements
+ * 
+ * 4. AI SAFETY
+ *    - AI systems can validate configuration before processing
+ *    - Prevents processing of corrupted or malicious configurations
+ *    - Enables safe automated deployment workflows
+ * 
+ * 5. SECTION-SPECIFIC VALIDATION
+ *    - Individual sections can be validated independently
+ *    - Supports partial configuration updates
+ *    - Enables efficient change detection and processing
+ */

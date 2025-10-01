@@ -1,0 +1,34 @@
+CTT1
+TOC-SIZE:170
+SECTIONS:3
+CREATED:2025-10-01T16:47:35.775793Z
+---TOC-V1-START---
+DB,124,144,PROD
+SC,268,191,PROD
+LG,459,161,PROD
+---TOC-V1-END---
+---CONTENT-V1-START---
+---DB-START---
+DatabaseConfig::production(
+    string host = "prod-db.company.com",
+    int port = 5432,
+    int pool_size = 20
+)
+---DB-END---
+
+---SC-START---
+SecurityConfig::enterprise(
+    bool enforce_2fa = true,
+    int session_timeout_minutes = 30,
+    array[string] allowed_ips = ["10.0.0.0/8", "192.168.0.0/16"]
+)
+---SC-END---
+
+---LG-START---
+LoggingConfig::application(
+    string level = "info",
+    bool enable_debug = false,
+    string output_file = "/var/log/app.log"
+)
+---LG-END---
+

@@ -1,0 +1,294 @@
+// Cross-Referencing - Advanced cross-configuration references with @ref() syntax
+// Demonstrates sophisticated configuration composition and reuse patterns
+
+// === SHARED CONSTANTS DEFINITION ===
+// Define once, reference everywhere for consistency and maintainability
+
+SharedConstants::global(
+    // Network settings
+    string default-host = "localhost",
+    int base-port = 8000,
+    int port-increment = 100,
+    
+    // Security settings
+    string default-algorithm = "HS256",
+    int default-session-timeout = 30,
+    int default-jwt-expiry = 60,
+    
+    // Performance settings
+    int default-pool-size = 20,
+    int default-timeout-ms = 5000,
+    int default-retry-count = 3,
+    
+    // Monitoring settings
+    string metrics-path = "/metrics",
+    int metrics-port = 9090,
+    string log-level = "info"
+)
+
+// === ENVIRONMENT-SPECIFIC OVERRIDES ===
+
+EnvironmentOverrides::production(
+    string host-suffix = ".production.com",
+    int pool-multiplier = 5,
+    string log-level = "warn",
+    bool enable-debug = false
+)
+
+EnvironmentOverrides::development(
+    string host-suffix = ".dev.local",
+    int pool-multiplier = 1,
+    string log-level = "debug", 
+    bool enable-debug = true
+)
+
+// === CROSS-REFERENCED CONFIGURATIONS ===
+
+// Web Server Configuration with cross-references
+WebServerConfig::frontend(
+    // Reference shared constants
+    string host = @ref(SharedConstants.global.default-host),
+    int port = @ref(SharedConstants.global.base-port),  // 8000
+    
+    // Computed references
+    int admin-port = @calc(@ref(SharedConstants.global.base-port) + 1),  // 8001
+    int metrics-port = @ref(SharedConstants.global.metrics-port),  // 9090
+    
+    // Environment-aware references
+    string full-host = @concat(@ref(SharedConstants.global.default-host), @ref(EnvironmentOverrides.production.host-suffix)),
+    
+    // Connection pool with shared settings
+    ConnectionPool pool = ConnectionPool(
+        int max-connections = @calc(@ref(SharedConstants.global.default-pool-size) * @ref(EnvironmentOverrides.production.pool-multiplier)),  // 20 * 5 = 100
+        int timeout-ms = @ref(SharedConstants.global.default-timeout-ms),  // 5000
+        int retry-count = @ref(SharedConstants.global.default-retry-count)  // 3
+    ),
+    
+    // Security with shared settings
+    SecurityConfig security = SecurityConfig(
+        string jwt-algorithm = @ref(SharedConstants.global.default-algorithm),  // "HS256"
+        int jwt-expiry-minutes = @ref(SharedConstants.global.default-jwt-expiry),  // 60
+        int session-timeout-minutes = @ref(SharedConstants.global.default-session-timeout)  // 30
+    )
+)
+
+// API Server Configuration with cross-references
+ApiServerConfig::backend(
+    // Reference same host but different port
+    string host = @ref(SharedConstants.global.default-host),
+    int port = @calc(@ref(SharedConstants.global.base-port) + @ref(SharedConstants.global.port-increment)),  // 8000 + 100 = 8100
+    
+    // Reference web server's admin port for internal communication
+    int frontend-admin-port = @ref(WebServerConfig.frontend.admin-port),  // 8001
+    
+    // Larger pool for API processing
+    ConnectionPool pool = ConnectionPool(
+        int max-connections = @calc(@ref(WebServerConfig.frontend.pool.max-connections) * 2),  // 100 * 2 = 200
+        int timeout-ms = @ref(SharedConstants.global.default-timeout-ms),
+        int retry-count = @calc(@ref(SharedConstants.global.default-retry-count) + 2)  // 3 + 2 = 5
+    ),
+    
+    // Inherit security settings from web server
+    SecurityConfig security = SecurityConfig(
+        string jwt-algorithm = @ref(WebServerConfig.frontend.security.jwt-algorithm),  // "HS256"
+        int jwt-expiry-minutes = @calc(@ref(WebServerConfig.frontend.security.jwt-expiry-minutes) * 2),  // 60 * 2 = 120
+        int session-timeout-minutes = @ref(WebServerConfig.frontend.security.session-timeout-minutes)  // 30
+    )
+)
+
+// Database Configuration with cross-references
+DatabaseConfig::primary(
+    string host = @concat("db", @ref(EnvironmentOverrides.production.host-suffix)),  // "db.production.com"
+    int port = 5432,
+    
+    // Connection pool sized based on total server capacity
+    ConnectionPool pool = ConnectionPool(
+        int max-connections = @calc(@ref(WebServerConfig.frontend.pool.max-connections) + @ref(ApiServerConfig.backend.pool.max-connections)),  // 100 + 200 = 300
+        int timeout-ms = @calc(@ref(SharedConstants.global.default-timeout-ms) * 2),  // 5000 * 2 = 10000
+        int retry-count = @ref(SharedConstants.global.default-retry-count)  // 3
+    ),
+    
+    // Backup configuration
+    BackupConfig backup = BackupConfig(
+        bool enabled = true,
+        string schedule = "0 2 * * *",  // 2 AM daily
+        int retention-days = 30
+    )
+)
+
+// Cache Configuration with cross-references
+CacheConfig::redis(
+    string host = @concat("redis", @ref(EnvironmentOverrides.production.host-suffix)),  // "redis.production.com"
+    int port = 6379,
+    
+    // Pool sized as percentage of database pool
+    ConnectionPool pool = ConnectionPool(
+        int max-connections = @calc(@ref(DatabaseConfig.primary.pool.max-connections) / 3),  // 300 / 3 = 100
+        int timeout-ms = @ref(SharedConstants.global.default-timeout-ms),  // 5000
+        int retry-count = @ref(SharedConstants.global.default-retry-count)  // 3
+    ),
+    
+    // TTL settings
+    CachePolicy policy = CachePolicy(
+        int default-ttl-seconds = @calc(@ref(SharedConstants.global.default-session-timeout) * 60),  // 30 * 60 = 1800
+        int max-ttl-seconds = @calc(@ref(SharedConstants.global.default-jwt-expiry) * 60 * 24)  // 60 * 60 * 24 = 86400
+    )
+)
+
+// Load Balancer Configuration with cross-references
+LoadBalancerConfig::main(
+    // Upstream servers from other configurations
+    array[UpstreamServer] servers = [
+        UpstreamServer(
+            string host = @ref(WebServerConfig.frontend.host),
+            int port = @ref(WebServerConfig.frontend.port),  // 8000
+            int weight = 100
+        ),
+        UpstreamServer(
+            string host = @ref(ApiServerConfig.backend.host),
+            int port = @ref(ApiServerConfig.backend.port),  // 8100
+            int weight = 200  // API server gets more traffic
+        )
+    ],
+    
+    // Health check configuration
+    HealthCheckConfig health-check = HealthCheckConfig(
+        string path = "/health",
+        int interval-seconds = 30,
+        int timeout-ms = @ref(SharedConstants.global.default-timeout-ms),  // 5000
+        int failure-threshold = @ref(SharedConstants.global.default-retry-count)  // 3
+    ),
+    
+    // Connection settings
+    ConnectionConfig connection = ConnectionConfig(
+        int max-connections = @calc(@ref(WebServerConfig.frontend.pool.max-connections) + @ref(ApiServerConfig.backend.pool.max-connections)),  // 100 + 200 = 300
+        int timeout-ms = @ref(SharedConstants.global.default-timeout-ms),  // 5000
+        bool keep-alive = true
+    )
+)
+
+// Monitoring Configuration with cross-references
+MonitoringConfig::comprehensive(
+    // Metrics collection from all services
+    array[MetricsTarget] targets = [
+        MetricsTarget(
+            string name = "web-server",
+            string host = @ref(WebServerConfig.frontend.host),
+            int port = @ref(WebServerConfig.frontend.metrics-port),  // 9090
+            string path = @ref(SharedConstants.global.metrics-path)  // "/metrics"
+        ),
+        MetricsTarget(
+            string name = "api-server", 
+            string host = @ref(ApiServerConfig.backend.host),
+            int port = @calc(@ref(ApiServerConfig.backend.port) + 90),  // 8100 + 90 = 8190
+            string path = @ref(SharedConstants.global.metrics-path)  // "/metrics"
+        ),
+        MetricsTarget(
+            string name = "load-balancer",
+            string host = @ref(LoadBalancerConfig.main.servers[0].host),
+            int port = @calc(@ref(SharedConstants.global.metrics-port) + 1),  // 9090 + 1 = 9091
+            string path = @ref(SharedConstants.global.metrics-path)  // "/metrics"
+        )
+    ],
+    
+    // Alerting thresholds based on capacity
+    AlertingConfig alerting = AlertingConfig(
+        int cpu-threshold = 80,
+        int memory-threshold = 85,
+        int connection-threshold = @calc(@ref(DatabaseConfig.primary.pool.max-connections) * 0.9),  // 300 * 0.9 = 270
+        int response-time-threshold = @calc(@ref(SharedConstants.global.default-timeout-ms) / 2)  // 5000 / 2 = 2500
+    ),
+    
+    // Logging configuration
+    LoggingConfig logging = LoggingConfig(
+        string level = @ref(EnvironmentOverrides.production.log-level),  // "warn"
+        string format = "json",
+        bool enable-debug = @ref(EnvironmentOverrides.production.enable-debug)  // false
+    )
+)
+
+// === CONDITIONAL CROSS-REFERENCES ===
+
+// Development Override Configuration
+ConditionalConfig::development-overrides(
+    // Only apply in development environment
+    @when(environment == "development") {
+        // Override shared constants for development
+        SharedConstantsOverride dev-overrides = SharedConstantsOverride(
+            string default-host = "127.0.0.1",
+            string log-level = @ref(EnvironmentOverrides.development.log-level),  // "debug"
+            bool enable-debug = @ref(EnvironmentOverrides.development.enable-debug),  // true
+            int pool-size-multiplier = @ref(EnvironmentOverrides.development.pool-multiplier)  // 1
+        )
+    }
+)
+
+// === CROSS-REFERENCE VALIDATION ===
+
+ValidationRules::cross-reference-constraints(
+    // Ensure port numbers don't conflict
+    @validate {
+        @ref(WebServerConfig.frontend.port) != @ref(ApiServerConfig.backend.port),
+        @ref(WebServerConfig.frontend.admin-port) != @ref(ApiServerConfig.backend.port),
+        @ref(DatabaseConfig.primary.port) != @ref(CacheConfig.redis.port)
+    },
+    
+    // Ensure pool sizes are reasonable
+    @validate {
+        @ref(DatabaseConfig.primary.pool.max-connections) >= @calc(@ref(WebServerConfig.frontend.pool.max-connections) + @ref(ApiServerConfig.backend.pool.max-connections)),
+        @ref(CacheConfig.redis.pool.max-connections) <= @ref(DatabaseConfig.primary.pool.max-connections)
+    },
+    
+    // Ensure timeout consistency
+    @validate {
+        @ref(LoadBalancerConfig.main.health-check.timeout-ms) <= @ref(SharedConstants.global.default-timeout-ms),
+        @ref(DatabaseConfig.primary.pool.timeout-ms) >= @ref(SharedConstants.global.default-timeout-ms)
+    }
+)
+
+// === CROSS-REFERENCE BENEFITS DEMONSTRATED ===
+
+/*
+ * CONFIGURATION CONSISTENCY:
+ * - Single source of truth for shared values
+ * - Automatic propagation of changes
+ * - Reduced configuration drift
+ * - Centralized parameter management
+ * 
+ * COMPUTED RELATIONSHIPS:
+ * - Port assignments: base-port + increment
+ * - Pool sizing: proportional to load requirements  
+ * - Timeout cascading: derived from base timeouts
+ * - Capacity planning: automatic scaling relationships
+ * 
+ * ENVIRONMENT AWARENESS:
+ * - Production vs development overrides
+ * - Conditional configuration application
+ * - Environment-specific host suffixes
+ * - Debug mode toggling
+ * 
+ * VALIDATION & SAFETY:
+ * - Cross-reference constraint validation
+ * - Port conflict detection
+ * - Capacity relationship enforcement
+ * - Timeout consistency checking
+ * 
+ * MAINTENANCE BENEFITS:
+ * - Change one value, update everywhere
+ * - No manual synchronization needed
+ * - Reduced configuration errors
+ * - Clear dependency relationships
+ * 
+ * AI REASONING ADVANTAGES:
+ * - Understand configuration relationships
+ * - Trace value dependencies
+ * - Validate configuration consistency
+ * - Optimize resource allocation
+ * - Predict impact of changes
+ * 
+ * PERFORMANCE CHARACTERISTICS:
+ * - O(1) reference resolution
+ * - Lazy evaluation of computed values
+ * - Cached reference lookups
+ * - Minimal memory overhead
+ */

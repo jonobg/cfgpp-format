@@ -1,0 +1,83 @@
+// Data Types Showcase - All supported CFGPP data types
+// Learn about every data type available in CFGPP
+
+DataTypesDemo {
+    // === STRING TYPES ===
+    simple_string = "Hello World",
+    quoted_string = "This is a quoted string",
+    empty_string = "",
+    string_with_spaces = "   padded string   ",
+    special_chars = "Special chars: !@#$%^&*()",
+    
+    // === NUMERIC TYPES ===
+    positive_integer = 42,
+    negative_integer = -17,
+    zero = 0,
+    large_number = 1000000,
+    
+    // Floating point numbers
+    pi = 3.14159,
+    negative_float = -2.5,
+    scientific_notation = 1.23e-4,
+    
+    // === BOOLEAN TYPES ===
+    enabled = true,
+    disabled = false,
+    feature_flag = true,
+    debug_mode = false,
+    
+    // === ARRAY TYPES ===
+    
+    // String arrays
+    fruits = ["apple", "banana", "cherry"],
+    empty_array = [],
+    single_item = ["lonely"],
+    
+    // Numeric arrays
+    fibonacci = [1, 1, 2, 3, 5, 8, 13],
+    temperatures = [98.6, 100.0, 102.5],
+    
+    // Boolean arrays
+    flags = [true, false, true, true],
+    
+    // Mixed type arrays (advanced feature)
+    mixed_data = [42, "hello", true, 3.14],
+    
+    // === NESTED OBJECTS ===
+    database = {
+        host = "localhost",
+        port = 5432,
+        name = "myapp",
+        ssl_enabled = true
+    },
+    
+    // Deeply nested objects
+    server = {
+        http = {
+            port = 80,
+            ssl = false
+        },
+        https = {
+            port = 443,
+            ssl = true,
+            certificate = "/path/to/cert.pem"
+        }
+    },
+    
+    // === SPECIAL VALUES ===
+    null_value = null,
+    
+    // === ARRAYS OF OBJECTS ===
+    users = [
+        {
+            name = "Alice",
+            age = 30,
+            admin = true
+        },
+        {
+            name = "Bob", 
+            age = 25,
+            admin = false
+        }
+    ]
+}

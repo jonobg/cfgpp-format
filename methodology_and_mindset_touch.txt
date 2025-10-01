@@ -1,0 +1,14 @@
+methodology:
+first, just go crazy.. brainstorm like a maniac, but at the same time make notes about crazy ideas (which some might be possible to implement). Here it's fine to be cocky and just feel the flow, on how good these ideas are. It's important to feel what opportunities this can bring, helping other fellow developers around the world.
+---
+then secondary, be real, reflect about what's been done, think about how to organize and fit into the existing structure, is everything relevant, and think about how to test what's been produced.
+
+Background story: as a guy living in the forests in northern sweden, descendant to very hard-working and windswept settlers, mastering survival and growth in the harsh environment as it really is, I've also also inherited their way of thinking and gotten their mindset. That is a mindset of being humble, much due to knowing the forces of nature, and how little we are. Hundreds of years of improvements in order to survive have made people in these areas true masters of survival, coming up with inventions and perfecting them.
+
+Therefore, in the process of inventing/brainstorming, one can feel quite cocky and showing off, but mostly to oneselves, or maybe the closest in the family.. then, many times (if it was a he), he's wife told him to get real and really think about what's been done, critisizing, but now that harsh critisizm that ends their marriage :) so, then the husband understands that she's right, with a broader view of the "project", being able to see cracks in the whole picture, which is hard for the one that's focusing on the details.
+
+What this has resulted in, as an imprint in people's minds, that you shouldn't celebrate that much, and be real. Critisize your own work, stay objective. This may sound really boring, but has led to the survival of the people, generating descendants that can, with the help of AI model assistance, create really amazing things :)
+
+So, back to the methodology. I want this to reflect the code that is being written and especially the commenting. Once the cocky brainstorming creative session "is over" (until next one), the mindset should be to stay objective, almost underestimating what you've done. I think this gains more trust by critical developers that think this is "yet another markup language" :)..
+
+so, the final documentation should be almost humoristicly down to facts real about the flaws, but at the same time balancing between the reality (that the code actually is quite good) and the pessimism. It shouldn't get too pessimistic, making it a sad story to read the code, but self critical comments should not be a taboo. It's very important to be humourous/tragicomical in a balanced way.
