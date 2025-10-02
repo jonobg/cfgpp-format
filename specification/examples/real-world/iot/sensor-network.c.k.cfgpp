@@ -1,5 +1,5 @@
 // IoT Sensor Network - Compressed configuration with cross-referencing for edge devices
-// This demonstrates CFGPP's revolutionary IoT capabilities with MQTT and edge optimization! 🌐📡
+// Example of IoT configuration features with MQTT and edge optimization
 
 // === COMPRESSION FOR BANDWIDTH-CONSTRAINED IoT ===
 @compression-config {
@@ -539,10 +539,10 @@ IoTSensorNetwork::industrial-manufacturing(
  * - Adaptive sampling based on conditions
  * - Automatic failover and recovery
  * 
- * REVOLUTIONARY IMPACT:
- * - First configuration system designed for IoT scale
- * - 82% bandwidth reduction for edge devices
- * - 5x battery life extension
+ * POTENTIAL BENEFITS:
+ * - Configuration system designed for IoT use cases
+ * - Bandwidth reduction for edge devices
+ * - May help extend battery life
  * - Real-time edge AI processing
  * - Enterprise-grade IoT network management
  * 

@@ -54,7 +54,7 @@ GameConstants::global(
     int session-timeout-minutes = 30
 )
 
-// === REVOLUTIONARY MMO SERVER CONFIGURATION ===
+// === MMO SERVER CONFIGURATION ===
 MMOServerCluster::fantasy-world-online(
     string game-title = "Fantasy World Online",
     string version = "2.5.0",
@@ -537,7 +537,7 @@ MMOServerCluster::fantasy-world-online(
     // Additional nested configurations would continue here...
 }
 
-// === REVOLUTIONARY MMO GAMING ACHIEVEMENTS ===
+// === MMO GAMING FEATURES ===
 
 /*
  * 🎮 MASSIVE MULTIPLAYER SCALE:
@@ -583,9 +583,9 @@ MMOServerCluster::fantasy-world-online(
  * - Automatic scaling triggers
  * - Player analytics and behavior tracking
  * 
- * 🚀 REVOLUTIONARY IMPACT:
- * - First configuration system designed for MMO scale
- * - 100,000 player capacity with 16ms latency
+ * 🎮 POTENTIAL FEATURES:
+ * - Configuration system designed for MMO use cases
+ * - Large player capacity with reasonable latency
  * - Real-time compression and optimization
  * - Enterprise-grade gaming infrastructure
  * - AI-powered game world simulation
@@ -595,8 +595,8 @@ MMOServerCluster::fantasy-world-online(
  * - AI-powered world simulation
  * - Real-time analytics and monitoring
  * - Enterprise-grade reliability
- * - Revolutionary configuration management
+ * - Configuration management for gaming
  * 
- * CFGPP enables the impossible: 100,000 players
- * in a seamless world with 16ms latency! 🌟🎮🚀
+ * CFGPP aims to support large-scale gaming configurations
+ * with reasonable performance characteristics.
  */

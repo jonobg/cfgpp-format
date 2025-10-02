@@ -3,7 +3,7 @@
   "displayName": "CFG++ Language Support",
   "description": "Language support for CFG++ configuration files with syntax highlighting, validation, and auto-completion. Now with verified syntax support and authoritative documentation.",
   "version": "1.2.0",
-  "publisher": "cfgpp",
+  "publisher": "cfgpp-format",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.75.0"

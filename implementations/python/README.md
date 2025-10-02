@@ -1,13 +1,13 @@
 # CFG++ Python Implementation
 
-The original Python implementation providing formatting, parsing, and tooling for CFG++ configuration files.
+Python code that parses and formats CFG++ configuration files. Seems to work reasonably well.
 
-## Features
+## What It Does
 
-- **Fast Formatter**: Clean, consistent code formatting
-- **Schema Validation**: Validate configurations against schemas
-- **CLI Tools**: Command-line utilities for common tasks
-- **Python API**: Programmatic access to parser and formatter
+- **Formatter**: Makes configuration files look consistent
+- **Schema validation**: Catches common mistakes
+- **CLI tools**: Command-line utilities for basic tasks
+- **Python API**: If you want to use it programmatically
 
 ## Installation
 
@@ -69,13 +69,13 @@ python/
 # Install development dependencies
 pip install -r requirements.txt
 
-# Run tests
+# Run tests (should pass)
 python -m pytest tests/
 
-# Run formatter on itself
+# Format code
 python -m cfgpp.cli.format src/
 ```
 
 ## API Reference
 
-See the [full API documentation](../../docs/api-reference/python.md) for detailed usage examples.
+See the [API documentation](../../docs/api-reference/python.md) if you need detailed usage examples.

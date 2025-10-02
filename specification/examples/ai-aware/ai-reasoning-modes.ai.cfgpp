@@ -1,5 +1,5 @@
-// AI Reasoning Modes - 5-level intelligent configuration processing
-// This demonstrates REVOLUTIONARY AI reasoning capabilities! 🧠⚡💎
+// AI Reasoning Modes - 5-level configuration processing
+// Experimental AI reasoning features (probably overkill for most use cases)
 
 // === AI REASONING CONFIGURATION ===
 @config-hash: "blake3:f1e2d3c4b5a6978012345678901234567890123456789012345678901234567890123456789012345678901234567890"

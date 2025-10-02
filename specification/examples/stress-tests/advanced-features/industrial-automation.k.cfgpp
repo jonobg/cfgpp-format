@@ -1,5 +1,5 @@
 // Industrial Automation - Smart factory IoT configuration with keying system
-// This demonstrates REVOLUTIONARY industrial IoT automation! 🏭⚡🤖
+// Example of industrial IoT automation features (might be useful for large factories)
 
 // === INDUSTRIAL AUTOMATION CONFIGURATION ===
 @config-hash: "sha256:1a2b3c4d5e6f789012345678901234567890123456789012345678901234567890"
@@ -467,7 +467,7 @@ SmartFactoryAutomation::manufacturing-plant(
     ])
 }
 
-// === INDUSTRIAL AUTOMATION REVOLUTIONARY ACHIEVEMENTS ===
+// === INDUSTRIAL AUTOMATION FEATURES ===
 
 /*
  * 🏭 SMART FACTORY AUTOMATION:
@@ -533,10 +533,10 @@ SmartFactoryAutomation::manufacturing-plant(
  * - Edge computing capabilities
  * - Cloud connectivity and analytics
  * 
- * 🌟 REVOLUTIONARY IMPACT:
- * - 40% increase in production efficiency
- * - 60% reduction in defect rates
- * - 50% decrease in unplanned downtime
+ * 🏭 POTENTIAL BENEFITS:
+ * - Possible increase in production efficiency
+ * - May help reduce defect rates
+ * - Could decrease unplanned downtime
  * - 30% improvement in energy efficiency
  * - 99.9% safety compliance achievement
  * 

@@ -1,18 +1,18 @@
-# CFG++ Language Support for VS Code & Windsurf
+# CFG++ Language Support for VS Code
 
-Professional language support for CFG++ configuration files, providing syntax highlighting, validation, auto-completion, and error checking.
+Language support for CFG++ configuration files. Provides syntax highlighting, validation, auto-completion, and error checking.
 
-## Features
+## What It Does
 
-- **Syntax Highlighting** - Full syntax highlighting for `.cfgpp` and `.cfgpp-schema` files
-- **Auto-completion** - Smart completion for identifiers, enum values, and schema elements
-- **Validation** - Real-time syntax and schema validation with detailed error messages
-- **Language Server** - Full Language Server Protocol (LSP) integration
-- **Schema Support** - Integration with `.cfgpp-schema` files for type validation
+- **Syntax highlighting** - Colors for `.cfgpp` and `.cfgpp-schema` files
+- **Auto-completion** - Suggests identifiers, enum values, and schema elements
+- **Validation** - Shows syntax and schema errors
+- **Language server** - LSP integration for IDE features
+- **Schema support** - Works with `.cfgpp-schema` files for type checking
 
-## Supported Syntax
+## Syntax Support
 
-This extension supports the complete CFG++ syntax including:
+Supports the CFG++ syntax including:
 
 - ✅ **Basic objects**: `ObjectName { property = value }`
 - ✅ **Nested objects**: Deep nesting with clean syntax

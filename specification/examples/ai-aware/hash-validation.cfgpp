@@ -1,5 +1,5 @@
 // Hash Validation - Configuration integrity and tamper detection
-// Demonstrates CFGPP's revolutionary hash validation system for AI-safe configurations
+// Example of hash validation features (might be useful for security-sensitive configs)
 
 // === BASIC HASH VALIDATION ===
 @config-hash: "sha256:7f4e1a2b8c9d3e6f5a4b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9"

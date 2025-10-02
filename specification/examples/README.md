@@ -1,13 +1,13 @@
 # CFGPP Examples - Comprehensive Library
 
-Welcome to the **world's most comprehensive configuration format example library**! This collection demonstrates every aspect of CFGPP from basic syntax to revolutionary AI-aware features.
+Welcome to the CFGPP example library. This collection demonstrates CFGPP features from basic syntax to experimental AI-aware capabilities.
 
 ## 🎯 **Quick Navigation**
 
 ### **📚 Learning Path (Recommended Order)**
 1. **[Basic Examples](basic/)** - Start here! Simple, beginner-friendly configurations
 2. **[Advanced Examples](advanced/)** - Complex type systems and validation
-3. **[AI-Aware Examples](ai-aware/)** - Revolutionary AI-native features
+3. **[AI-Aware Examples](ai-aware/)** - Experimental AI-aware features
 4. **[Real-World Examples](real-world/)** - Production-ready use cases
 5. **[Integration Examples](integration/)** - Advanced integration patterns
 
@@ -34,7 +34,7 @@ AppConfig {
 }
 ```
 
-### **🤖 AI-Aware Configuration** *(Revolutionary)*
+### **🤖 AI-Aware Configuration** *(Experimental)*
 ```cfgpp
 @config-hash: "sha256:7f4e1a2b8c9d3e6f..."
 @ai-validated-by: "deployment-ai"
@@ -67,7 +67,7 @@ Master the sophisticated type system:
 - **Type validation**: ensuring configuration correctness
 - **Nested hierarchies**: deep configuration structures
 
-### **🤖 AI-Aware Examples** *(Our Revolutionary Edge)*
+### **🤖 AI-Aware Examples** *(Experimental Features)*
 Explore the future of configuration management:
 - **Hash validation**: integrity checking with `@config-hash`
 - **Compression**: efficient storage with `@compression-config`
