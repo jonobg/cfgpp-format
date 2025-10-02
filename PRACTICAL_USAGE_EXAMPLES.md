@@ -69,19 +69,19 @@ class ConfigTemplateGenerator:
         
         template = f'''
         // Generated configuration for {service_name}
-        ServiceConfig::standard(
-            string name = "{service_name}",
-            int port = {port},
+        ServiceConfig {{
+            string name = "{service_name}"
+            int port = {port}
             bool debug = false
-        )
+        }}
         
         // Database configuration
-        DatabaseConfig::{database_type}(
-            string host = "${{DATABASE_HOST:-localhost}}",
-            int port = ${{DATABASE_PORT:-5432}},
-            string database = "{service_name}_db",
+        DatabaseConfig {{
+            string host = "localhost"
+            int port = 5432
+            string database = "{service_name}_db"
             bool ssl_enabled = true
-        )
+        }}
         
         // Observability
         LoggingConfig {{
@@ -368,128 +368,103 @@ with open("new_config.cfgpp", "w") as f:
 print("✅ Configuration upgraded to v2")
 ```
 
-### 5. AI-Powered Configuration Assistant
+### 5. Configuration Analysis Tool
 
 ```python
 from cfgpp import parse_string, parse_file
-from cfgpp.ai import FeatureFlags, loads_with_extensions, explain_config, query_config
+from cfgpp.core.parser import ConfigParseError
 
-class ConfigurationAssistant:
-    """AI-powered configuration analysis and assistance."""
-    
-    def __init__(self):
-        # Enable AI features
-        FeatureFlags.HIERARCHICAL_PARSING = True
-        FeatureFlags.AI_REASONING_MODES = True
+class ConfigurationAnalyzer:
+    """Configuration analysis and validation tool."""
     
     def analyze_configuration(self, config_file: str):
-        """Provide AI-powered analysis of configuration."""
-        print(f"🤖 Analyzing {config_file} with AI assistance...")
+        """Analyze configuration for common patterns and issues."""
+        print(f"🔍 Analyzing {config_file}...")
         
-        # Load with AI extensions
-        config = loads_with_extensions(open(config_file).read())
-        
-        # Generate explanation
-        explanation = explain_config(config)
-        print(f"\\n📋 Configuration Summary:")
-        print(explanation)
-        
-        # Query specific aspects
-        queries = [
-            "What databases are configured?",
-            "What are the security settings?",
-            "What ports are being used?",
-            "Are there any potential issues?"
-        ]
-        
-        print(f"\\n❓ AI Queries:")
-        for question in queries:
-            answer = query_config(config, question)
-            if answer:
-                print(f"Q: {question}")
-                print(f"A: {answer}\\n")
+        try:
+            config = parse_file(config_file)
+            
+            # Basic structure analysis
+            self._analyze_structure(config)
+            
+            # Security analysis
+            self._analyze_security(config)
+            
+            # Performance suggestions
+            self._analyze_performance(config)
+            
+        except ConfigParseError as e:
+            print(f"❌ Parse error: {e}")
+        except Exception as e:
+            print(f"❌ Analysis error: {e}")
     
-    def suggest_improvements(self, config_text: str):
-        """Suggest configuration improvements."""
-        config = loads_with_extensions(config_text)
+    def _analyze_structure(self, config):
+        """Analyze configuration structure."""
+        if 'body' not in config:
+            return
         
+        object_count = len(config['body'])
+        print(f"📊 Structure: {object_count} top-level objects")
+        
+        for obj_name, obj_data in config['body'].items():
+            if 'body' in obj_data:
+                prop_count = len(obj_data['body'])
+                print(f"  - {obj_name}: {prop_count} properties")
+    
+    def _analyze_security(self, config):
+        """Check for potential security issues."""
+        security_issues = []
+        
+        def check_values(data, path=""):
+            if isinstance(data, dict):
+                if 'body' in data:
+                    for key, value in data['body'].items():
+                        check_values(value, f"{path}.{key}")
+                elif 'value' in data and 'value' in data['value']:
+                    value = data['value']['value']
+                    if isinstance(value, str):
+                        if any(word in value.lower() for word in ['password', 'secret', 'key', 'token']):
+                            if not value.startswith('${'):  # Not an env var
+                                security_issues.append(f"Hardcoded secret at {path}: {value[:10]}...")
+        
+        check_values(config)
+        
+        if security_issues:
+            print("⚠️  Security Issues:")
+            for issue in security_issues:
+                print(f"  - {issue}")
+        else:
+            print("✅ No obvious security issues found")
+    
+    def _analyze_performance(self, config):
+        """Suggest performance improvements."""
         suggestions = []
         
-        # Check for common issues
-        if '_hierarchical_view' in config:
-            tree = config['_hierarchical_view']
-            
-            # Check for hardcoded values that should be environment variables
-            for node in tree.get_all_nodes():
-                if node.node_type == "property" and isinstance(node.value, str):
-                    if "localhost" in node.value:
-                        suggestions.append(
-                            f"Consider using environment variable for {node.full_path}: {node.value}"
-                        )
-                    elif node.value.startswith("password") or "secret" in node.value.lower():
-                        suggestions.append(
-                            f"⚠️  Security: Consider externalizing secret at {node.full_path}"
-                        )
-            
-            # Check for missing required configurations
-            config_types = [node.name for node in tree.children.values()]
-            if "LoggingConfig" not in config_types:
-                suggestions.append("💡 Consider adding LoggingConfig for better observability")
-            if "MetricsConfig" not in config_types:
-                suggestions.append("💡 Consider adding MetricsConfig for monitoring")
+        def check_config_objects(data, path=""):
+            if isinstance(data, dict) and 'body' in data:
+                for obj_name, obj_data in data['body'].items():
+                    current_path = f"{path}.{obj_name}" if path else obj_name
+                    
+                    # Check for missing logging config
+                    if obj_name.endswith('Config') and 'LoggingConfig' not in data['body']:
+                        suggestions.append("Consider adding LoggingConfig for better observability")
+                    
+                    # Check for missing metrics config  
+                    if obj_name.endswith('Config') and 'MetricsConfig' not in data['body']:
+                        suggestions.append("Consider adding MetricsConfig for monitoring")
+                    
+                    check_config_objects(obj_data, current_path)
         
-        return suggestions
-    
-    def interactive_query(self, config_file: str):
-        """Interactive Q&A about configuration."""
-        config = loads_with_extensions(open(config_file).read())
+        check_config_objects(config)
         
-        print(f"🤖 Configuration Assistant loaded {config_file}")
-        print("Ask me anything about this configuration (type 'quit' to exit):\\n")
-        
-        while True:
-            question = input("❓ Your question: ").strip()
-            
-            if question.lower() in ['quit', 'exit', 'q']:
-                break
-            
-            if not question:
-                continue
-                
-            try:
-                answer = query_config(config, question)
-                if answer:
-                    print(f"🤖 {answer}\\n")
-                else:
-                    print("🤖 I couldn't find information about that. Try asking differently.\\n")
-            except Exception as e:
-                print(f"❌ Error processing question: {e}\\n")
-        
-        print("👋 Thanks for using the Configuration Assistant!")
+        if suggestions:
+            print("💡 Performance Suggestions:")
+            for suggestion in suggestions:
+                print(f"  - {suggestion}")
 
 # Usage
-assistant = ConfigurationAssistant()
-
-# Analyze configuration with AI
-assistant.analyze_configuration("production.cfgpp")
-
-# Get improvement suggestions
-config_text = '''
-AppConfig {
-    name = "MyApp",
-    database_host = "localhost",
-    admin_password = "secret123",
-    port = 8080
-}
-'''
-
-suggestions = assistant.suggest_improvements(config_text)
-print("💡 Suggestions:")
-for suggestion in suggestions:
-    print(f"  - {suggestion}")
-
-# Interactive mode (uncomment to try)
-# assistant.interactive_query("complex_config.cfgpp")
+analyzer = ConfigurationAnalyzer()
+analyzer.analyze_configuration("production.cfgpp")
 ```
 
 ## 🔧 **Development Workflow Integration**

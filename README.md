@@ -39,8 +39,8 @@ Yet another configuration format. We ran into some annoying problems with existi
 
 - **Readable syntax**: Configuration files that don't make you cry
 - **Schema validation**: Catches mistakes before they cause problems  
-- **Environment variables**: `${VAR:-default}` syntax that works
-- **Include files**: Split large configs into manageable pieces with `@include`
+- **Type annotations**: `string name = "value"` syntax for type safety
+- **Namespaced identifiers**: `Database::PostgreSQL` for organization
 - **Type checking**: Enums and types to prevent common errors
 - **Comments**: You can actually document your configuration
 - **Decent performance**: Fast enough for most use cases
@@ -79,42 +79,45 @@ We're experimenting with making configuration files more useful for AI systems. 
 
 ```cfgpp
 database {
-    host = ${DATABASE_HOST:-"localhost"};
-    port = 5432;
-    ssl = true;
+    host = "localhost"
+    port = 5432
+    ssl = true
     
     connection_pool {
-        min_connections = 5;
-        max_connections = 20;
+        min_connections = 5
+        max_connections = 20
     }
 }
 
-servers = ["web1", "web2", "web3"];
-log_level = DEBUG;
+servers = ["web1", "web2", "web3"]
+log_level = "DEBUG"
 ```
 
-### **Future AI-Aware Example**
+### **Type System Example**
 ```cfgpp
-@config-hash: "sha256:7f4e1a2b8c9d3e6f..."
-@ai-validated-by: "deployment-ai"
-@compression-config { algorithm = "lz4", target = "ai-communication" }
+// Define reusable types with parameters
+DatabaseConfig(
+    string host = "localhost",
+    int port = 5432
+) {
+    connection_pool = ConnectionPool {
+        min_connections = 5,
+        max_connections = 50
+    }
+}
 
-EnterpriseConfig::production(
-    DatabaseConfig database = DatabaseConfig(
-        string host = "${DB_HOST:-localhost}",
-        ConnectionPool pool = ConnectionPool(
-            int min-connections = 5,
-            int max-connections = 50
-        )
+// Reuse types with custom parameters
+EnterpriseConfig {
+    primary_db = DatabaseConfig(
+        host = "localhost",
+        port = 5432
     ),
     
-    SecurityConfig security = SecurityConfig(
-        JWT jwt = JWT(
-            string secret = "${JWT_SECRET}",
-            int expiry-minutes = 15
-        )
+    cache_db = DatabaseConfig(
+        host = "cache.example.com",
+        port = 6379
     )
-)
+}
 ```
 
 ## 📁 **What's In Here**
@@ -183,12 +186,12 @@ Available on VS Code Marketplace and Eclipse Open VSX Registry - search for "cfg
 ### **Essential Reading**
 - **[SYNTAX_REFERENCE.md](SYNTAX_REFERENCE.md)** - Authoritative syntax guide
 - **[QUICKSTART.md](QUICKSTART.md)** - Get running in 5 minutes
-- **[docs/roadmap-ai-aware-configuration.md](docs/roadmap-ai-aware-configuration.md)** - Complete future vision
+- **[specification/examples/](specification/examples/)** - Working examples
 
 ### **Technical Deep Dives**
-- **[docs/implementation-strategy-risk-minimized.md](docs/implementation-strategy-risk-minimized.md)** - Risk-free implementation approach
-- **[docs/hash-validation-design.md](docs/hash-validation-design.md)** - Security & integrity features
-- **[docs/practical-examples-hash-compression.md](docs/practical-examples-hash-compression.md)** - Real-world examples
+- **[docs/api-reference.md](docs/api-reference.md)** - Complete API documentation
+- **[docs/getting-started.md](docs/getting-started.md)** - Implementation guide
+- **[docs/language-specification.md](docs/language-specification.md)** - Language specification
 
 ### **API References**
 - **[docs/api-reference.md](docs/api-reference.md)** - Language-specific APIs
@@ -241,7 +244,7 @@ npm test
 ## 🤝 **Contributing**
 
 ### **How to Contribute**
-1. **🎯 Choose your focus area**: Current features or AI-aware roadmap
+1. **🎯 Choose your focus area**: Core features, documentation, or examples
 2. **📋 Follow coding standards**: See implementation-specific guidelines
 3. **✅ Add comprehensive tests**: All new features require tests
 4. **📚 Update documentation**: Keep examples and specs current
@@ -282,9 +285,9 @@ This project represents a collaborative vision between **ChatGPT strategic desig
 
 - **📦 VS Code Extension**: [Eclipse Open VSX Registry](https://open-vsx.org/) 
 - **🤝 Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md)
-- **📋 Project Roadmap**: [docs/roadmap-ai-aware-configuration.md](docs/roadmap-ai-aware-configuration.md)
+- **📋 Examples**: [specification/examples/](specification/examples/) - Working examples
 - **🔍 Issue Tracker**: GitHub Issues for bug reports and feature requests
 
 ---
 
-*Ready to revolutionize configuration management? Join us in building the first AI-native configuration system!* 🚀
+*Another configuration format? Maybe it'll be useful for your project. Give it a try and let us know what you think.* 🌲

@@ -9,9 +9,9 @@
 - **Syntax Verification**: All syntax patterns tested against actual parser implementation
 
 ### Added
-- Environment variable syntax: `${VAR:-"default"}` confirmed working
-- Include directive syntax: `@include "file.cfgpp"` confirmed working  
 - Constructor syntax: `ObjectName(type param = default) { body }` confirmed working
+- Namespaced identifiers: `Database::PostgreSQL` confirmed working
+- Type annotations: `string name = "value"` confirmed working
 - Professional documentation standards and verification methodology
 
 ### Changed

@@ -127,28 +127,26 @@ Config {
 
 ---
 
-### **7. Environment Variables**
+### **7. Type Annotations**
 
 **✅ CONFIRMED WORKING:**
 ```cfgpp
 Config {
-    // Pattern 1: Variable with default (WORKING)
-    database_url = ${DATABASE_URL:-"localhost:5432"}
+    string name = "MyApp"
+    int port = 8080
+    bool debug = true
     
-    // Pattern 2: Variable without default (WORKING - becomes literal string)
-    api_key = "${API_KEY}"
-    
-    // Pattern 3: Default with spaces (WORKING)
-    service_name = ${SERVICE_NAME:-"default service name"}
+    // Type annotations help with validation
+    string database_url = "localhost:5432"
+    string api_key = "your-api-key-here"
 }
 ```
 
 **Key Rules:**
-- `${VAR:-"default"}` - Variable substitution with default value
-- `"${VAR}"` - Treated as literal string (no substitution)
-- Defaults can contain spaces when quoted
-- If environment variable exists, it replaces the entire expression
-- If variable doesn't exist, default value is used
+- Type annotations: `string`, `int`, `bool`
+- Help with schema validation and IDE support
+- Optional but recommended for clarity
+- Types must match the assigned values
 
 ---
 
@@ -224,7 +222,7 @@ Based on **direct testing against the parser**, the following syntax is **verifi
 ✅ **Enum definitions** with values and defaults  
 ✅ **Namespaced identifiers** with multiple levels  
 ✅ **Comments** (single-line and multi-line)  
-✅ **Environment variables** with `${VAR:-default}` syntax  
+✅ **Type annotations** with `string`, `int`, `bool`  
 ✅ **Include directives** with `@include "file.cfgpp"`  
 ✅ **Constructor syntax** with typed parameters  
 

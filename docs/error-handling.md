@@ -158,7 +158,7 @@ Config {
     // or
     port = "8080"         // String
     // or
-    port = ${PORT}        // Environment variable (future feature)
+    port = 8080           // Static value
 }
 ```
 

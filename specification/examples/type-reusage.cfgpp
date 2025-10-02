@@ -1,0 +1,24 @@
+// Demonstrates type definitions and reusage
+ServerConfig(
+    string host = "localhost",
+    int port = 8080,
+    bool ssl_enabled = false
+) {
+    max_connections = 100,
+    timeout_seconds = 30
+}
+
+// Reuse the type with different parameters
+AppConfig {
+    web_server = ServerConfig(
+        host = "web.example.com",
+        port = 443,
+        ssl_enabled = true
+    ),
+    
+    api_server = ServerConfig(
+        host = "api.example.com",
+        port = 8080,
+        ssl_enabled = false
+    )
+}

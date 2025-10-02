@@ -18,7 +18,7 @@ Supports the CFG++ syntax including:
 - ✅ **Nested objects**: Deep nesting with clean syntax
 - ✅ **Arrays**: `[1, 2, 3, "mixed", true]`
 - ✅ **Enums**: `enum::Status { values = ["active", "inactive"] }`
-- ✅ **Environment variables**: `${VAR:-"default"}`
+- ✅ **Type safety**: Strong typing with validation
 - ✅ **Include directives**: `@include "other.cfgpp"`
 - ✅ **Constructor syntax**: `Config(string name = "app") { ... }`
 - ✅ **Namespaced identifiers**: `Database::PostgreSQL`
@@ -43,7 +43,7 @@ AppConfig {
     }
     
     database = Database::PostgreSQL {
-        host = ${DB_HOST:-"localhost"}
+        host = "localhost"
         port = 5432
     }
 }

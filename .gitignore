@@ -63,6 +63,7 @@ htmlcov/
 # Project specific
 .cache/
 .mypy_cache/
+cfgpp_format/
 
 # MCP and AI tooling
 .mcp/

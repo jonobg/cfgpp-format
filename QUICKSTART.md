@@ -51,4 +51,4 @@ pytest -q tests
 ```
 
 ## Notes
-- Features supported: env vars `${VAR:-default}`, includes, expressions, comments, compact syntax.
+- Features supported: typed objects, namespaced identifiers, arrays, comments, compact syntax.

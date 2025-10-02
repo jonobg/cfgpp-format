@@ -1714,8 +1714,9 @@ class Parser:
             # Argument iteration supports parameter parsing, value collection, and iteration coordination while enabling
             # comprehensive iteration strategies and systematic argument workflows.
             while self._current_token() and self._current_token()["value"] != ")":
-                arg_value = self._parse_value()  # Parse each argument
-                args.append(arg_value)
+                # Parse named parameter (key = value)
+                key, value = self._parse_key_value_pair()
+                args.append({"key": key, "value": value})
 
                 # REASONING: Comma handling enables argument separation and parameter list processing for separation workflows.
                 # Separation workflows require comma handling for argument separation and parameter list processing in separation workflows.
@@ -1723,6 +1724,9 @@ class Parser:
                 # comprehensive handling strategies and systematic separation workflows.
                 if self._current_token() and self._current_token()["value"] == ",":
                     self._consume("PUNCTUATION", ",")  # Optional comma separator
+                else:
+                    # No comma found, we're done with arguments
+                    break
 
             self._consume("PUNCTUATION", ")")  # Close parameter list
 

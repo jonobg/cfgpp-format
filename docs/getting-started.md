@@ -170,11 +170,14 @@ MainConfig {
 
 ## Common Patterns
 
-### Environment Variables
+### Environment-Specific Configuration
 ```cfgpp
 Config {
-    database_url = "${DATABASE_URL}"
-    api_key = "${API_KEY}"
+    database_url = "postgresql://localhost:5432/myapp"
+    api_key = "your-api-key-here"
+    
+    // Environment-specific overrides can be handled
+    // by your application configuration loader
 }
 ```
 

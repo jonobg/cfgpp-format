@@ -1,0 +1,7 @@
+// Environment variable substitution
+Config {
+    database_host = ${DATABASE_HOST:-"localhost"},
+    database_port = ${DATABASE_PORT:-"5432"},
+    api_key = "${API_KEY}",
+    debug_mode = ${DEBUG:-"false"}
+}

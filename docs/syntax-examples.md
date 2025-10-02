@@ -71,7 +71,7 @@ FullStackApp {
             hot_reload = false
             source_maps = false
             analytics = true
-            sentry_dsn = "${SENTRY_DSN}"
+            sentry_dsn = "https://your-sentry-dsn@sentry.io/project"
         }
     }
     
@@ -106,7 +106,7 @@ FullStackApp {
             name = "auth-service"
             port = 3001
             database = "auth_db"
-            jwt_secret = "${JWT_SECRET}"
+            jwt_secret = "your-jwt-secret-key"
         },
         Service::Users {
             name = "user-service"
@@ -135,7 +135,7 @@ DatabaseCluster {
         port = 5432
         database = "myapp_prod"
         username = "app_user"
-        password = "${DB_PASSWORD}"
+        password = "secure-database-password"
         
         connection_pool = Pool::Config {
             min_connections = 5
@@ -417,7 +417,7 @@ KubernetesDeployment {
 // Feature flags management
 FeatureFlags {
     provider = FeatureProvider::LaunchDarkly {
-        sdk_key = "${LAUNCHDARKLY_SDK_KEY}"
+        sdk_key = "your-launchdarkly-sdk-key"
         base_uri = "https://app.launchdarkly.com"
         
         default_config = DefaultConfig {
@@ -591,7 +591,7 @@ LoggingConfig {
                 
                 auth = ES::Auth {
                     username = "logstash"
-                    password = "${ES_PASSWORD}"
+                    password = "elasticsearch-password"
                 }
                 
                 ssl = ES::SSL {
@@ -783,7 +783,7 @@ SecurityConfig {
             
             key_management = KeyMgmt::Vault {
                 address = "https://vault.example.com"
-                token = "${VAULT_TOKEN}"
+                token = "vault-access-token"
                 mount_path = "secret/app"
                 key_rotation = 2592000  // 30 days
             }

@@ -41,41 +41,30 @@ except FileNotFoundError:
     print("❌ Configuration file not found")
 ```
 
-### AI-Aware Features (Optional)
+### Advanced Features (Optional)
 
 ```python
-from cfgpp.ai import FeatureFlags, loads_with_extensions, explain_config
+from cfgpp.core.formatter import format_string, FormatterConfig
+from cfgpp.schema import load_schema, validate_config
 
-# Enable AI features (disabled by default)
-FeatureFlags.HIERARCHICAL_PARSING = True
-FeatureFlags.AI_REASONING_MODES = True
-
-# Enhanced parsing with AI capabilities
+# Format configuration with custom settings
 config_text = '''
 ComplexConfig {
-    database = DatabaseConfig::primary(
-        string host = "prod-db.company.com",
+    database = DatabaseConfig {
+        string host = "prod-db.company.com"
         int port = 5432
-    ),
-    cache = RedisConfig::cluster(
-        string[] hosts = ["redis1", "redis2", "redis3"],
+    }
+    cache = RedisConfig {
+        hosts = ["redis1", "redis2", "redis3"]
         int timeout = 5000
-    )
+    }
 }
 '''
 
-# Get AI-enhanced parsing result
-result = loads_with_extensions(config_text)
-
-if '_hierarchical_view' in result:
-    print("✅ Hierarchical view available!")
-    tree = result['_hierarchical_view']
-    print(f"Root has {len(tree.children)} children")
-
-# Get AI explanation of configuration
-explanation = explain_config(result)
-print("🤖 AI Explanation:")
-print(explanation)
+# Format the configuration
+formatted = format_string(config_text, formatter_config)
+print("✅ Formatted configuration:")
+print(formatted)
 ```
 
 ### Schema Validation
@@ -204,25 +193,18 @@ from cfgpp.tools.cli.format_commands import add_formatter_commands
 from cfgpp.tools.cli.schema_commands import add_schema_commands
 ```
 
-### AI System Usage
+### Configuration Utilities
 ```python
-# Feature flags control
-from cfgpp.ai.feature_flags import FeatureFlags
+# Feature flags for optional functionality
+from cfgpp.core.feature_flags import FeatureFlags
 
-# Compression for AI communication
-from cfgpp.ai.compression import CFGPPCompressor
+# Configuration formatting
+from cfgpp.core.formatter import format_string
 
-compressor = CFGPPCompressor()
-if FeatureFlags.is_enabled("COMPRESSION"):
-    compressed = compressor.compress(config_text, target="ai-communication")
-
-# Hash validation for security
-from cfgpp.ai.hash_validator import BasicHashValidator
-
-validator = BasicHashValidator()
-if FeatureFlags.is_enabled("HASH_VALIDATION"):
-    hash_value = validator.calculate_hash(config_text)
-    is_valid = validator.validate_hash(config_text, hash_value)
+# Format configuration for better readability
+formatted_config = format_string(config_text)
+print("Formatted configuration:")
+print(formatted_config)
 ```
 
 ## 🚀 **Advanced Use Cases**
@@ -230,23 +212,21 @@ if FeatureFlags.is_enabled("HASH_VALIDATION"):
 ### Microservice Configuration
 ```python
 from cfgpp import parse_file
-from cfgpp.ai import loads_with_extensions, explain_config
 
 # Load microservice configuration
 config = parse_file("microservice.cfgpp")
 
 # Extract service information
-service_body = config['body']['ServiceConfig']['body']
-service_name = service_body['name']['value']['value']
-port = service_body['port']['value']['value']
+service_name = config["body"]["ServiceConfig"]["body"]["name"]["value"]["value"]
+port = config["body"]["ServiceConfig"]["body"]["port"]["value"]["value"]
 
 print(f"Service: {service_name} on port {port}")
 
-# Use AI features for documentation
-if FeatureFlags.AI_REASONING_MODES:
-    explanation = explain_config(config)
-    print("Service Documentation:")
-    print(explanation)
+# Validate configuration structure
+if "ServiceConfig" in config["body"]:
+    print("✅ Valid microservice configuration")
+else:
+    print("❌ Missing ServiceConfig section")
 ```
 
 ### Configuration Merging

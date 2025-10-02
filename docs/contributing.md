@@ -300,7 +300,7 @@ Use descriptive commit messages:
 ```
 Add support for environment variable interpolation
 
-- Implement ${VAR} syntax in string values
+- Implement external environment variable loading
 - Add environment variable resolution
 - Include tests for various interpolation scenarios
 - Update documentation with examples
@@ -326,7 +326,7 @@ Priority features under consideration:
 
 1. **Comments support**: Single-line and multi-line comments
 2. **Include/import system**: File inclusion and modular configs
-3. **Environment variable interpolation**: `${VAR}` syntax
+3. **Environment variable interpolation**: External configuration loading
 4. **Expression evaluation**: Basic arithmetic and string operations
 5. **Schema validation**: Built-in validation support
 6. **CLI tools**: Command-line utilities for formatting and validation
@@ -354,21 +354,23 @@ Create a feature request issue with:
 ## Feature: Environment Variable Interpolation
 
 ### Description
-Add support for environment variable interpolation in string values using ${VAR} syntax.
+Add support for environment variable interpolation through external configuration loading.
 
 ### Use Cases
 - Database URLs with credentials from environment
 - API keys and secrets management
 - Environment-specific configuration values
 
-### Proposed Syntax
+### Proposed Approach
 ```cfgpp
 Config {
-    database_url = "${DATABASE_URL}"
-    api_key = "${API_KEY}"
-    debug = "${DEBUG:-false}"  // With default value
+    database_url = "postgresql://localhost:5432/myapp"
+    api_key = "your-api-key-here"
+    debug = false
 }
 ```
+
+Environment-specific values would be loaded by the application configuration system.
 
 ### Implementation Considerations
 - Variable resolution at parse time vs runtime
