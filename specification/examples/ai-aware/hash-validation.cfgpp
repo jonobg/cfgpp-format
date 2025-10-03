@@ -1,0 +1,35 @@
+// Hash Validation Example
+// Demonstrates configuration integrity checking with hash validation
+
+// Configuration metadata for AI validation
+ConfigMetadata {
+    hash = "sha256:7f4e1a2b8c9d3e6f5a4b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9"
+    hash_algorithm = "sha256"
+    generated_at = "2025-10-03T07:45:00Z"
+    ai_validated_by = "deployment-ai"
+    deployment_safe = true
+}
+
+// Basic configuration with hash protection
+DatabaseConfig {
+    host = "localhost"
+    port = 5432
+    ssl = true
+    
+    connection_pool {
+        min_connections = 5
+        max_connections = 20
+    }
+}
+
+// Section-specific hashing for granular validation
+SectionHashes {
+    database_config = "sha256:1a2b3c4d5e6f..."
+    security_config = "sha256:9f8e7d6c5b4a..."
+}
+
+SecurityConfig {
+    encryption = "AES-256"
+    key_rotation_days = 30
+    audit_logging = true
+}

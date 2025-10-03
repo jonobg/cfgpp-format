@@ -1,0 +1,44 @@
+// Compression Configuration Example
+// Demonstrates AI-optimized compression for efficient configuration transfer
+
+// Compression settings for AI communication
+CompressionConfig {
+    algorithm = "lz4"           // lz4, gzip, brotli, zstd
+    level = 1                   // Fast compression for real-time AI
+    dictionary = "cfgpp-dict-v1" // Custom dictionary for better ratios
+    target = "ai-communication"  // ai-communication, storage, network, iot
+    preserve_structure = true    // Keep hierarchy for AI parsing
+}
+
+// Transfer optimization settings
+TransferOptimization {
+    latency_priority = "low"     // low, medium, high
+    bandwidth_savings = 85       // Target compression ratio %
+}
+
+// Large configuration that benefits from compression
+MicroserviceConfig {
+    api_gateway {
+        host = "api.example.com"
+        port = 443
+        ssl = true
+        rate_limiting {
+            requests_per_minute = 1000
+            burst_limit = 100
+        }
+    }
+    
+    services = [
+        "user-service",
+        "auth-service", 
+        "payment-service",
+        "notification-service",
+        "analytics-service"
+    ]
+    
+    database_cluster {
+        primary = "db1.example.com"
+        replicas = ["db2.example.com", "db3.example.com"]
+        sharding_strategy = "hash"
+    }
+}

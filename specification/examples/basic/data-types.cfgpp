@@ -1,0 +1,41 @@
+// Data Types Example
+// Demonstrates all supported CFGPP data types
+
+BasicTypes {
+    // String values
+    name = "CFGPP Configuration"
+    description = "Another config format? Probably useful for large files."
+    
+    // Numeric values
+    port = 8080
+    timeout = 30.5
+    max_connections = 1000
+    
+    // Boolean values
+    debug = true
+    ssl_enabled = false
+    auto_restart = true
+    
+    // Array values
+    servers = ["web1", "web2", "web3"]
+    ports = [8080, 8081, 8082]
+    features = [true, false, true]
+    
+    // Mixed array
+    mixed_data = ["string", 42, true, 3.14]
+}
+
+// Nested object example
+DatabaseConfig {
+    connection {
+        host = "localhost"
+        port = 5432
+        database = "myapp"
+    }
+    
+    pool_settings {
+        min_size = 5
+        max_size = 20
+        timeout = 30.0
+    }
+}

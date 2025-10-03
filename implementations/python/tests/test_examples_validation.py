@@ -137,16 +137,16 @@ class TestExamplesValidation:
             with open(ai_file, 'r', encoding='utf-8') as f:
                 content = f.read()
             
-            # Check for AI-aware features in content (as comments/metadata)
+            # Check for AI-aware features in content (using valid CFGPP syntax)
             ai_features_found = []
             
-            if "@config-hash" in content:
+            if "hash" in content and ("ConfigMetadata" in content or "SectionHashes" in content):
                 ai_features_found.append("hash-validation")
-            if "@compression-config" in content:
+            if "CompressionConfig" in content or "compression" in content:
                 ai_features_found.append("compression")
-            if "@ai-validated-by" in content:
+            if "ai_validated_by" in content or "deployment_safe" in content:
                 ai_features_found.append("ai-signatures")
-            if "@mqtt-config" in content:
+            if "mqtt" in content.lower() or "iot" in content.lower():
                 ai_features_found.append("iot-integration")
             
             # AI-aware examples should demonstrate AI features

@@ -1,0 +1,52 @@
+// Comments Example
+// Demonstrates comment syntax and documentation patterns
+
+/*
+ * Multi-line comment block
+ * Useful for detailed explanations
+ * and configuration documentation
+ */
+
+AppConfig {
+    // Single-line comment for a property
+    name = "MyApplication"
+    
+    /* Inline comment */ version = "1.0.0"
+    
+    // Alternative comment style
+    debug = true
+    
+    server {
+        // Server configuration
+        host = "0.0.0.0"  // Bind to all interfaces
+        port = 8080       // HTTP port
+        
+        /*
+         * SSL Configuration
+         * Enable for production environments
+         */
+        ssl {
+            enabled = false  // Disabled for development
+            cert_file = "/path/to/cert.pem"
+            key_file = "/path/to/key.pem"
+        }
+    }
+    
+    // Feature flags with explanatory comments
+    features {
+        // Enable new user interface (experimental)
+        new_ui = false
+        
+        // Advanced analytics tracking
+        analytics = true
+        
+        // Beta features for testing
+        beta_features = [
+            "feature_a",  // New dashboard
+            "feature_b",  // Enhanced search
+            "feature_c"   // Real-time updates
+        ]
+    }
+}
+
+// End-of-file comment

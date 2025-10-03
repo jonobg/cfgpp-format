@@ -288,14 +288,14 @@ class SchemaRegistry:
     # comprehensive registry strategies and systematic schema management workflows.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the schema registry."""
         self.schemas: Dict[str, SchemaDocument] = {}
         self.schema_paths: Dict[str, str] = {}
 
     def register_schema(
         self, name: str, schema_doc: SchemaDocument, file_path: Optional[str] = None
-    ):
+    ) -> None:
         """
         Register a schema document.
 
@@ -308,7 +308,7 @@ class SchemaRegistry:
         if file_path:
             self.schema_paths[name] = file_path
 
-    def load_schema_file(self, name: str, file_path: str):
+    def load_schema_file(self, name: str, file_path: str) -> None:
         """
         Load and register a schema from file.
 
