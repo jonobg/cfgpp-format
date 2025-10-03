@@ -1,6 +1,33 @@
 # CFG++ Language Support for VS Code
 
-Language support for CFG++ configuration files. Provides syntax highlighting, validation, auto-completion, and error checking.
+Language support for CFG++ configuration files. Another VS Code extension? Probably useful if you're working with CFG++ files and want syntax highlighting, validation, and auto-completion.
+
+## When This Extension Might Be Useful
+
+- **Large configuration files** where JSON becomes unwieldy
+- **Type safety** to prevent configuration errors  
+- **Schema validation** for complex configurations
+- **Teams using CFG++** for microservice deployments
+
+## When You Probably Don't Need This
+
+- **Simple JSON/YAML configs** work fine for your use case
+- **Your team** isn't using CFG++ format
+- **You prefer** existing configuration formats
+
+## Why CFG++ Was Created
+
+CFGPP's initial goal was to create a configuration format with **more features than JSON** but **without YAML's indentation dependency**. This makes CFG++ particularly useful in **field environments** - at industrial plants, remote sites, or anywhere you might need to edit configs **without IDE assistance**.
+
+### Practical Field Advantages
+
+- **No indentation sensitivity** - Works fine in basic text editors
+- **Explicit braces** - Clear structure without whitespace dependency  
+- **Type safety** - Prevents configuration errors in production environments
+- **Comments supported** - Document complex industrial configurations
+- **Schema validation** - Catch errors before deployment to remote systems
+
+**Perfect for**: Industrial automation, IoT deployments, field engineering, remote system configuration where you can't rely on fancy IDE features.
 
 ## What It Does
 

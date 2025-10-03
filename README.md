@@ -12,7 +12,9 @@ Yet another configuration format. We ran into some annoying problems with existi
 ## 📊 **Current Status: Working**
 
 ✅ **Python Implementation** (245K+ lines - seems to work)  
-✅ **VS Code Extension** published on Eclipse Open VSX Registry and VS Code Marketplace  
+✅ **VS Code Extension** published on both marketplaces:
+   - [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cfgpp-format.cfgpp-language-support)
+   - [Open VSX Registry](https://open-vsx.org/extension/cfgpp/cfgpp-language-support)  
 ✅ **90/90 Tests Passing** - all functionality tested  
 ✅ **CI Pipeline Green** - builds and tests pass  
 ✅ **Some Users** - small but growing  

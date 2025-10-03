@@ -18,6 +18,11 @@
 - **Example files** may not parse consistently
 - **Feature documentation** doesn't match reality
 
+### **4. VS Code Extension VSIX Naming Issue**
+- **Marketplace confusion** - Different publisher names cause URL conflicts
+- **User discovery problems** - Extension hard to find due to naming inconsistency
+- **Installation issues** - Users can't locate correct extension version
+
 ---
 
 ## 📋 **5-PHASE SYSTEMATIC RESOLUTION PLAN**
@@ -56,11 +61,30 @@ if token and token.get("type") == "IDENTIFIER":
     # Add null checks before accessing
 ```
 
-#### **1.3 Success Criteria**
+#### **1.3 VS Code Extension VSIX Naming Fix**
+```bash
+# Fix marketplace naming confusion
+cd vscode-extension
+
+# Create separate package.json for each marketplace
+# VS Code Marketplace: publisher "cfgpp-format"
+# Open VSX Registry: publisher "cfgpp"
+
+# Build clean VSIX files for both marketplaces
+powershell -ExecutionPolicy Bypass -File build-extensions.ps1
+
+# Publish to both marketplaces with correct naming
+vsce publish --packagePath cfgpp-language-support-vscode-1.2.1.vsix
+ovsx publish cfgpp-language-support-openvsx-1.2.1.vsix
+```
+
+#### **1.4 Success Criteria**
 - [ ] All critical mypy errors resolved
 - [ ] CI pipeline passes with stricter type checking
 - [ ] No runtime type-related failures
 - [ ] 90/90 tests still passing
+- [ ] VS Code extension published to both marketplaces with correct naming
+- [ ] Extension README includes CFGPP's practical field usage context
 
 ---
 
