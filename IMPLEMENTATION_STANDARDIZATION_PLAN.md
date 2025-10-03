@@ -22,6 +22,7 @@
 - **Marketplace confusion** - Different publisher names cause URL conflicts
 - **User discovery problems** - Extension hard to find due to naming inconsistency
 - **Installation issues** - Users can't locate correct extension version
+- **Long-term naming inconsistency** - Need to standardize `cfgpp` vs `cfgpp-format` across all platforms
 
 ---
 
@@ -267,7 +268,27 @@ def validate_syntax_consistency():
 ### **📚 PHASE 5: Documentation & Quality Assurance (Week 5-6)**
 **Priority: LOW - Polish and finalize**
 
-#### **5.1 Implementation Comparison Guide**
+#### **5.1 Publisher Naming Standardization (Long-term)**
+```bash
+# FUTURE GOAL: Standardize naming across all platforms
+# Current state: cfgpp-format (VS Code) vs cfgpp (Open VSX)
+# Target state: Single consistent naming scheme
+
+# Option 1: Migrate VS Code to "cfgpp" publisher
+# - Requires new publisher account setup
+# - Need to deprecate old cfgpp-format publisher
+# - Update all documentation and links
+
+# Option 2: Migrate Open VSX to "cfgpp-format" publisher  
+# - May require namespace changes on Open VSX
+# - Less disruptive to VS Code users (70% of user base)
+# - Consistent with GitHub repository naming
+
+# Recommended approach: Option 2 (cfgpp-format everywhere)
+# Timeline: After Phase 4 completion, when extensions are stable
+```
+
+#### **5.2 Implementation Comparison Guide**
 ```markdown
 # CFGPP Implementation Comparison
 
@@ -292,7 +313,7 @@ def validate_syntax_consistency():
 **Limitations**: Specialized use case
 ```
 
-#### **5.2 Feature Documentation Updates**
+#### **5.3 Feature Documentation Updates**
 ```bash
 # Update all documentation to reflect actual capabilities
 # Remove any references to unimplemented features
@@ -300,7 +321,7 @@ def validate_syntax_consistency():
 # Update examples to work with all implementations
 ```
 
-#### **5.3 CI Pipeline Standardization**
+#### **5.4 CI Pipeline Standardization**
 ```yaml
 # .github/workflows/multi-implementation-test.yml
 name: Multi-Implementation Testing
@@ -345,7 +366,7 @@ jobs:
         run: ./test_all_implementations.sh
 ```
 
-#### **5.4 Success Criteria**
+#### **5.5 Success Criteria**
 - [ ] All documentation reflects actual capabilities
 - [ ] Implementation comparison guide created
 - [ ] CI tests all implementations consistently
