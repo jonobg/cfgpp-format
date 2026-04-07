@@ -108,7 +108,7 @@ Parse the configuration.
 
 **Example:**
 ```python
-from cfgpp.parser import Parser
+from cfgpp.core.parser import Parser
 from cfgpp.lexer import lex
 
 tokens = lex("Config { name = 'test' }")
@@ -193,7 +193,7 @@ ConfigParseError(message: str, line: int = None, column: int = None, context: st
 **Example:**
 ```python
 from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp.core.parser import ConfigParseError
 
 try:
     result = loads("invalid {")
@@ -380,7 +380,7 @@ port = db_config['port']['value']['value']  # 5432
 
 ```python
 from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp.core.parser import ConfigParseError
 from cfgpp.lexer import LexerError
 
 def safe_parse(config_text):

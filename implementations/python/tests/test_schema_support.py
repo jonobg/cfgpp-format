@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
 """
-Comprehensive tests for cfgpp-format schema support.
+Tests for cfgpp-format schema support.
 
-Tests cover schema parsing, validation, integration, and error handling.
-
-# REASONING: Schema testing enables schema functionality validation and regression prevention for testing workflows.
-# Testing workflows require schema testing for schema functionality validation and regression prevention in testing workflows.
-# Schema testing supports schema functionality validation, regression prevention, and testing coordination while enabling
-# comprehensive testing strategies and systematic schema validation workflows.
+Covers schema parsing, validation, integration, and error handling.
 """
 
 import unittest

@@ -50,7 +50,7 @@ Parser errors occur when the tokens are valid but don't form a valid CFGPP struc
 **Example:**
 ```python
 from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp.core.parser import ConfigParseError
 
 try:
     loads("Config { name = }")
@@ -74,7 +74,7 @@ Both error types provide detailed information to help you locate and fix issues:
 
 ```python
 from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp.core.parser import ConfigParseError
 from cfgpp.lexer import LexerError
 
 def parse_with_error_handling(config_text, filename="<string>"):

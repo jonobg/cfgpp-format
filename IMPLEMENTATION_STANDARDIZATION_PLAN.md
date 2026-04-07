@@ -83,7 +83,7 @@ ovsx publish cfgpp-language-support-openvsx-1.2.1.vsix
 - [ ] All critical mypy errors resolved
 - [ ] CI pipeline passes with stricter type checking
 - [ ] No runtime type-related failures
-- [ ] 90/90 tests still passing
+- [ ] 98/98 tests still passing
 - [ ] VS Code extension published to both marketplaces with correct naming
 - [ ] Extension README includes CFGPP's practical field usage context
 

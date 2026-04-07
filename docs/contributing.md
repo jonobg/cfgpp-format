@@ -86,8 +86,8 @@ cfgpp-format/
 
 ### Key Components
 
-- **`src/cfgpp/lexer.py`**: Tokenizes CFGPP text into tokens
-- **`src/cfgpp/parser.py`**: Parses tokens into structured data
+- **`src/cfgpp/core/lexer.py`**: Tokenizes CFGPP text into tokens
+- **`src/cfgpp/core/parser.py`**: Parses tokens into structured data
 - **`src/cfgpp/__init__.py`**: Public API exports
 - **`tests/`**: Test suite with comprehensive coverage
 - **`docs/`**: Documentation in Markdown format
@@ -221,7 +221,7 @@ Follow these guidelines when writing tests:
 ```python
 import pytest
 from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp.core.parser import ConfigParseError
 
 
 def test_simple_config_parsing():

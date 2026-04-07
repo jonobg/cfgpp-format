@@ -1,10 +1,5 @@
 """
 Test cases for enum type support in cfgpp-format parser.
-
-# REASONING: Comprehensive enum testing enables validation of enum definition parsing and type usage for testing workflows.
-# Testing workflows require comprehensive enum testing for validation of enum definition parsing and type usage in testing workflows.
-# Comprehensive enum testing supports validation of enum definition parsing, type usage validation, and testing coordination while enabling
-# comprehensive testing strategies and systematic enum validation workflows.
 """
 
 import unittest
