@@ -77,13 +77,15 @@ class Parser:
 
         self.pos = 0
 
+        # Bare "key = value" at top level (no enclosing object) is a special case.
+        # Detect it by checking for IDENTIFIER followed by '=' before entering
+        # the normal object-parsing loop.
         if (
             self._current_token()
             and self._current_token()["type"] == "IDENTIFIER"
             and self._current_token(1)
             and self._current_token(1)["value"] == "="
         ):
-            # Parse as a simple key-value pair
             key, value = self._parse_key_value_pair()
             return {"body": {key: value}}
 
@@ -137,7 +139,13 @@ class Parser:
         return {"body": body}
 
     def _tokenize(self, text: str) -> List[Dict]:
-        """Convert the input text into a list of tokens."""
+        """Convert the input text into a list of tokens.
+
+        This is a simplified regex-based tokenizer used when Parser.parse()
+        is called with a text argument directly. The main entry points
+        (loads/parse_string) use the dedicated lexer module instead, which
+        handles additional token types like ENV_VAR, INCLUDE, and ENUM.
+        """
         token_spec = [
             ("COMMENT", r"//.*?$"),  # Single-line comments
             ("STRING", r'"(?:\\.|[^"\\])*"'),  # Quoted strings with escape support
@@ -228,7 +236,12 @@ class Parser:
         return loads(included_content, str(resolved_path.parent), new_included_files)
 
     def _is_expression_start(self) -> bool:
-        """Check if the current position starts an expression by looking ahead for operators."""
+        """Check if the current position starts an expression by looking ahead for operators.
+
+        Uses speculative lookahead: advances past the current value token to
+        see if an arithmetic operator follows. Always restores position via
+        the finally block regardless of the outcome.
+        """
         original_pos = self.pos
 
         try:
@@ -246,7 +259,6 @@ class Parser:
                 "IDENTIFIER",
             ]:
                 self.pos += 1
-                # Check for following operators
                 if (
                     self._current_token()
                     and self._current_token()["type"] == "OPERATOR"
@@ -349,6 +361,8 @@ class Parser:
             }
 
         elif token["type"] == "ENV_VAR":
+            # ENV_VAR tokens look like ${VAR_NAME} or ${VAR_NAME:-default}.
+            # The ":-" syntax provides a fallback when the variable is unset.
             env_token = self._consume("ENV_VAR")["value"]
             env_content = env_token[2:-1]  # Remove ${ and } delimiters
 
@@ -367,6 +381,8 @@ class Parser:
                     token,
                 )
 
+            # Auto-coerce the env var string to the most specific type possible:
+            # bool → int → float → string (fallback).
             if env_value.lower() in ("true", "false"):
                 return {
                     "type": "boolean",
@@ -386,7 +402,7 @@ class Parser:
                     "env_var": var_name,
                 }
             except ValueError:
-                pass  # Continue to float or string handling
+                pass
 
             try:
                 float_value = float(env_value)
@@ -533,7 +549,9 @@ class Parser:
 
         param_type, type_parts = self._parse_identifier(allow_namespace=True)
 
-        # Note: This is a simplified check - in a complete implementation, we would validate against defined enums
+        # Heuristic: if the type isn't a built-in and doesn't contain "::",
+        # assume it's a user-defined enum. A full implementation would
+        # cross-reference against declared enum definitions.
         is_enum_type = "::" not in param_type and param_type not in [
             "string",
             "int",
@@ -680,6 +698,10 @@ class Parser:
         if params:
             result["params"] = params
 
+        # Top-level objects are wrapped in {"body": {name: ...}} to match the
+        # document root structure. However, if the next token is a delimiter
+        # (',', ';', '=') the object is actually a value inside a larger
+        # expression (e.g. an object assigned to a key), so return it unwrapped.
         if is_top_level and (
             self._current_token() is None
             or self._current_token()["value"] not in {",", ";", "="}
@@ -708,6 +730,9 @@ class Parser:
         token = self._current_token()
 
         if token["type"] == "ENV_VAR":
+            # Same env-var resolution and type coercion as _parse_primary.
+            # Duplicated here because _parse_value is the entry point for
+            # non-expression contexts (e.g. right-hand side of key = value).
             env_token = self._consume("ENV_VAR")["value"]
             env_content = env_token[2:-1]  # Remove ${ and } delimiters
 
@@ -727,6 +752,7 @@ class Parser:
                     token,
                 )
 
+            # Auto-coerce: bool → int → float → string
             if env_value.lower() in ("true", "false"):
                 return {
                     "type": "boolean",
@@ -746,7 +772,7 @@ class Parser:
                     "env_var": var_name,
                 }
             except ValueError:
-                pass  # Try float conversion next
+                pass
 
             try:
                 float_value = float(env_value)
@@ -758,7 +784,7 @@ class Parser:
                     "env_var": var_name,
                 }
             except ValueError:
-                pass  # Default to string type
+                pass
 
             return {
                 "type": "string",
@@ -829,6 +855,9 @@ class Parser:
             return self._parse_constructor_call()
 
         elif token["type"] == "IDENTIFIER":
+            # Look past any Namespace::Chain to see if a '{' follows.
+            # If so, this is a block-style object (e.g. "Database::MySQL { ... }").
+            # We skip pairs of (NAMESPACE, IDENTIFIER) tokens before checking.
             lookahead = 1
             while (
                 self._current_token(lookahead)
@@ -836,16 +865,17 @@ class Parser:
                 and self._current_token(lookahead + 1)
                 and self._current_token(lookahead + 1)["type"] == "IDENTIFIER"
             ):
-                lookahead += 2  # Skip namespace separator and identifier
+                lookahead += 2
 
             if (
                 self._current_token(lookahead)
                 and self._current_token(lookahead)["value"] == "{"
             ):
-                # Parse as constructor call with direct property access
                 obj_result = self._parse_object(is_top_level=False)
 
-                # Flatten constructor call structure: properties should be directly accessible under 'value'
+                # Flatten: merge body properties into the result dict so callers
+                # can access them directly (e.g. result["host"]) instead of
+                # going through result["body"]["host"].
                 flattened_result = {
                     "type": obj_result.get("name", "object"),
                     "line": obj_result.get("line", token["line"]),
@@ -910,7 +940,8 @@ class Parser:
                 "col": self.tokens[start_pos]["col"],
             }
 
-            # Elevate params to same level as value for test compatibility
+            # Hoist params alongside value so tests can access obj["params"]
+            # directly rather than obj["value"]["params"]
             if isinstance(value, dict) and "params" in value:
                 result["params"] = value["params"]
 
@@ -920,6 +951,9 @@ class Parser:
             return key_name, result
 
         except SyntaxError:
+            # The typed-declaration attempt raised an error (e.g. the
+            # "type" token wasn't a valid identifier). Fall back to
+            # parsing as a plain "key = value" pair.
             self.pos = start_pos
 
             if self._current_token() and self._current_token()["type"] == "IDENTIFIER":
@@ -940,7 +974,8 @@ class Parser:
                     "col": self.tokens[start_pos]["col"],
                 }
 
-                # Elevate params to same level as value for test compatibility
+                # Hoist params alongside value so tests can access obj["params"]
+            # directly rather than obj["value"]["params"]
                 if isinstance(value, dict) and "params" in value:
                     result["params"] = value["params"]
 
@@ -997,6 +1032,8 @@ class Parser:
 
                 continue
 
+            # Try key-value pair first; if that fails (returns None),
+            # try parsing as a nested object definition.
             key, value = self._parse_key_value_pair()
 
             if key is not None:
@@ -1016,6 +1053,8 @@ class Parser:
                     if "name" in nested_obj:
                         obj_name = nested_obj["name"]
 
+                        # When the same name appears more than once, promote
+                        # the value to a list so all instances are preserved.
                         if obj_name in body:
                             if not isinstance(body[obj_name]["value"], list):
                                 body[obj_name] = {
@@ -1037,10 +1076,13 @@ class Parser:
                                 "col": nested_obj.get("col", 0),
                             }
 
-                            # Elevate params to same level as value for test compatibility
+                            # Hoist params alongside value so tests can access obj["params"]
+            # directly rather than obj["value"]["params"]
                             if isinstance(nested_obj, dict) and "params" in nested_obj:
                                 body[obj_name]["params"] = nested_obj["params"]
                 else:
+                    # Neither a key-value pair nor an identifier-led object.
+                    # Skip the unrecognized token to avoid an infinite loop.
                     if self._current_token():
                         self._consume()
                     else:

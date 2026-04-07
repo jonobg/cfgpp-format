@@ -302,11 +302,11 @@ class CfgppFormatter:
         # Write object header
         obj_line = name
         if params:
+            # Estimate total length: name + "(" + params + ")".
+            # If it fits on one line, keep it compact; otherwise wrap.
             if len("".join(params)) + len(name) + 2 < self.config.max_line_length:
-                # Short parameter list - keep on same line
                 obj_line += f"({', '.join(params)})"
             else:
-                # Long parameter list - multi-line
                 obj_line += "("
                 self._write_line(obj_line)
                 self._indent()
@@ -488,11 +488,11 @@ class CfgppFormatter:
         # Write object header with parameters
         obj_line = name
         if params:
+            # Estimate total length: name + "(" + params + ")".
+            # If it fits on one line, keep it compact; otherwise wrap.
             if len("".join(params)) + len(name) + 2 < self.config.max_line_length:
-                # Short parameter list - keep on same line
                 obj_line += f"({', '.join(params)})"
             else:
-                # Long parameter list - multi-line
                 obj_line += "("
                 self._write_line(obj_line)
                 self._indent()
@@ -611,10 +611,12 @@ class CfgppFormatter:
         elif self.config.array_style == ArrayStyle.COMPACT:
             should_wrap = False
         else:  # AUTO
-            # Check length and complexity
+            # Wrap to multi-line if the estimated single-line length exceeds
+            # the threshold, there are too many elements, or any element
+            # already contains a newline (nested arrays/objects).
             total_length = (
                 sum(len(item) for item in formatted_items) + len(formatted_items) * 2
-            )  # commas and spaces
+            )
             should_wrap = (
                 total_length > self.config.array_wrap_threshold
                 or len(formatted_items) > self.config.array_element_threshold
@@ -645,9 +647,10 @@ class CfgppFormatter:
         # For inline object formatting, we need to handle this differently
         # Objects as property values should be formatted inline or expanded
         if "body" in value and value["body"]:
-            # Check if this is a simple object that can be formatted inline
             body = value["body"]
-            if len(body) <= 2:  # Small objects can be inline
+            # Objects with 1-2 properties are formatted inline as
+            # "{ key = val; key2 = val2 }"; larger ones get a placeholder.
+            if len(body) <= 2:
                 formatted_parts = []
                 for key, item in body.items():
                     if isinstance(item, dict) and "value" in item:
