@@ -5,10 +5,6 @@ CLI commands for cfgpp-format formatting operations.
 This module extends the main CLI with formatting commands for code formatting,
 style checking, and format configuration.
 
-# REASONING: CLI formatting support enables developer-friendly formatting operations for CLI workflows.
-# CLI workflows require CLI formatting support for developer-friendly formatting operations in CLI workflows.
-# CLI formatting support supports developer-friendly formatting operations, command-line integration, and CLI coordination while enabling
-# comprehensive CLI strategies and systematic formatting command-line workflows.
 """
 
 import sys

@@ -1,10 +1,6 @@
 """
 Command-line interface for the cfgpp parser.
 
-# REASONING: CLI interface enables command-line configuration processing and developer tooling for CLI workflows.
-# CLI workflows require CLI interface for command-line configuration processing and developer tooling in CLI workflows.
-# CLI interface supports command-line configuration processing, developer tooling, and CLI coordination while enabling
-# comprehensive CLI strategies and systematic command-line workflows.
 """
 
 import argparse

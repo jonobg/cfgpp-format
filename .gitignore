@@ -65,6 +65,11 @@ htmlcov/
 .mypy_cache/
 cfgpp_format/
 
+# VS Code extension build artifacts
+*.vsix
+vscode-extension/out/
+vscode-extension/node_modules/
+
 # MCP and AI tooling
 .mcp/
 .cascade/

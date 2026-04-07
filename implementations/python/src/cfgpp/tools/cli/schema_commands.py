@@ -5,10 +5,6 @@ CLI commands for cfgpp-format schema operations.
 This module extends the main CLI with schema-specific commands for validation,
 checking, and schema management.
 
-# REASONING: CLI schema support enables developer-friendly schema operations for CLI workflows.
-# CLI workflows require CLI schema support for developer-friendly schema operations in CLI workflows.
-# CLI schema support supports developer-friendly schema operations, command-line integration, and CLI coordination while enabling
-# comprehensive CLI strategies and systematic schema command-line workflows.
 """
 
 import sys
