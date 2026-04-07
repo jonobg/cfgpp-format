@@ -132,7 +132,6 @@ class DiagnosticsEngine:
     """
     Provides real-time validation and diagnostics for cfgpp documents.
 
-    # Real-time diagnostics support immediate feedback, efficient development, and feedback coordination while enabling
     """
 
     def __init__(self, document_manager: DocumentManager):

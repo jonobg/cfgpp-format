@@ -21,11 +21,11 @@ class ConfigParseError(Exception):
         context: Optional[str] = None,
         expected: Optional[str] = None,
     ):
-        self.message = message  # Primary error description
-        self.line = line  # Line number where error occurred
-        self.column = column  # Column position for precise location
-        self.col = column  # Alias for backward compatibility
-        self.context = context  # Surrounding code/configuration for debugging
+        self.message = message
+        self.line = line
+        self.column = column
+        self.col = column
+        self.context = context
         self.expected = expected  # What was expected vs. what was found
         super().__init__(self._format_message())
 
@@ -53,10 +53,10 @@ class Parser:
         included_files: Optional[Set[Path]] = None,
     ):
         self.tokens = tokens  # Tokenized input for parsing
-        self.source_lines = source_lines  # Original source for error context
-        self.pos = 0  # Current token position
-        self.base_path = base_path or Path.cwd()  # Base path for file resolution
-        self.included_files = included_files or set()  # Circular include prevention
+        self.source_lines = source_lines
+        self.pos = 0
+        self.base_path = base_path or Path.cwd()
+        self.included_files = included_files or set()
 
     def parse(self, text: Optional[str] = None) -> Dict:
         """Parse the given cfgpp configuration text into a Python dictionary.
@@ -70,13 +70,12 @@ class Parser:
         Raises:
             ValueError: If no tokens are provided and no text is given to parse
         """
-        # Input validation and tokenization support proper parsing setup, input preparation, and setup coordination while enabling
         if text is not None:
             self.tokens = self._tokenize(text)
         elif not self.tokens:
             raise ValueError("No tokens provided and no text to parse")
 
-        self.pos = 0  # Reset parser position
+        self.pos = 0
 
         if (
             self._current_token()
@@ -107,9 +106,8 @@ class Parser:
                     )
 
                 path_token = self._consume("STRING")
-                include_path = path_token["value"][1:-1]  # Remove quotes
+                include_path = path_token["value"][1:-1]
 
-                # Include processing and merging support file composition, configuration integration, and integration coordination while enabling
                 included_data = self._process_include(include_path)
 
                 # Merge included data into the current body
@@ -140,7 +138,6 @@ class Parser:
 
     def _tokenize(self, text: str) -> List[Dict]:
         """Convert the input text into a list of tokens."""
-        # Token patterns support syntax recognition, lexical element identification, and pattern coordination while enabling
         token_spec = [
             ("COMMENT", r"//.*?$"),  # Single-line comments
             ("STRING", r'"(?:\\.|[^"\\])*"'),  # Quoted strings with escape support
@@ -150,30 +147,29 @@ class Parser:
             ("IDENTIFIER", r"[a-zA-Z_]\w*"),  # Variable names and identifiers
             ("PUNCTUATION", r"[\{\}\(\)\[\],;=]"),  # Structural punctuation
             ("WHITESPACE", r"\s+"),  # Whitespace for formatting
-            ("NEWLINE", r"\n"),  # Line breaks for tracking
+            ("NEWLINE", r"\n"),
             ("OTHER", r"."),  # Catch-all for unrecognized characters
         ]
 
         token_regex = "|".join(f"(?P<{name}>{pattern})" for name, pattern in token_spec)
 
-        # Token collection and position tracking support parsing state management, location awareness, and tracking coordination while enabling
         tokens = []
-        line_num = 1  # Current line for error reporting
-        line_start = 0  # Line start position for column calculation
+        line_num = 1
+        line_start = 0
 
         for mo in re.finditer(token_regex, text, re.MULTILINE | re.DOTALL):
-            kind = mo.lastgroup  # Token type from named group
-            value = mo.group()  # Matched text content
-            column = mo.start() - line_start  # Column position
+            kind = mo.lastgroup
+            value = mo.group()
+            column = mo.start() - line_start
 
             if kind == "NEWLINE":
-                line_start = mo.end()  # Update line start position
-                line_num += 1  # Increment line counter
+                line_start = mo.end()
+                line_num += 1
                 continue
             elif kind == "WHITESPACE":
-                continue  # Skip whitespace tokens
+                continue
             elif kind == "COMMENT":
-                continue  # Skip comment tokens
+                continue
             elif kind == "OTHER":
                 raise SyntaxError(
                     f"Unexpected character: {value} at line {line_num}, column {column + 1}"
@@ -181,10 +177,10 @@ class Parser:
 
             tokens.append(
                 {
-                    "type": kind,  # Token category
-                    "value": value,  # Matched text
-                    "line": line_num,  # Line number for errors
-                    "col": column + 1,  # Column position (1-based)
+                    "type": kind,
+                    "value": value,
+                    "line": line_num,
+                    "col": column + 1,
                 }
             )
 
@@ -196,7 +192,6 @@ class Parser:
         Returns:
             The token at the current position + offset, or None if beyond the end
         """
-        # Position calculation and bounds checking support safe token access, parsing state management, and access coordination while enabling
         pos = self.pos + offset
         if 0 <= pos < len(self.tokens):
             return self.tokens[pos]
@@ -211,7 +206,7 @@ class Parser:
     def _process_include(self, include_path: str) -> Dict[str, Any]:
         """Process an include/import directive."""
         if not include_path.endswith(".cfgpp"):
-            include_path += ".cfgpp"  # Add default extension
+            include_path += ".cfgpp"
 
         resolved_path = (self.base_path / include_path).resolve()
 
@@ -221,14 +216,13 @@ class Parser:
         if not resolved_path.exists():
             raise ConfigParseError(f"Include file not found: {include_path}")
 
-        # File reading and error handling support content loading, failure management, and loading coordination while enabling
         try:
             with open(resolved_path, "r", encoding="utf-8") as f:
                 included_content = f.read()
         except IOError as e:
             raise ConfigParseError(f"Failed to read include file '{include_path}': {e}")
 
-        new_included_files = self.included_files.copy()  # Track included files
+        new_included_files = self.included_files.copy()
         new_included_files.add(resolved_path)
 
         return loads(included_content, str(resolved_path.parent), new_included_files)
@@ -270,7 +264,7 @@ class Parser:
 
     def _parse_addition(self) -> Dict[str, Any]:
         """Parse addition and subtraction operations."""
-        left = self._parse_multiplication()  # Higher precedence first
+        left = self._parse_multiplication()
 
         while (
             self._current_token()
@@ -286,7 +280,7 @@ class Parser:
 
     def _parse_multiplication(self) -> Dict[str, Any]:
         """Parse multiplication and division operations."""
-        left = self._parse_primary()  # Highest precedence
+        left = self._parse_primary()
 
         while (
             self._current_token()
@@ -309,7 +303,7 @@ class Parser:
 
         if token["value"] == "(":
             self._consume("PUNCTUATION", "(")
-            result = self._parse_expression()  # Recursive expression parsing
+            result = self._parse_expression()
             if not self._current_token() or self._current_token()["value"] != ")":
                 raise self._create_syntax_error(
                     "Expected ')' to close expression", self._current_token(), "')'"
@@ -319,7 +313,7 @@ class Parser:
 
         if token["type"] == "STRING":
             value = self._consume("STRING")["value"]
-            value = value[1:-1]  # Remove surrounding quotes
+            value = value[1:-1]
             return {
                 "type": "string",
                 "value": value,
@@ -330,11 +324,11 @@ class Parser:
         elif token["type"] == "NUMBER":
             value = self._consume("NUMBER")["value"]
             try:
-                value = int(value)  # Try integer first
+                value = int(value)
                 value_type = "integer"
             except ValueError:
                 try:
-                    value = float(value)  # Fall back to float
+                    value = float(value)
                     value_type = "float"
                 except ValueError:
                     raise self._create_syntax_error("Invalid number format", token)
@@ -349,7 +343,7 @@ class Parser:
             value = self._consume("BOOLEAN")["value"]
             return {
                 "type": "boolean",
-                "value": value.lower() == "true",  # Convert to boolean
+                "value": value.lower() == "true",
                 "line": token["line"],
                 "col": token["col"],
             }
@@ -361,7 +355,7 @@ class Parser:
             if ":-" in env_content:
                 var_name, default_value = env_content.split(":-", 1)
                 if default_value.startswith('"') and default_value.endswith('"'):
-                    default_value = default_value[1:-1]  # Remove quotes from default
+                    default_value = default_value[1:-1]
             else:
                 var_name = env_content
                 default_value = None
@@ -404,7 +398,7 @@ class Parser:
                     "env_var": var_name,
                 }
             except ValueError:
-                pass  # Fall back to string type
+                pass
 
             return {
                 "type": "string",
@@ -439,7 +433,7 @@ class Parser:
         if operator == "+" and (left_type == "string" or right_type == "string"):
             result_val = str(left_val) + str(
                 right_val
-            )  # Coerce to strings and concatenate
+            )
             return {
                 "type": "string",
                 "value": result_val,
@@ -448,7 +442,6 @@ class Parser:
                 "expression": True,
             }
 
-        # Numeric operations support mathematical computation, arithmetic evaluation, and numeric coordination while enabling
         if left_type in ["integer", "float"] and right_type in ["integer", "float"]:
             try:
                 if operator == "+":
@@ -565,12 +558,12 @@ class Parser:
             default_value = self._parse_value()
 
         param_info = {
-            "type": param_type,  # Parameter type name
-            "is_array": is_array,  # Array type flag
-            "is_enum_type": is_enum_type,  # Enum type flag for constraint validation
-            "value": default_value,  # Default value if specified
-            "line": type_parts[0]["line"],  # Line number for error reporting
-            "col": type_parts[0]["col"],  # Column position for location
+            "type": param_type,
+            "is_array": is_array,
+            "is_enum_type": is_enum_type,
+            "value": default_value,
+            "line": type_parts[0]["line"],
+            "col": type_parts[0]["col"],
         }
 
         if self._current_token() and self._current_token()["value"] == "(":
@@ -678,10 +671,10 @@ class Parser:
         # Note: Removed early return to ensure consistent object structure for nested parsing
 
         result = {
-            "name": full_name,  # Object type name
-            "body": body or {},  # Object properties
-            "line": start_line,  # Line number for errors
-            "col": start_col,  # Column position for location
+            "name": full_name,
+            "body": body or {},
+            "line": start_line,
+            "col": start_col,
         }
 
         if params:
@@ -721,7 +714,7 @@ class Parser:
             if ":-" in env_content:
                 var_name, default_value = env_content.split(":-", 1)
                 if default_value.startswith('"') and default_value.endswith('"'):
-                    default_value = default_value[1:-1]  # Remove quotes from default
+                    default_value = default_value[1:-1]
             else:
                 var_name = env_content
                 default_value = None
@@ -777,7 +770,7 @@ class Parser:
 
         elif token["type"] == "STRING":
             value = self._consume("STRING")["value"]
-            value = value[1:-1]  # Remove surrounding quotes
+            value = value[1:-1]
             return {
                 "type": "string",
                 "value": value,
@@ -788,11 +781,11 @@ class Parser:
         elif token["type"] == "NUMBER":
             value = self._consume("NUMBER")["value"]
             try:
-                value = int(value)  # Try integer first
+                value = int(value)
                 value_type = "integer"
             except ValueError:
                 try:
-                    value = float(value)  # Fall back to float
+                    value = float(value)
                     value_type = "float"
                 except ValueError:
                     raise self._create_syntax_error("Invalid number format", token)
@@ -808,7 +801,7 @@ class Parser:
             value = self._consume("BOOLEAN")["value"]
             return {
                 "type": "boolean",
-                "value": value.lower() == "true",  # Convert to boolean
+                "value": value.lower() == "true",
                 "line": token["line"],
                 "col": token["col"],
             }
@@ -887,17 +880,17 @@ class Parser:
             if self._current_token() and self._current_token()["type"] == "IDENTIFIER":
                 key_name = self._consume("IDENTIFIER")[
                     "value"
-                ]  # This is a typed declaration
+                ]
                 is_type_declaration = True
             else:
-                self.pos = start_pos  # Reset position for regular key parsing
+                self.pos = start_pos
                 key_name = self._consume("IDENTIFIER")["value"]
                 is_type_declaration = False
 
             is_array = False
             if self._current_token() and self._current_token()["value"] == "[":
                 self._consume("PUNCTUATION", "[")
-                self._consume("PUNCTUATION", "]")  # Empty brackets indicate array type
+                self._consume("PUNCTUATION", "]")
                 is_array = True
 
             if not (self._current_token() and self._current_token()["value"] == "="):
@@ -924,7 +917,7 @@ class Parser:
             return key_name, result
 
         except SyntaxError:
-            self.pos = start_pos  # Rewind on syntax error
+            self.pos = start_pos
 
             if self._current_token() and self._current_token()["type"] == "IDENTIFIER":
                 key_name = self._consume("IDENTIFIER")["value"]
@@ -950,7 +943,7 @@ class Parser:
 
                 return key_name, result
 
-        self.pos = start_pos  # Reset position if not a key-value pair
+        self.pos = start_pos
         return None, None
 
     def _parse_object_body(self) -> Dict:
@@ -982,7 +975,7 @@ class Parser:
                     )
 
                 path_token = self._consume("STRING")
-                include_path = path_token["value"][1:-1]  # Remove surrounding quotes
+                include_path = path_token["value"][1:-1]
 
                 included_data = self._process_include(include_path)
 
@@ -997,17 +990,17 @@ class Parser:
                     ";",
                     ",",
                 ]:
-                    self._consume("PUNCTUATION")  # Skip optional separator
+                    self._consume("PUNCTUATION")
 
-                continue  # Process next object member
+                continue
 
             key, value = self._parse_key_value_pair()
 
             if key is not None:
-                body[key] = value  # Add parsed pair to body
+                body[key] = value
 
                 if self._current_token() and self._current_token()["value"] == ",":
-                    self._consume("PUNCTUATION", ",")  # Optional comma separator
+                    self._consume("PUNCTUATION", ",")
             else:
                 if (
                     self._current_token()
@@ -1015,7 +1008,7 @@ class Parser:
                 ):
                     nested_obj = self._parse_object(
                         is_top_level=False
-                    )  # Parse nested object
+                    )
 
                     if "name" in nested_obj:
                         obj_name = nested_obj["name"]
@@ -1025,14 +1018,14 @@ class Parser:
                                 body[obj_name] = {
                                     "value": [
                                         body[obj_name]["value"]
-                                    ],  # Convert to array
+                                    ],
                                     "is_array": True,
                                     "line": body[obj_name]["line"],
                                     "col": body[obj_name]["col"],
                                 }
                             body[obj_name]["value"].append(
                                 nested_obj
-                            )  # Add to existing array
+                            )
                         else:
                             body[obj_name] = {
                                 "value": nested_obj,
@@ -1046,12 +1039,12 @@ class Parser:
                                 body[obj_name]["params"] = nested_obj["params"]
                 else:
                     if self._current_token():
-                        self._consume()  # Skip unrecognized token
+                        self._consume()
                     else:
-                        break  # End of input reached
+                        break
 
             if self._current_token() and self._current_token()["value"] == ";":
-                self._consume("PUNCTUATION", ";")  # Optional semicolon separator
+                self._consume("PUNCTUATION", ";")
 
         self._consume("PUNCTUATION", "}")
         return body
@@ -1070,16 +1063,16 @@ class Parser:
                 args.append({"key": key, "value": value})
 
                 if self._current_token() and self._current_token()["value"] == ",":
-                    self._consume("PUNCTUATION", ",")  # Optional comma separator
+                    self._consume("PUNCTUATION", ",")
                 else:
                     # No comma found, we're done with arguments
                     break
 
-            self._consume("PUNCTUATION", ")")  # Close parameter list
+            self._consume("PUNCTUATION", ")")
 
         body = {}
         if self._current_token() and self._current_token()["value"] == "{":
-            body = self._parse_object_body()  # Parse optional constructor body
+            body = self._parse_object_body()
 
         return {"type": type_name, "body": body}
 
@@ -1103,18 +1096,18 @@ class Parser:
 
         try:
             if self._current_token() and self._current_token()["value"] == "]":
-                self._consume("PUNCTUATION", "]")  # Empty array case
+                self._consume("PUNCTUATION", "]")
                 return elements
 
-            elements.append(self._parse_value())  # Parse first element
+            elements.append(self._parse_value())
 
             while self._current_token() and self._current_token()["value"] == ",":
-                self._consume("PUNCTUATION", ",")  # Comma separator
+                self._consume("PUNCTUATION", ",")
 
                 if self._current_token() and self._current_token()["value"] == "]":
-                    break  # Allow trailing comma
+                    break
 
-                elements.append(self._parse_value())  # Parse next element
+                elements.append(self._parse_value())
 
             if not self._current_token() or self._current_token()["value"] != "]":
                 raise self._create_syntax_error(
@@ -1127,7 +1120,7 @@ class Parser:
             return elements
 
         except ConfigParseError as e:
-            raise e from None  # Re-raise custom errors without modification
+            raise e from None
 
         except Exception as e:
             raise self._create_syntax_error(
@@ -1152,7 +1145,7 @@ class Parser:
 
         # Parse first value
         value_obj = self._parse_value()
-        values.append(value_obj["value"])  # Extract just the value, not the full object
+        values.append(value_obj["value"])
 
         # Parse additional values
         while self._current_token() and self._current_token()["value"] == ",":
@@ -1163,7 +1156,7 @@ class Parser:
                 break
 
             value_obj = self._parse_value()
-            values.append(value_obj["value"])  # Extract just the value
+            values.append(value_obj["value"])
 
         if not self._current_token() or self._current_token()["value"] != "]":
             raise self._create_syntax_error(
@@ -1236,7 +1229,7 @@ class Parser:
                     default_obj = self._parse_value()
                     enum_data["default"] = default_obj[
                         "value"
-                    ]  # Extract just the value
+                    ]
                 else:
                     raise self._create_syntax_error(
                         f"Unknown enum property: {prop_name}",
@@ -1381,7 +1374,7 @@ def _parse_text_internal(
         return parser.parse()
     except Exception as e:
         if isinstance(e, ConfigParseError):
-            raise  # Re-raise custom errors as-is
+            raise
         raise ConfigParseError(f"Error parsing configuration: {str(e)}") from e
 
 
