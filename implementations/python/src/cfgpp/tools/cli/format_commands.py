@@ -10,19 +10,15 @@ style checking, and format configuration.
 import sys
 import json
 from pathlib import Path
-from typing import Optional, List, Dict, Any
 
 from ...core.formatter import (
-    CfgppFormatter,
     FormatterConfig,
     BraceStyle,
     ArrayStyle,
     CommentStyle,
     format_string,
-    format_file,
 )
-from ...core.parser import loads, ConfigParseError
-from ...schema.integration import auto_discover_schema
+from ...core.parser import ConfigParseError
 
 
 def add_formatter_commands(subparsers):
@@ -328,7 +324,7 @@ def cmd_format_init(args) -> int:
 
         print(f"✅ Created formatting configuration: {output_path}")
         print(f"   Style: {args.style}")
-        print(f"   Edit this file to customize formatting options")
+        print("   Edit this file to customize formatting options")
 
         return 0
 

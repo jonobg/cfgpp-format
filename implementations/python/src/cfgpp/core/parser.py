@@ -7,7 +7,6 @@ import os
 import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Set, Tuple
-from .lexer import lex, Token, LexerError
 
 
 class ConfigParseError(Exception):
@@ -95,7 +94,7 @@ class Parser:
                 enum_name, enum_data = self._parse_enum_definition()
                 body[enum_name] = enum_data
             elif self._current_token()["type"] == "INCLUDE":
-                include_token = self._consume("INCLUDE")
+                self._consume("INCLUDE")
 
                 if (
                     not self._current_token()
@@ -996,7 +995,7 @@ class Parser:
 
         while self._current_token() and self._current_token()["value"] != "}":
             if self._current_token() and self._current_token()["type"] == "INCLUDE":
-                include_token = self._consume("INCLUDE")
+                self._consume("INCLUDE")
 
                 if (
                     not self._current_token()

@@ -12,10 +12,8 @@ Based on proven methodology from CFGPP-Format case study:
 - Ensure examples reflect actual working implementation
 """
 
-import os
 import pytest
 from pathlib import Path
-from typing import List, Tuple
 import time
 
 from cfgpp.core.parser import loads, ConfigParseError
@@ -93,7 +91,7 @@ class TestExamplesValidation:
             max_time = max(parsing_times, key=lambda x: x[1])
             min_time = min(parsing_times, key=lambda x: x[1])
 
-            print(f"\n📊 Parsing Performance:")
+            print("\n📊 Parsing Performance:")
             print(f"   Average: {avg_time:.4f}s")
             print(f"   Fastest: {min_time[0]} ({min_time[1]:.4f}s)")
             print(f"   Slowest: {max_time[0]} ({max_time[1]:.4f}s)")
@@ -249,7 +247,7 @@ class TestExamplesValidation:
         # Sort by parsing time (slowest first)
         performance_results.sort(key=lambda x: x["avg_time"], reverse=True)
 
-        print(f"\n📈 Performance Benchmark Results:")
+        print("\n📈 Performance Benchmark Results:")
         print(f"{'File':<40} {'Size':<8} {'Time':<10} {'Throughput':<12}")
         print("-" * 72)
 

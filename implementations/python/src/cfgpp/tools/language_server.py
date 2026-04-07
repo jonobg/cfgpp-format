@@ -5,18 +5,14 @@ CFG++ Language Server Protocol implementation.
 
 """
 
-import asyncio
-import json
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 from dataclasses import dataclass
 from pathlib import Path
 
 from ..core.parser import loads, ConfigParseError
-from ..schema.integration import auto_discover_schema, load_with_auto_schema
+from ..schema.integration import load_with_auto_schema
 from ..schema.schema_validator import (
-    ValidationResult,
-    ValidationMessage,
     ValidationSeverity,
 )
 from ..core.formatter import format_string

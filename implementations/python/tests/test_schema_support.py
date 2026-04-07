@@ -14,26 +14,17 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from cfgpp.schema.schema_parser import (
     loads_schema,
-    SchemaDocument,
-    SchemaDefinition,
-    SchemaField,
-    EnumDefinition,
-    ValidationRule,
     FieldRequirement,
     SchemaParseError,
 )
 from cfgpp.schema.schema_validator import (
     validate_config,
-    SchemaValidator,
-    ValidationResult,
     ValidationMessage,
     ValidationSeverity,
 )
 from cfgpp.schema.integration import (
     loads_with_schema,
-    SchemaAwareParser,
     format_validation_messages,
-    auto_discover_schema,
     SchemaRegistry,
 )
 from cfgpp.core.parser import loads as config_loads
@@ -126,7 +117,7 @@ class TestSchemaParser(unittest.TestCase):
         schema UserConfig {
             required string username;
             required int age;
-            
+
             validate {
                 username.length > 3;
                 age > 0 && age <= 120;
@@ -150,18 +141,18 @@ class TestSchemaParser(unittest.TestCase):
             values = ["debug", "info", "error"],
             default = "info"
         }
-        
+
         schema DatabaseConfig {
             required string host;
             required int port;
         }
-        
+
         schema AppConfig {
             required string appName;
             required LogLevel logLevel;
             required DatabaseConfig database;
             optional string[] features = [];
-            
+
             validate {
                 appName.length > 0;
             }
@@ -194,13 +185,13 @@ class TestSchemaValidator(unittest.TestCase):
         enum Environment {
             values = ["dev", "staging", "prod"]
         }
-        
+
         schema AppConfig {
             required string appName;
             required Environment environment;
             optional int port = 3000;
             optional bool debug = false;
-            
+
             validate {
                 appName.length > 0;
                 port > 0 && port <= 65535;
@@ -474,7 +465,7 @@ class TestSchemaErrorHandling(unittest.TestCase):
         schema NodeA {
             required NodeB child;
         }
-        
+
         schema NodeB {
             required NodeA parent;
         }
@@ -513,15 +504,15 @@ class TestSchemaPerformance(unittest.TestCase):
         schema Level3 {
             required string value;
         }
-        
+
         schema Level2 {
             required Level3 nested;
         }
-        
+
         schema Level1 {
             required Level2 nested;
         }
-        
+
         schema RootConfig {
             required Level1 nested;
         }
@@ -543,7 +534,7 @@ class TestSchemaPerformance(unittest.TestCase):
         config_data = config_loads(config_text)
 
         # This should validate successfully
-        result = validate_config(config_data, schema_doc, "RootConfig")
+        validate_config(config_data, schema_doc, "RootConfig")
         # Note: This test may need adjustment based on how nested objects are parsed
 
 

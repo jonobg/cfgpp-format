@@ -6,8 +6,7 @@ Provides formatting capabilities for cfgpp files including style customization,
 consistent indentation, and intelligent layout.
 """
 
-from typing import Dict, List, Any, Optional, Union, TextIO
-import re
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum as PyEnum
 from io import StringIO

@@ -6,11 +6,9 @@ Command-line interface for the cfgpp parser.
 import argparse
 import json
 import sys
-from pathlib import Path
-from typing import Optional, Dict, Any, List, Tuple
-import re
+from typing import Dict, Any, List, Tuple
 
-from ...core.parser import parse_file, parse_string, load, loads, ConfigParseError
+from ...core.parser import parse_file, parse_string, ConfigParseError
 from ...core.lexer import LexerError
 from .schema_commands import add_schema_commands
 from .format_commands import add_formatter_commands
@@ -243,7 +241,7 @@ Examples:
   cfgpp config.cfgpp --format-cfgpp     # Format CFGPP syntax
   cfgpp config.cfgpp --convert-json     # Convert to simplified JSON
   cat config.cfgpp | cfgpp -            # Read from stdin
-  
+
   # Schema commands:
   cfgpp validate config.cfgpp --schema schema.cfgpp-schema
   cfgpp schema-check schema.cfgpp-schema

@@ -8,7 +8,6 @@ Tests cover LSP protocol handling, document management, diagnostics, and complet
 import unittest
 import sys
 import os
-from unittest.mock import Mock, patch
 
 # Add src directory to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
@@ -72,7 +71,7 @@ class TestDocumentManager(unittest.TestCase):
             values = ["active", "inactive"],
             default = "active"
         }
-        
+
         AppConfig(string name = "test") {
             value = "configured";
         }
@@ -244,12 +243,6 @@ class TestCfgppLanguageServer(unittest.TestCase):
 
     def test_initialization(self):
         """Test server initialization."""
-        params = {
-            "capabilities": {
-                "textDocument": {"completion": {"dynamicRegistration": True}}
-            }
-        }
-
         # Since initialize is async, we'll test the sync parts
         self.assertIsNotNone(self.server.server_capabilities)
         self.assertIn("textDocumentSync", self.server.server_capabilities)
@@ -348,12 +341,6 @@ class TestLSPIntegration(unittest.TestCase):
 
         self.server.document_manager.open_document(uri, messy_content)
 
-        # Test formatting parameters structure
-        params = {
-            "textDocument": {"uri": uri},
-            "options": {"tabSize": 4, "insertSpaces": True},
-        }
-
         # The formatting method is async, but we can test the synchronous parts
         content = self.server.document_manager.get_document_content(uri)
         self.assertEqual(content, messy_content)
@@ -368,7 +355,7 @@ class TestLSPIntegration(unittest.TestCase):
         enum::Status {
             values = ["active", "inactive"]
         }
-        
+
         AppConfig(string name = "test") {
             value = "";
         }

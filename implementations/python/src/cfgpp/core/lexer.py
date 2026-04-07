@@ -3,7 +3,7 @@ Lexer for the CFG++ configuration format.
 """
 
 import re
-from typing import List, Dict, Tuple, Optional, Pattern, Match, Any
+from typing import List, Dict, Any
 
 TOKEN_SPECS = [
     ("WHITESPACE", r"\s+"),

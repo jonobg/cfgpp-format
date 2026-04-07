@@ -8,7 +8,7 @@ error reporting.
 
 """
 
-from typing import Dict, List, Any, Optional, Set, Union, Tuple
+from typing import Dict, List, Any, Optional
 import re
 from dataclasses import dataclass
 from enum import Enum as PyEnum
@@ -17,10 +17,7 @@ from .schema_parser import (
     SchemaDocument,
     SchemaDefinition,
     SchemaField,
-    EnumDefinition,
-    ValidationRule,
     FieldRequirement,
-    SchemaParseError,
 )
 
 
@@ -342,7 +339,7 @@ class SchemaValidator:
                     continue
                 else:
                     self._add_info(f"Validation rule check: {rule.expression}", path)
-            except Exception as e:
+            except Exception:
                 self._add_warning(
                     f"Could not evaluate validation rule: {rule.expression}", path
                 )

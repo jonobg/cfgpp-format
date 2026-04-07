@@ -7,13 +7,11 @@ validation, type checking, and enhanced developer experience for cfgpp configura
 
 """
 
-from typing import Dict, List, Any, Optional, Union, Tuple
-import re
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum as PyEnum
 
 from ..core.lexer import lex
-from ..core.parser import ConfigParseError
 
 
 class SchemaParseError(Exception):

@@ -8,12 +8,11 @@ developer experience.
 
 """
 
-from typing import Dict, List, Any, Optional, Union, Tuple
-import os
+from typing import Dict, List, Any, Optional, Tuple
 from pathlib import Path
 
 from ..core.parser import loads as config_loads, ConfigParseError
-from .schema_parser import loads_schema, load_schema, SchemaDocument, SchemaParseError
+from .schema_parser import loads_schema, load_schema, SchemaDocument
 from .schema_validator import (
     validate_config,
     ValidationResult,
