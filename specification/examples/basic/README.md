@@ -29,13 +29,13 @@ Parse any example with the CFGPP CLI:
 
 ```bash
 # Parse to JSON
-python -m cfgpp.cli basic/hello-world.cfgpp
+python -m cfgpp basic/hello-world.cfgpp
 
 # Parse to YAML
-python -m cfgpp.cli basic/data-types.cfgpp --format yaml
+python -m cfgpp basic/data-types.cfgpp --format yaml
 ```
 
 ## Next Steps
 
 - Check out `../advanced/` for complex type system examples
-- See `../ai-aware/` for AI-native features like hash validation and compression
+- See `../ai-aware/` for experimental AI-related configuration examples

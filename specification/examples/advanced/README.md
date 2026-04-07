@@ -30,10 +30,10 @@ These examples require understanding of CFGPP's type system:
 
 ```bash
 # Parse complex configuration
-python -m cfgpp.cli advanced/complex-config.cfgpp
+python -m cfgpp advanced/complex-config.cfgpp
 
 # Validate against schema
-python -m cfgpp.cli advanced/complex-config.cfgpp --schema app.cfgpp-schema
+python -m cfgpp advanced/complex-config.cfgpp --schema app.cfgpp-schema
 ```
 
 ## Prerequisites
@@ -43,5 +43,5 @@ python -m cfgpp.cli advanced/complex-config.cfgpp --schema app.cfgpp-schema
 
 ## Next Steps
 
-- Explore `../ai-aware/` for cutting-edge AI-native features
+- Explore `../ai-aware/` for experimental AI-related configuration examples
 - Study the schema files to understand validation patterns
