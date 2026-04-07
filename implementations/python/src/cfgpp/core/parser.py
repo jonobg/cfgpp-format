@@ -447,9 +447,7 @@ class Parser:
         right_type = right["type"]
 
         if operator == "+" and (left_type == "string" or right_type == "string"):
-            result_val = str(left_val) + str(
-                right_val
-            )
+            result_val = str(left_val) + str(right_val)
             return {
                 "type": "string",
                 "value": result_val,
@@ -911,9 +909,7 @@ class Parser:
             type_name, _ = self._parse_identifier(allow_namespace=True)
 
             if self._current_token() and self._current_token()["type"] == "IDENTIFIER":
-                key_name = self._consume("IDENTIFIER")[
-                    "value"
-                ]
+                key_name = self._consume("IDENTIFIER")["value"]
                 is_type_declaration = True
             else:
                 self.pos = start_pos
@@ -975,7 +971,7 @@ class Parser:
                 }
 
                 # Hoist params alongside value so tests can access obj["params"]
-            # directly rather than obj["value"]["params"]
+                # directly rather than obj["value"]["params"]
                 if isinstance(value, dict) and "params" in value:
                     result["params"] = value["params"]
 
@@ -1046,9 +1042,7 @@ class Parser:
                     self._current_token()
                     and self._current_token()["type"] == "IDENTIFIER"
                 ):
-                    nested_obj = self._parse_object(
-                        is_top_level=False
-                    )
+                    nested_obj = self._parse_object(is_top_level=False)
 
                     if "name" in nested_obj:
                         obj_name = nested_obj["name"]
@@ -1058,16 +1052,12 @@ class Parser:
                         if obj_name in body:
                             if not isinstance(body[obj_name]["value"], list):
                                 body[obj_name] = {
-                                    "value": [
-                                        body[obj_name]["value"]
-                                    ],
+                                    "value": [body[obj_name]["value"]],
                                     "is_array": True,
                                     "line": body[obj_name]["line"],
                                     "col": body[obj_name]["col"],
                                 }
-                            body[obj_name]["value"].append(
-                                nested_obj
-                            )
+                            body[obj_name]["value"].append(nested_obj)
                         else:
                             body[obj_name] = {
                                 "value": nested_obj,
@@ -1077,7 +1067,7 @@ class Parser:
                             }
 
                             # Hoist params alongside value so tests can access obj["params"]
-            # directly rather than obj["value"]["params"]
+                            # directly rather than obj["value"]["params"]
                             if isinstance(nested_obj, dict) and "params" in nested_obj:
                                 body[obj_name]["params"] = nested_obj["params"]
                 else:
@@ -1272,9 +1262,7 @@ class Parser:
                     enum_data["values"] = self._parse_enum_values_array()
                 elif prop_name == "default":
                     default_obj = self._parse_value()
-                    enum_data["default"] = default_obj[
-                        "value"
-                    ]
+                    enum_data["default"] = default_obj["value"]
                 else:
                     raise self._create_syntax_error(
                         f"Unknown enum property: {prop_name}",

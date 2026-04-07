@@ -186,7 +186,6 @@ class DiagnosticsEngine:
         """Perform schema validation and return diagnostics."""
         diagnostics = []
 
-
         try:
             # Auto-discover and validate against schema
             file_path = Path(uri.replace("file://", ""))
