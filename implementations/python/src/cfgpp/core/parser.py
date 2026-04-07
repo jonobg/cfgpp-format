@@ -52,7 +52,7 @@ class Parser:
         base_path: Optional[Path] = None,
         included_files: Optional[Set[Path]] = None,
     ):
-        self.tokens = tokens  # Tokenized input for parsing
+        self.tokens = tokens
         self.source_lines = source_lines
         self.pos = 0
         self.base_path = base_path or Path.cwd()
@@ -875,6 +875,9 @@ class Parser:
         start_pos = self.pos
 
         try:
+            # Try parsing as "TypeName key = value" first. If the next token
+            # after the identifier isn't another identifier, backtrack and
+            # treat the first identifier as the key instead.
             type_name, _ = self._parse_identifier(allow_namespace=True)
 
             if self._current_token() and self._current_token()["type"] == "IDENTIFIER":
