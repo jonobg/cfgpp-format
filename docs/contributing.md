@@ -69,25 +69,31 @@ The project works well with:
 
 ```
 cfgpp-format/
-├── src/
-│   └── cfgpp/
-│       ├── __init__.py          # Package exports
-│       ├── parser.py            # Main parser implementation
-│       └── lexer.py             # Lexical analyzer
-├── tests/
-│   ├── test_parser.py           # Parser tests
-│   └── test_namespaced_identifiers.py  # Namespace tests
-├── examples/
-│   └── complex_config.cfgpp     # Example configuration
-├── docs/                        # Documentation
-├── setup.py                     # Package configuration
-└── README.md                    # Project overview
+├── implementations/python/
+│   ├── src/cfgpp/
+│   │   ├── __init__.py              # Package exports
+│   │   ├── core/
+│   │   │   ├── parser.py            # Main parser
+│   │   │   ├── lexer.py             # Tokenizer
+│   │   │   └── formatter.py         # Code formatter
+│   │   ├── schema/                  # Schema validation
+│   │   └── tools/
+│   │       ├── cli/                 # CLI commands
+│   │       └── language_server.py   # LSP implementation
+│   ├── tests/
+│   └── pyproject.toml
+├── specification/
+│   ├── grammar.ebnf
+│   └── examples/
+├── vscode-extension/                # VS Code extension
+├── docs/                            # Documentation
+└── README.md
 ```
 
 ### Key Components
 
-- **`src/cfgpp/lexer.py`**: Tokenizes CFGPP text into tokens
-- **`src/cfgpp/parser.py`**: Parses tokens into structured data
+- **`src/cfgpp/core/lexer.py`**: Tokenizes CFGPP text into tokens
+- **`src/cfgpp/core/parser.py`**: Parses tokens into structured data
 - **`src/cfgpp/__init__.py`**: Public API exports
 - **`tests/`**: Test suite with comprehensive coverage
 - **`docs/`**: Documentation in Markdown format
@@ -221,7 +227,7 @@ Follow these guidelines when writing tests:
 ```python
 import pytest
 from cfgpp import loads
-from cfgpp.parser import ConfigParseError
+from cfgpp.core.parser import ConfigParseError
 
 
 def test_simple_config_parsing():

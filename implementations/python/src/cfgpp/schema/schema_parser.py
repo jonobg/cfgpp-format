@@ -5,19 +5,13 @@ Schema parser for cfgpp-format schema files (.cfgpp-schema).
 This module provides parsing capabilities for schema definitions that enable
 validation, type checking, and enhanced developer experience for cfgpp configurations.
 
-# REASONING: Schema parsing enables configuration validation and developer tooling for schema workflows.
-# Schema workflows require schema parsing for configuration validation and developer tooling in schema workflows.
-# Schema parsing supports configuration validation, developer tooling, and schema coordination while enabling
-# comprehensive validation strategies and systematic schema-driven development workflows.
 """
 
-from typing import Dict, List, Any, Optional, Union, Tuple
-import re
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum as PyEnum
 
 from ..core.lexer import lex
-from ..core.parser import ConfigParseError
 
 
 class SchemaParseError(Exception):
@@ -94,10 +88,6 @@ class SchemaParser:
     """
     Parser for cfgpp schema files (.cfgpp-schema).
 
-    # REASONING: Schema parsing enables configuration validation and type checking for schema workflows.
-    # Schema workflows require schema parsing for configuration validation and type checking in schema workflows.
-    # Schema parsing supports configuration validation, type checking, and schema coordination while enabling
-    # comprehensive parsing strategies and systematic schema validation workflows.
     """
 
     def __init__(self):

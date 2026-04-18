@@ -73,7 +73,8 @@
     "object-definition": {
       "patterns": [
         {
-          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(::)?([a-zA-Z_][a-zA-Z0-9_]*)?",
+          "comment": "Namespaced type::instance pattern (e.g. DatabaseConfig::primary)",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(::)([a-zA-Z_][a-zA-Z0-9_-]*)",
           "captures": {
             "1": {
               "name": "entity.name.type.object.cfgpp"
@@ -83,6 +84,15 @@
             },
             "3": {
               "name": "entity.name.function.cfgpp"
+            }
+          }
+        },
+        {
+          "comment": "Block-style object name before { (e.g. AppConfig {)",
+          "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*[({])",
+          "captures": {
+            "1": {
+              "name": "entity.name.type.object.cfgpp"
             }
           }
         }

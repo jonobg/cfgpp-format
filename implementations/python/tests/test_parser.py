@@ -94,43 +94,23 @@ def test_parse_array():
     assert values[4]["value"] is True
 
 
-def test_parse_example_file():
-    """Test parsing the example configuration file."""
-    import pytest
+def test_parse_complex_config_example():
+    """Test parsing the complex-config.cfgpp example file."""
+    example_path = os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "..",
+        "..",
+        "specification",
+        "examples",
+        "advanced",
+        "complex-config.cfgpp",
+    )
 
-    pytest.skip("Skipping example file test until core functionality is complete")
+    assert os.path.exists(example_path), f"Example file not found: {example_path}"
 
-    example_path = os.path.join(os.path.dirname(__file__), "..", "AppConfig.cfgpp")
-
-    # Parse the example file
     result = load(example_path)
 
-    # Basic structure checks
-    assert "body" in result
-
-    # Check for expected top-level keys
-    expected_keys = ["Logging", "Server", "Database", "Cache", "Security", "Features"]
-    for key in expected_keys:
-        assert key in result["body"], f"Expected key '{key}' not found in result"
-
-    # Check Logging configuration
-    logging = result["body"]["Logging"]
-    assert "level" in logging
-    assert logging["level"]["value"] == "INFO"
-
-    # Check Server configuration
-    server = result["body"]["Server"]
-    assert "port" in server
-    assert server["port"]["value"] == 8080
-    assert "environment" in server
-    assert server["environment"]["value"] == "development"
-
-    # Check for UserConfig
-    assert "userConf" in result["body"]
-    user_config = result["body"]["userConf"]
-    assert "users" in user_config["parameters"]
-    assert user_config["parameters"]["users"]["is_array"] is True
-
-    # Check that we have some nested objects in the body
     assert "body" in result
     assert isinstance(result["body"], dict)
+    assert "ComplexConfig" in result["body"]

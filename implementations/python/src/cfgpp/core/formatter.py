@@ -2,17 +2,11 @@
 """
 Code formatter for cfgpp-format configuration files.
 
-This module provides comprehensive formatting capabilities for cfgpp files,
-including style customization, consistent indentation, and intelligent layout.
-
-# REASONING: Code formatting enables consistent code style and developer productivity for formatting workflows.
-# Formatting workflows require code formatting for consistent code style and developer productivity in formatting workflows.
-# Code formatting supports consistent code style, developer productivity, and formatting coordination while enabling
-# comprehensive formatting strategies and systematic code style workflows.
+Provides formatting capabilities for cfgpp files including style customization,
+consistent indentation, and intelligent layout.
 """
 
-from typing import Dict, List, Any, Optional, Union, TextIO
-import re
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum as PyEnum
 from io import StringIO
@@ -111,19 +105,7 @@ class FormatterConfig:
 
 
 class CfgppFormatter:
-    """
-    Formatter for cfgpp configuration files.
-
-    # REASONING: Code formatting enables developer productivity and team consistency for professional workflows.
-    # Professional workflows require code formatting for developer productivity and team consistency in professional workflows.
-    # Code formatting supports developer productivity, team consistency, and professional coordination while enabling
-    # comprehensive formatting strategies and systematic code style workflows.
-
-    # REASONING: AST-based formatting ensures semantic accuracy and preserves program correctness for formatting workflows.
-    # Formatting workflows require AST-based formatting for semantic accuracy and program correctness in formatting workflows.
-    # AST-based formatting supports semantic accuracy, program correctness, and formatting coordination while enabling
-    # comprehensive accuracy strategies and systematic semantic formatting workflows.
-    """
+    """Formatter for cfgpp configuration files."""
 
     def __init__(
         self,
@@ -319,11 +301,11 @@ class CfgppFormatter:
         # Write object header
         obj_line = name
         if params:
+            # Estimate total length: name + "(" + params + ")".
+            # If it fits on one line, keep it compact; otherwise wrap.
             if len("".join(params)) + len(name) + 2 < self.config.max_line_length:
-                # Short parameter list - keep on same line
                 obj_line += f"({', '.join(params)})"
             else:
-                # Long parameter list - multi-line
                 obj_line += "("
                 self._write_line(obj_line)
                 self._indent()
@@ -401,28 +383,6 @@ class CfgppFormatter:
             formatted_params.append(param_str)
 
         return formatted_params
-
-    def _get_indent(self) -> str:
-        """Get current indentation string."""
-        if self.config.use_tabs:
-            return "\t" * self._indent_level
-        else:
-            return " " * (self.config.indent_size * self._indent_level)
-
-    def _format_value(self, value: Dict[str, Any]) -> str:
-        """Format a value based on its type."""
-        if value["type"] == "string":
-            return f'"{value["value"]}"'
-        elif value["type"] == "number":
-            return str(value["value"])
-        elif value["type"] == "boolean":
-            return str(value["value"]).lower()
-        elif value["type"] == "array":
-            return self._format_array_value(value["value"])
-        elif value["type"] == "identifier":
-            return value["value"]
-        else:
-            return str(value["value"])
 
     def _format_array_value(self, array_items: List[Dict[str, Any]]) -> str:
         """Format an array value."""
@@ -527,11 +487,11 @@ class CfgppFormatter:
         # Write object header with parameters
         obj_line = name
         if params:
+            # Estimate total length: name + "(" + params + ")".
+            # If it fits on one line, keep it compact; otherwise wrap.
             if len("".join(params)) + len(name) + 2 < self.config.max_line_length:
-                # Short parameter list - keep on same line
                 obj_line += f"({', '.join(params)})"
             else:
-                # Long parameter list - multi-line
                 obj_line += "("
                 self._write_line(obj_line)
                 self._indent()
@@ -650,10 +610,12 @@ class CfgppFormatter:
         elif self.config.array_style == ArrayStyle.COMPACT:
             should_wrap = False
         else:  # AUTO
-            # Check length and complexity
+            # Wrap to multi-line if the estimated single-line length exceeds
+            # the threshold, there are too many elements, or any element
+            # already contains a newline (nested arrays/objects).
             total_length = (
                 sum(len(item) for item in formatted_items) + len(formatted_items) * 2
-            )  # commas and spaces
+            )
             should_wrap = (
                 total_length > self.config.array_wrap_threshold
                 or len(formatted_items) > self.config.array_element_threshold
@@ -684,9 +646,10 @@ class CfgppFormatter:
         # For inline object formatting, we need to handle this differently
         # Objects as property values should be formatted inline or expanded
         if "body" in value and value["body"]:
-            # Check if this is a simple object that can be formatted inline
             body = value["body"]
-            if len(body) <= 2:  # Small objects can be inline
+            # Objects with 1-2 properties are formatted inline as
+            # "{ key = val; key2 = val2 }"; larger ones get a placeholder.
+            if len(body) <= 2:
                 formatted_parts = []
                 for key, item in body.items():
                     if isinstance(item, dict) and "value" in item:

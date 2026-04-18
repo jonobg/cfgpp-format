@@ -8,11 +8,8 @@ import tempfile
 import shutil
 from pathlib import Path
 import pytest
-import json
 
 from cfgpp.core.parser import loads, load, ConfigParseError
-from cfgpp.core.lexer import LexerError
-from cfgpp.tools.cli.cli import main
 import sys
 from io import StringIO
 
@@ -38,21 +35,21 @@ class TestIntegration:
         AppConfig {
             name = "TestApp"  // End-of-line comment
             version = "1.0.0"
-            
-            /* 
+
+            /*
              * Multi-line comment
              * with multiple lines
              */
             port = 8080
             debug = true  /* inline block comment */
-            
+
             // Nested configuration
             database = DatabaseConfig {
                 host = "localhost"  // Database host
                 port = 5432
             }
         }
-        
+
         /* End of configuration */
         """
 
@@ -114,7 +111,7 @@ class TestIntegration:
             max_connections = 100
             timeout = 30
         }
-        
+
         AuthConfig {
             jwt_secret = ${JWT_SECRET:-"default_secret"}
             token_expiry = 3600
@@ -130,9 +127,9 @@ class TestIntegration:
         AppConfig {
             name = "MainApp"
             version = "2.0.0"
-            
+
             @include "shared.cfgpp"
-            
+
             server = ServerConfig {
                 port = ${PORT:-8080}
                 workers = 4
@@ -172,15 +169,15 @@ class TestIntegration:
             difference = 20 - 8
             product = 6 * 7
             quotient = 100 / 4
-            
+
             // Complex expressions
             complex = (10 + 5) * 2
             mixed = 5 + 3 * 2
-            
+
             // String concatenation
             app_name = "My" + "App"
             full_name = "App" + "_" + "v1"
-            
+
             // Environment variables in expressions
             total_workers = ${BASE_WORKERS:-4} + 2
             log_path = "/var/log/" + ${APP_NAME:-"app"} + ".log"
@@ -227,8 +224,8 @@ class TestIntegration:
             timeout = 30
             retry_attempts = 3
         }
-        
-        // Shared logging configuration  
+
+        // Shared logging configuration
         LoggingDefaults {
             level = ${LOG_LEVEL:-"info"}
             format = "json"
@@ -245,23 +242,23 @@ class TestIntegration:
          * Main application configuration
          * Uses includes, environment variables, expressions, and comments
          */
-        
+
         ApplicationConfig {
             // Basic application metadata
             name = ${APP_NAME:-"DefaultApp"}
             version = "2" + "." + "1" + "." + "0"  // Expression: "2.1.0"
             environment = ${ENVIRONMENT:-"development"}
-            
+
             // Include shared configurations
             @include "defaults.cfgpp"
-            
+
             // Server configuration with expressions
             server = ServerConfig {
                 host = ${SERVER_HOST:-"0.0.0.0"}
                 port = ${SERVER_PORT:-8000} + 80  // Expression
                 workers = ${WORKER_COUNT:-4} * 2   // Expression
                 timeout = 30 + 30                 // Expression: 60
-                
+
                 // TLS configuration
                 tls = TLSConfig {
                     enabled = ${TLS_ENABLED:-true}
@@ -269,14 +266,14 @@ class TestIntegration:
                     key_path = "/etc/ssl/" + ${APP_NAME:-"app"} + ".key"
                 }
             }
-            
+
             // Database configuration extending defaults
             database = DatabaseConfig {
                 driver = ${DB_DRIVER:-"postgresql"}
                 host = ${DB_HOST:-"localhost"}
                 port = ${DB_PORT:-5432}
                 name = ${DB_NAME:-"appdb"}
-                
+
                 // Connection pool settings
                 pool = PoolConfig {
                     min_size = ${DB_POOL_MIN:-5}
@@ -284,14 +281,14 @@ class TestIntegration:
                     timeout = 10 + 5  // Expression: 15
                 }
             }
-            
+
             // Feature flags
             features = [
                 ${FEATURE_AUTH:-"auth"},
-                ${FEATURE_CACHE:-"cache"}, 
+                ${FEATURE_CACHE:-"cache"},
                 ${FEATURE_METRICS:-"metrics"}
             ]
-            
+
             // Cache configuration
             cache = CacheConfig {
                 provider = ${CACHE_PROVIDER:-"redis"}
@@ -402,14 +399,14 @@ class TestIntegration:
         // Test configuration for CLI
         TestConfig {
             name = "CLI" + "Test"  // Expression
-            port = 8000 + 80      // Expression  
+            port = 8000 + 80      // Expression
             debug = ${DEBUG:-false}
-            
+
             database = DatabaseConfig {
                 host = ${DB_HOST:-"localhost"}
                 port = 5432
             }
-            
+
             features = ["auth", "logging"]
         }
         """

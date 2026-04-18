@@ -5,28 +5,20 @@ CLI commands for cfgpp-format formatting operations.
 This module extends the main CLI with formatting commands for code formatting,
 style checking, and format configuration.
 
-# REASONING: CLI formatting support enables developer-friendly formatting operations for CLI workflows.
-# CLI workflows require CLI formatting support for developer-friendly formatting operations in CLI workflows.
-# CLI formatting support supports developer-friendly formatting operations, command-line integration, and CLI coordination while enabling
-# comprehensive CLI strategies and systematic formatting command-line workflows.
 """
 
 import sys
 import json
 from pathlib import Path
-from typing import Optional, List, Dict, Any
 
 from ...core.formatter import (
-    CfgppFormatter,
     FormatterConfig,
     BraceStyle,
     ArrayStyle,
     CommentStyle,
     format_string,
-    format_file,
 )
-from ...core.parser import loads, ConfigParseError
-from ...schema.integration import auto_discover_schema
+from ...core.parser import ConfigParseError
 
 
 def add_formatter_commands(subparsers):
@@ -332,7 +324,7 @@ def cmd_format_init(args) -> int:
 
         print(f"✅ Created formatting configuration: {output_path}")
         print(f"   Style: {args.style}")
-        print(f"   Edit this file to customize formatting options")
+        print("   Edit this file to customize formatting options")
 
         return 0
 

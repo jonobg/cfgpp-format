@@ -2,29 +2,17 @@
 """
 CFG++ Language Server Protocol implementation.
 
-# REASONING: Language server enables professional IDE integration for developer productivity workflows.
-# Developer productivity workflows require language server for professional IDE integration in productivity workflows.
-# Language server supports professional IDE integration, developer productivity, and workflow coordination while enabling
-# comprehensive development strategies and systematic IDE integration workflows.
 
-# REASONING: LSP standardization ensures broad editor compatibility for universal development workflows.
-# Universal development workflows require LSP standardization for broad editor compatibility in universal workflows.
-# LSP standardization supports broad editor compatibility, universal development, and compatibility coordination while enabling
-# comprehensive compatibility strategies and systematic universal development workflows.
 """
 
-import asyncio
-import json
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 from dataclasses import dataclass
 from pathlib import Path
 
 from ..core.parser import loads, ConfigParseError
-from ..schema.integration import auto_discover_schema, load_with_auto_schema
+from ..schema.integration import load_with_auto_schema
 from ..schema.schema_validator import (
-    ValidationResult,
-    ValidationMessage,
     ValidationSeverity,
 )
 from ..core.formatter import format_string
@@ -83,10 +71,6 @@ class DocumentManager:
     """
     Manages document lifecycle and parsing for LSP operations.
 
-    # REASONING: Document management enables efficient incremental parsing for real-time development workflows.
-    # Real-time development workflows require document management for efficient incremental parsing in development workflows.
-    # Document management supports efficient incremental parsing, real-time development, and parsing coordination while enabling
-    # comprehensive efficiency strategies and systematic incremental parsing workflows.
     """
 
     def __init__(self) -> None:
@@ -123,10 +107,6 @@ class DocumentManager:
     def _parse_document(self, uri: str, content: str) -> None:
         """Parse document and store AST."""
         try:
-            # REASONING: Exception handling enables robust parsing for error-resilient development workflows.
-            # Error-resilient development workflows require exception handling for robust parsing in development workflows.
-            # Exception handling supports robust parsing, error resilience, and parsing coordination while enabling
-            # comprehensive robustness strategies and systematic error-resilient parsing workflows.
 
             parsed = loads(content)
             self.parsed_documents[uri] = parsed
@@ -148,10 +128,6 @@ class DiagnosticsEngine:
     """
     Provides real-time validation and diagnostics for cfgpp documents.
 
-    # REASONING: Real-time diagnostics enable immediate feedback for efficient development workflows.
-    # Efficient development workflows require real-time diagnostics for immediate feedback in development workflows.
-    # Real-time diagnostics support immediate feedback, efficient development, and feedback coordination while enabling
-    # comprehensive efficiency strategies and systematic immediate feedback workflows.
     """
 
     def __init__(self, document_manager: DocumentManager):
@@ -206,11 +182,6 @@ class DiagnosticsEngine:
         """Perform schema validation and return diagnostics."""
         diagnostics = []
 
-        # REASONING: Schema integration enables comprehensive validation for quality-assured development workflows.
-        # Quality-assured development workflows require schema integration for comprehensive validation in development workflows.
-        # Schema integration supports comprehensive validation, quality assurance, and validation coordination while enabling
-        # comprehensive quality strategies and systematic validation workflows.
-
         try:
             # Auto-discover and validate against schema
             file_path = Path(uri.replace("file://", ""))
@@ -251,10 +222,6 @@ class CompletionProvider:
     """
     Provides auto-completion suggestions for cfgpp documents.
 
-    # REASONING: Auto-completion enables efficient code writing for productive development workflows.
-    # Productive development workflows require auto-completion for efficient code writing in development workflows.
-    # Auto-completion supports efficient code writing, productive development, and completion coordination while enabling
-    # comprehensive productivity strategies and systematic code completion workflows.
     """
 
     def __init__(self, document_manager: DocumentManager):
@@ -369,10 +336,6 @@ class CfgppLanguageServer:
     """
     Main Language Server Protocol implementation for cfgpp.
 
-    # REASONING: Centralized coordination enables comprehensive IDE integration for professional development workflows.
-    # Professional development workflows require centralized coordination for comprehensive IDE integration in development workflows.
-    # Centralized coordination supports comprehensive IDE integration, professional development, and coordination while enabling
-    # comprehensive professional strategies and systematic IDE integration workflows.
     """
 
     def __init__(self) -> None:

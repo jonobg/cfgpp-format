@@ -5,7 +5,6 @@ This avoids relative import issues when building with PyInstaller.
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add the src directory to the Python path so we can import cfgpp

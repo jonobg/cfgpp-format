@@ -4,7 +4,7 @@ Entry point for cfgpp module execution.
 Enables running cfgpp as: python -m cfgpp
 """
 
-from .cli import main
+from .tools.cli.cli import main
 
 if __name__ == "__main__":
     main()

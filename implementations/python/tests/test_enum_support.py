@@ -1,10 +1,5 @@
 """
 Test cases for enum type support in cfgpp-format parser.
-
-# REASONING: Comprehensive enum testing enables validation of enum definition parsing and type usage for testing workflows.
-# Testing workflows require comprehensive enum testing for validation of enum definition parsing and type usage in testing workflows.
-# Comprehensive enum testing supports validation of enum definition parsing, type usage validation, and testing coordination while enabling
-# comprehensive testing strategies and systematic enum validation workflows.
 """
 
 import unittest
@@ -71,12 +66,12 @@ class TestEnumSupport(unittest.TestCase):
         enum::Status {
             values = ["active", "inactive"]
         }
-        
+
         enum::Priority {
             values = ["low", "high"],
             default = "low"
         }
-        
+
         enum::Category {
             values = ["feature", "bugfix", "hotfix"]
         }
@@ -113,7 +108,7 @@ class TestEnumSupport(unittest.TestCase):
         enum::Status {
             values = ["active", "inactive", "pending"]
         }
-        
+
         TaskManager {
             createTask(Status status, string title) {
                 status = "active"
@@ -153,7 +148,7 @@ class TestEnumSupport(unittest.TestCase):
         enum::Permission {
             values = ["read", "write", "execute", "admin"]
         }
-        
+
         UserManager {
             setPermissions(Permission[] permissions) {
                 permissions = ["read", "write"]
@@ -279,7 +274,7 @@ class TestEnumIntegration(unittest.TestCase):
         enum::BaseStatus {
             values = ["active", "inactive"]
         }
-        
+
         TaskSystem {
             processTask(BaseStatus status) {
                 status = "active"
@@ -307,14 +302,14 @@ class TestEnumIntegration(unittest.TestCase):
             values = ["debug", "info", "warning", "error"],
             default = "info"
         }
-        
+
         Application {
             Logger {
                 log(LogLevel level, string message) {
                     level = "info"
                     message = "Default log message"
                 }
-                
+
                 Settings {
                     setDefaultLevel(LogLevel level) {
                         level = "warning"

@@ -8,7 +8,6 @@ Tests cover formatting styles, configuration options, and integration scenarios.
 import unittest
 import sys
 import os
-from textwrap import dedent
 
 # Add src directory to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
@@ -18,9 +17,7 @@ from cfgpp.core.formatter import (
     FormatterConfig,
     BraceStyle,
     ArrayStyle,
-    CommentStyle,
     format_string,
-    format_file,
 )
 from cfgpp.core.parser import loads, ConfigParseError
 
@@ -256,17 +253,17 @@ class TestFormatterIntegration(unittest.TestCase):
     def test_whitespace_normalization(self):
         """Test whitespace and blank line normalization."""
         messy_config = """
-        
-        
+
+
         AppConfig {
-        
-        
+
+
             value = "test";
-        
-        
+
+
         }
-        
-        
+
+
         """
 
         formatter = CfgppFormatter()
@@ -303,7 +300,7 @@ class TestComplexFormatting(unittest.TestCase):
         config_text = """
         enum::Environment{values=["dev","staging","prod"],default="dev"}
         enum::LogLevel{values=["debug","info","error"]}
-        
+
         AppConfig(string name="MyApp",Environment env="prod",LogLevel logLevel="info"){
             DatabaseConfig::database(string host="db.example.com",int port=5432){
                 ConnectionPool::pool(int minConnections=5,int maxConnections=50);
@@ -336,7 +333,7 @@ class TestComplexFormatting(unittest.TestCase):
         enum::Status {
             values = ["pending", "active", "inactive"]
         }
-        
+
         Config {
             zebra = "last";
             alpha = "first";

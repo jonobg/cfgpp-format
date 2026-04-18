@@ -6,13 +6,9 @@ This module provides validation capabilities for cfgpp configurations against
 schema definitions, enabling type checking, constraint validation, and enhanced
 error reporting.
 
-# REASONING: Schema validation enables configuration correctness and developer feedback for validation workflows.
-# Validation workflows require schema validation for configuration correctness and developer feedback in validation workflows.
-# Schema validation supports configuration correctness, developer feedback, and validation coordination while enabling
-# comprehensive validation strategies and systematic schema-driven validation workflows.
 """
 
-from typing import Dict, List, Any, Optional, Set, Union, Tuple
+from typing import Dict, List, Any, Optional
 import re
 from dataclasses import dataclass
 from enum import Enum as PyEnum
@@ -21,10 +17,7 @@ from .schema_parser import (
     SchemaDocument,
     SchemaDefinition,
     SchemaField,
-    EnumDefinition,
-    ValidationRule,
     FieldRequirement,
-    SchemaParseError,
 )
 
 
@@ -80,10 +73,6 @@ class SchemaValidator:
     """
     Validates cfgpp configuration against schema definitions.
 
-    # REASONING: Schema validation enables configuration validation and type safety for validation workflows.
-    # Validation workflows require schema validation for configuration validation and type safety in validation workflows.
-    # Schema validation supports configuration validation, type safety, and validation coordination while enabling
-    # comprehensive validation strategies and systematic schema-based validation workflows.
     """
 
     def __init__(self, schema_doc: SchemaDocument):
@@ -350,7 +339,7 @@ class SchemaValidator:
                     continue
                 else:
                     self._add_info(f"Validation rule check: {rule.expression}", path)
-            except Exception as e:
+            except Exception:
                 self._add_warning(
                     f"Could not evaluate validation rule: {rule.expression}", path
                 )

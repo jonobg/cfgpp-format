@@ -5,27 +5,20 @@ CLI commands for cfgpp-format schema operations.
 This module extends the main CLI with schema-specific commands for validation,
 checking, and schema management.
 
-# REASONING: CLI schema support enables developer-friendly schema operations for CLI workflows.
-# CLI workflows require CLI schema support for developer-friendly schema operations in CLI workflows.
-# CLI schema support supports developer-friendly schema operations, command-line integration, and CLI coordination while enabling
-# comprehensive CLI strategies and systematic schema command-line workflows.
 """
 
 import sys
 import json
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional
 
 from ...schema.integration import (
     load_with_auto_schema,
-    loads_with_schema,
     auto_discover_schema,
     format_validation_messages,
-    SchemaRegistry,
-    register_global_schema,
 )
-from ...schema.schema_parser import load_schema, loads_schema, SchemaParseError
-from ...core.parser import loads as config_loads, ConfigParseError
+from ...schema.schema_parser import load_schema, SchemaParseError
+from ...core.parser import ConfigParseError
 
 
 def add_schema_commands(subparsers):
@@ -371,8 +364,8 @@ def output_json_validation(validation_result):
 
 def output_schema_info_human(schema_doc, specific_schema: Optional[str] = None):
     """Output schema information in human-readable format."""
-    print(f"📋 Schema Document Information")
-    print(f"═══════════════════════════════")
+    print("📋 Schema Document Information")
+    print("═══════════════════════════════")
 
     # Enums
     if schema_doc.enums:

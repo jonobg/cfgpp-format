@@ -41,7 +41,7 @@ dev = [
 ]
 
 [project.scripts]
-cfgpp = "cfgpp.cli:main"
+cfgpp = "cfgpp.tools.cli.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/jonobg/cfgpp-format"
