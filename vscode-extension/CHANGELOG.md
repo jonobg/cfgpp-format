@@ -1,5 +1,10 @@
 # CFG++ Language Support - Changelog
 
+## [1.2.4] - 2026-04-18
+
+### Changed
+- No user-facing changes. CI tooling bumped to Node.js 24 (both for user steps and for the JavaScript Actions runtime).
+
 ## [1.2.3] - 2026-04-18
 
 ### Changed
