@@ -1,5 +1,10 @@
 # CFG++ Language Support - Changelog
 
+## [1.2.5] - 2026-04-18
+
+### Changed
+- No user-facing changes. All GitHub Actions bumped to majors that natively target Node.js 24 (checkout@v6, setup-python@v6, setup-node@v6, upload-artifact@v7, download-artifact@v8, softprops/action-gh-release@v3, cache@v4). The `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24` override is no longer needed and has been removed.
+
 ## [1.2.4] - 2026-04-18
 
 ### Changed
