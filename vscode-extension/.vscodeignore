@@ -8,6 +8,3 @@ vsc-extension-quickstart.md
 **/tsconfig.json
 **/node_modules/**
 **/.eslintrc.json
-PUBLISHING_GUIDE.md
-build-extensions.ps1
-package-openvsx.json
