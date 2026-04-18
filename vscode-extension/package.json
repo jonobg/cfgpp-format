@@ -2,7 +2,7 @@
   "name": "cfgpp-language-support",
   "displayName": "CFG++ Language Support",
   "description": "Language support for CFG++ configuration files. Another config format? Probably useful for field environments where you need more features than JSON but can't rely on YAML's indentation sensitivity. Provides syntax highlighting, validation, and auto-completion.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "publisher": "cfgpp",
   "icon": "icon.png",
   "engines": {

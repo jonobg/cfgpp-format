@@ -1,5 +1,10 @@
 # CFG++ Language Support - Changelog
 
+## [1.2.3] - 2026-04-18
+
+### Changed
+- No user-facing changes. CI pipeline rebuilt: release workflow now also produces standalone `cfgpp` CLI binaries for Linux/Windows/macOS and attaches them to the GitHub Release alongside the VSIX and Python dist.
+
 ## [1.2.2] - 2026-04-18
 
 ### Fixed
