@@ -1,5 +1,16 @@
 # CFG++ Language Support - Changelog
 
+## [1.2.2] - 2026-04-18
+
+### Fixed
+- **Grammar**: object-definition pattern no longer colors every bare identifier as a type name. Now only matches real `Type::instance` namespaced patterns and block-style object headers before `{` or `(`.
+- **Package contents**: LICENSE is now included at the VSIX root instead of being buried inside a transitive dependency.
+
+### Changed
+- `.vscodeignore` excludes `PUBLISHING_GUIDE.md`, `build-extensions.ps1`, and `package-openvsx.json` from the shipped VSIX.
+- `package-lock.json` version field corrected (was stuck at `1.0.2`).
+- `node_modules/` no longer tracked in git; committed `.vsix` binaries removed from the repo.
+
 ## [1.2.0] - 2025-09-22
 
 ### API Revolution & Project Reorganization Update
